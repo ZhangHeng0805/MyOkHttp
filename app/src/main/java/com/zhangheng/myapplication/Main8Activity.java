@@ -25,9 +25,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import okhttp3.Call;
 
@@ -78,7 +81,7 @@ public class Main8Activity extends AppCompatActivity {
         param.put("type", "2");//返回模式，1:二维码图片以base64encode编码返回 2:直接返回二维码图像，默认1
 
         final boolean b = ReadAndWrite.RequestPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);//写入权限
-        final String dir = Environment.getExternalStorageDirectory().getAbsolutePath();
+        final String dir = Environment.getExternalStorageDirectory().getAbsolutePath()+"/DCIM/";
         if (b) {
             OkHttpUtils
                     .get()
@@ -93,14 +96,16 @@ public class Main8Activity extends AppCompatActivity {
 
                         @Override
                         public void onResponse(final Bitmap response, int id) {
-                            String name="二维码.png";
-                            String et=m8_et_message.getText().toString().replace("/","*");
-                            int l=15;
-                            if (et.length()>l) {
-                                name= et.substring(0,l)+"_二维码.png";
-                            }else {
-                                name= et+"_二维码.png";
-                            }
+                            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");//设置日期格式
+                            String time = df.format(new Date());// new Date()为获取当前系统时间
+                            String name= time+"@星曦向荣二维码.png";
+//                            String et=m8_et_message.getText().toString().replace("/","*");
+//                            int l=15;
+//                            if (et.length()>l) {
+//                                name= et.substring(0,l)+"_二维码.png";
+//                            }else {
+//                                name= et+"_二维码.png";
+//                            }
                             AlertDialog.Builder builder=new AlertDialog.Builder(Main8Activity.this);
                             builder.setTitle("是否保存？");
                             builder.setMessage("是如将二维码保存到本地（根目录下）");
@@ -127,7 +132,7 @@ public class Main8Activity extends AppCompatActivity {
                                             response.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
                                             outputStream.flush();
                                             outputStream.close();
-                                            Toast.makeText(Main8Activity.this, "图片保存成功！"+file.getAbsolutePath() , Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(Main8Activity.this, "图片保存成功！路径："+file.getAbsolutePath() , Toast.LENGTH_LONG).show();
                                         } catch (Exception e) {
                                             Toast.makeText(Main8Activity.this, "错误" + e.getMessage(), Toast.LENGTH_SHORT).show();
                                         }
