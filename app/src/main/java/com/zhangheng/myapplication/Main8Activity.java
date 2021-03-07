@@ -108,7 +108,7 @@ public class Main8Activity extends AppCompatActivity {
 //                            }
                             AlertDialog.Builder builder=new AlertDialog.Builder(Main8Activity.this);
                             builder.setTitle("是否保存？");
-                            builder.setMessage("是如将二维码保存到本地（根目录下）");
+                            builder.setMessage("是否将二维码保存到本地（"+dir+"目录下）");
                             final String finalName = name;
                             builder.setNegativeButton("不保存", new DialogInterface.OnClickListener() {
                                 @Override
