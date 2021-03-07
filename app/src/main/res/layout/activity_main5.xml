@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Main5Activity">
+            <Button
+                android:id="@+id/btn_uploadfile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:text="上         传"/>
+
+           <LinearLayout
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_marginTop="20dp">
+
+               <ProgressBar
+                   android:id="@+id/progress_uploadfile"
+                   style="?android:progressBarStyleHorizontal"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_marginLeft="10dp"
+                   android:layout_marginRight="5dp"
+                   android:layout_weight="15"
+                   android:max="100" />
+
+               <TextView
+                   android:id="@+id/text_progress_uploadfile"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_weight="1"
+                   android:text="0%" />
+           </LinearLayout>
+            <ScrollView
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:background="#F8F6F0">
+                <TextView
+                    android:id="@+id/text_uploadfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:text="返回内容"
+                    android:textColor="#000000"/>
+            </ScrollView>
+
+
+
+            <EditText
+                android:id="@+id/et_upload_01"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:hint="请输入文件路径"
+                />
+
+            <RadioGroup
+                android:id="@+id/rg_upload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                    <RadioButton
+                        android:id="@+id/rd_upload_01"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="图片"
+                        android:checked="true"
+                        android:layout_weight="1"/>
+                    <RadioButton
+                        android:id="@+id/rd_upload_02"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="视频"
+                        android:layout_weight="1"/>
+                    <RadioButton
+                        android:id="@+id/rd_upload_03"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="音频"
+                        android:layout_weight="1"/>
+                    <RadioButton
+                        android:id="@+id/rd_upload_04"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="文档"
+                        android:layout_weight="1"/>
+                    <RadioButton
+                        android:id="@+id/rd_upload_05"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="压缩文件"
+                        android:layout_weight="1"/>
+            </RadioGroup>
+            <Button
+                android:id="@+id/btn_upload_01"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="查         找           文         件"
+                />
+            <ListView
+                android:id="@+id/list_view_upload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+</LinearLayout>

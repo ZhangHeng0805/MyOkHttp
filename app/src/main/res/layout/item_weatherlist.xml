@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:background="#DEF7F7"
+android:orientation="vertical">
+<TextView
+    android:id="@+id/itme1_text_future_date"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:textSize="20sp"
+    android:layout_marginTop="15dp"
+    android:textStyle="bold"
+    android:textColor="#808892"
+    android:text="某天天气"
+    />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_marginTop="5dp">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_weight="1">
+    <ImageView
+        android:id="@+id/itme1_img_day_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/undefined"
+        android:layout_marginRight="2dp"
+        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="30sp"
+            android:text="/"/>
+    <ImageView
+        android:id="@+id/itme1_img_night_icon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@mipmap/undefined"
+        android:layout_marginLeft="2dp"
+        />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/itme1_text_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="25sp"
+        android:text="天气"
+        android:layout_weight="1"
+        />
+    <TextView
+        android:id="@+id/itme1_text_temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:text="温度"
+        android:gravity="center"
+        android:layout_weight="1"
+        />
+</LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="15dp">
+    <TextView
+        android:id="@+id/itme1_text_direct"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:text="风向"
+        android:layout_weight="1"
+        />
+    <!--<TextView
+        android:id="@+id/itme1_text_power"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:text="风力"
+        android:layout_weight="1"
+        />
+    <TextView
+        android:id="@+id/itme1_text_humidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:text="湿度"
+        android:layout_weight="1"
+        />
+    <TextView
+        android:id="@+id/itme1_text_aqi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:gravity="center"
+        android:text="空气质量"
+        android:layout_weight="1"
+        />-->
+</LinearLayout>
+</LinearLayout>
+</LinearLayout>
