@@ -98,7 +98,7 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
             return;
         }
         Map<String, String> params = new HashMap<>();
-        params.put("username", "张恒");
+        params.put("username", "星曦向荣");
         params.put("password", "305666");
 //        String url = mBaseUrl + "user!uploadFile";
         OkHttpUtils
@@ -148,11 +148,9 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.btn_upload_01:
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        button1.setText("检索中，请稍后。。。");
-                    }});
+
+                Toast.makeText(Main5Activity.this,"检索中，请稍后。。。",Toast.LENGTH_SHORT).show();
+
                 boolean b = ReadAndWrite.RequestPermissions(this, PERMISSIONS_STORAGE[0]);
                 if (b){
                     String s = editText1.getText().toString();
@@ -183,7 +181,6 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
                 }else {
                     Toast.makeText(Main5Activity.this, "没有权限，请先获取权限", Toast.LENGTH_SHORT).show();
                 }
-                button1.setText("查         找           文         件");
                 break;
         }
     }

@@ -17,7 +17,7 @@
            <LinearLayout
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginTop="20dp">
+               android:layout_marginTop="10dp">
 
                <ProgressBar
                    android:id="@+id/progress_uploadfile"
@@ -28,7 +28,6 @@
                    android:layout_marginRight="5dp"
                    android:layout_weight="15"
                    android:max="100" />
-
                <TextView
                    android:id="@+id/text_progress_uploadfile"
                    android:layout_width="wrap_content"
@@ -39,24 +38,23 @@
             <ScrollView
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="60dp"
                 android:background="#F8F6F0">
                 <TextView
                     android:id="@+id/text_uploadfile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
+                    android:paddingRight="8dp"
+                    android:paddingLeft="8dp"
                     android:text="返回内容"
                     android:textColor="#000000"/>
             </ScrollView>
-
-
 
             <EditText
                 android:id="@+id/et_upload_01"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:hint="请输入文件路径"
                 />
 

@@ -96,7 +96,7 @@ public class Main8Activity extends AppCompatActivity {
 
                         @Override
                         public void onResponse(final Bitmap response, int id) {
-                            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");//设置日期格式
+                            SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd_HHmmss");//设置日期格式
                             String time = df.format(new Date());// new Date()为获取当前系统时间
                             String name= time+"@星曦向荣二维码.png";
 //                            String et=m8_et_message.getText().toString().replace("/","*");
