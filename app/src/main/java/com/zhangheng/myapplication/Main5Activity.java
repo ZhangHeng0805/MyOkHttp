@@ -139,7 +139,7 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
                 progressBar.setProgress(0);
                 tv_pro.setText("0%");
                 textView.setText("");
-                String url="http://zhangheng.free.idcfengye.com/upload/files";
+                String url="http://zhangheng.free.idcfengye.com/uploadjson/files";
                 String path = editText1.getText().toString();
                 if (path.length()<4){
                     Toast.makeText(Main5Activity.this,"请输入文件路径或路径过短",Toast.LENGTH_SHORT).show();
@@ -148,6 +148,11 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.btn_upload_01:
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        button1.setText("检索中，请稍后。。。");
+                    }});
                 boolean b = ReadAndWrite.RequestPermissions(this, PERMISSIONS_STORAGE[0]);
                 if (b){
                     String s = editText1.getText().toString();
@@ -173,10 +178,12 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
                             }
                         });
                     }
-                });}else {
-                    Toast.makeText(Main5Activity.this, "没有权限，请先获取权限", Toast.LENGTH_SHORT).show();
+                });
 
+                }else {
+                    Toast.makeText(Main5Activity.this, "没有权限，请先获取权限", Toast.LENGTH_SHORT).show();
                 }
+                button1.setText("查         找           文         件");
                 break;
         }
     }
