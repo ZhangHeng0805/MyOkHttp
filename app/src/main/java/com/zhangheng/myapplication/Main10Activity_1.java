@@ -70,8 +70,26 @@ public class Main10Activity_1 extends AppCompatActivity {
                         Gson gson = new Gson();
                         BookListBean bean = gson.fromJson(response, BookListBean.class);
                         if (bean.getError_code()==0){
-                            List<Data> data = bean.getResult().getData();
-                            listView.setAdapter(new BookList_Adapter(Main10Activity_1.this,data));
+                            final List<Data> data = bean.getResult().getData();
+                            listView.setAdapter(new BookList_Adapter(Main10Activity_1.this,data, new BookList_Adapter.OnItemClickListen() {
+                                @Override
+                                public void onItemClick(int position) {
+                                    Toast.makeText(Main10Activity_1.this,position,Toast.LENGTH_SHORT).show();
+                                    Intent intent=new Intent();
+                                    Data data1 = data.get(position);
+                                    intent.putExtra("title",data1.getTitle());
+                                    intent.putExtra("catalog",data1.getCatalog());
+                                    intent.putExtra("tags",data1.getTags());
+                                    intent.putExtra("sub1",data1.getSub1());
+                                    intent.putExtra("sub2",data1.getSub2());
+                                    intent.putExtra("img",data1.getImg());
+                                    intent.putExtra("reading",data1.getReading());
+                                    intent.putExtra("online",data1.getOnline());
+                                    intent.putExtra("bytime",data1.getBytime());
+                                    intent.setClass(Main10Activity_1.this,Main10Activity_2.class);
+                                    startActivity(intent);
+                                }
+                            }));
                         }else {
                             Toast.makeText(Main10Activity_1.this, "错误码：" + bean.getError_code(), Toast.LENGTH_SHORT).show();
 
