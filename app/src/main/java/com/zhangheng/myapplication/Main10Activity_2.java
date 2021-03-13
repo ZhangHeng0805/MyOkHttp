@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,6 +14,7 @@ public class Main10Activity_2 extends AppCompatActivity {
     private TextView m10_2_book_title,m10_2_book_catalog,m10_2_book_bytime,
             m10_2_bookt_tags,m10_2_bookt_reading,m10_2_bookt_sub1,m10_2_bookt_sub2;
     private ImageView m10_2_book_image;
+    private Button m10_2_book_buy1,m10_2_book_buy2,m10_2_book_buy3;
     private String title,catalog,tags,sub1,sub2,reading,img,online,bytime;
 
     @Override
@@ -39,6 +41,9 @@ public class Main10Activity_2 extends AppCompatActivity {
         m10_2_bookt_reading=findViewById(R.id.m10_2_bookt_reading);
         m10_2_bookt_sub1=findViewById(R.id.m10_2_bookt_sub1);
         m10_2_bookt_sub2=findViewById(R.id.m10_2_bookt_sub2);
+        m10_2_book_buy1=findViewById(R.id.m10_2_book_buy1);
+        m10_2_book_buy2=findViewById(R.id.m10_2_book_buy2);
+        m10_2_book_buy3=findViewById(R.id.m10_2_book_buy3);
         String s=title+"\n"
                 +catalog+"\n"
                 +tags+"\n"
@@ -55,7 +60,9 @@ public class Main10Activity_2 extends AppCompatActivity {
         m10_2_bookt_tags.setText(tags);
         m10_2_bookt_reading.setText(reading);
         m10_2_bookt_sub1.setText(sub1);
-        m10_2_bookt_sub2.setText(sub2);
+        m10_2_bookt_sub2.setText(sub2+online);
+
+
 
     }
 }

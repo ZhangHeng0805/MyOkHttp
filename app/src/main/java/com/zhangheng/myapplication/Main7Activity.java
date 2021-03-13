@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.zhangheng.myapplication.adapter.WeatherList_Adapter;
@@ -125,6 +126,20 @@ public class Main7Activity extends Activity implements View.OnClickListener {
                             m7_text_future_city.setText(future_text);
                             m7_list_future.setAdapter(new WeatherList_Adapter(Main7Activity.this,jsonRootBean));
                         }else {
+                            switch (jsonRootBean.getError_code()){
+                                case 207301:
+                                    Toast.makeText(Main7Activity.this, "错误的查询城市名", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 207302:
+                                    Toast.makeText(Main7Activity.this, "查询不到该城市的相关信息", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case 207303:
+                                    Toast.makeText(Main7Activity.this, "网络错误，请重试", Toast.LENGTH_SHORT).show();
+                                    break;
+                                default:
+                                    Toast.makeText(Main7Activity.this, "错误码："+jsonRootBean.getError_code(), Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
                             m7_text_realtime_city.setText("错误码："+jsonRootBean.getError_code());
                         }
                     }

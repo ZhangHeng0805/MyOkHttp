@@ -117,7 +117,9 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp">
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="#F5F0E7">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -128,7 +130,7 @@
                 android:orientation="vertical"
                 android:gravity="center_vertical"
                 android:layout_marginTop="8dp"
-                android:layout_marginLeft="10dp"
+
                 >
                 <TextView
                     android:layout_width="match_parent"
@@ -151,7 +153,6 @@
                 android:orientation="vertical"
                 android:gravity="center_vertical"
                 android:layout_marginTop="8dp"
-                android:layout_marginLeft="10dp"
                 >
                 <TextView
                     android:layout_width="match_parent"
@@ -171,4 +172,23 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/m10_2_book_buy1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/m10_2_book_buy2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/m10_2_book_buy3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    </LinearLayout>
 </LinearLayout>

@@ -77,11 +77,27 @@ public class Main10Activity extends AppCompatActivity {
                     public void onResponse(String response, int id) {
                         Gson gson = new Gson();
                         BooksRootBean bean = gson.fromJson(response, BooksRootBean.class);
-                        List<Result> result = bean.getResult();
-                        if (result.size()>0) {
-                            setAdapter(result);
+                        String resultcode = bean.getResultcode();
+                        if (resultcode == "200") {
+                            List<Result> result = bean.getResult();
+                            if (result.size() > 0) {
+                                setAdapter(result);
+                            } else {
+                                Toast.makeText(Main10Activity.this, "没有请求到数据", Toast.LENGTH_SHORT).show();
+                            }
                         }else {
-                            Toast.makeText(Main10Activity.this, "没有请求到数据" , Toast.LENGTH_SHORT).show();
+                            switch (resultcode){
+                                case "112":
+                                    Toast.makeText(Main10Activity.this, "今天请求超过次数限制（100次）", Toast.LENGTH_SHORT).show();
+                                    break;
+                                case "120":
+                                    Toast.makeText(Main10Activity.this, "系统维护，暂时停用", Toast.LENGTH_SHORT).show();
+                                    break;
+                                default:
+                                    Toast.makeText(Main10Activity.this, "错误码："+resultcode, Toast.LENGTH_SHORT).show();
+                                    break;
+                            }
+
                         }
                     }
                 });
