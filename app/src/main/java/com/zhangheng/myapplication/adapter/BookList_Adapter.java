@@ -1,17 +1,22 @@
 package com.zhangheng.myapplication.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.zhangheng.myapplication.Main10Activity_1;
+import com.zhangheng.myapplication.Main10Activity_2;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.bean.books.bookslist.Data;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -24,12 +29,12 @@ import okhttp3.Call;
 public class BookList_Adapter extends BaseAdapter {
     private final List<Data> data;
     private final Context context;
-    private OnItemClickListen onItemClickListen;
+//    private OnItemClickListen onItemClickListen;
 
-    public BookList_Adapter(Context context, List<Data> data,OnItemClickListen onItemClickListen) {
+    public BookList_Adapter(Context context, List<Data> data/*,OnItemClickListen onItemClickListen*/) {
         this.context=context;
         this.data=data;
-        this.onItemClickListen=onItemClickListen;
+//        this.onItemClickListen=onItemClickListen;
 
     }
 
@@ -94,10 +99,25 @@ public class BookList_Adapter extends BaseAdapter {
         //标签
         String tags = d.getTags();
         holder.item_booklist_tags.setText(tags);
+
         holder.item_layout_booklist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onItemClickListen.onItemClick(i);
+
+//                Toast.makeText(context,i,Toast.LENGTH_SHORT).show();
+                Intent intent=new Intent();
+                Data data1 = data.get(i);
+                intent.putExtra("title",data1.getTitle());
+                intent.putExtra("catalog",data1.getCatalog());
+                intent.putExtra("tags",data1.getTags());
+                intent.putExtra("sub1",data1.getSub1());
+                intent.putExtra("sub2",data1.getSub2());
+                intent.putExtra("img",data1.getImg());
+                intent.putExtra("reading",data1.getReading());
+                intent.putExtra("online",data1.getOnline());
+                intent.putExtra("bytime",data1.getBytime());
+                intent.setClass(context, Main10Activity_2.class);
+                context.startActivity(intent);
             }
         });
 
@@ -108,10 +128,11 @@ public class BookList_Adapter extends BaseAdapter {
         ImageView item_booklist_image;
         TextView item_booklist_title,item_booklist_catalog
                 ,item_booklist_bytime,item_booklist_tags;
-        ViewGroup item_layout_booklist;
+        LinearLayout item_layout_booklist;
 
     }
-    public interface OnItemClickListen{
-        void onItemClick(int position);
-    }
+    /*public interface OnItemClickListen extends AdapterView.OnItemClickListener {
+        @Override
+        void onItemClick(AdapterView<?> adapterView, View view, int i, long l);
+    }*/
 }

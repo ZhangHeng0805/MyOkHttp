@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/item_layout_booklist">
+    >
 <LinearLayout
+    android:id="@+id/item_layout_booklist"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
@@ -17,15 +18,15 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:background="#F5F5F5"/>
-    <ScrollView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
         <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             android:layout_marginRight="10dp"
-        android:gravity="center_vertical">
+            android:gravity="center_vertical">
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,6 +92,6 @@
                 android:text="中国历史 历史小说 好书推荐 明朝 畅销书排行榜"/>
         </LinearLayout>
     </LinearLayout>
-    </ScrollView>
+    </LinearLayout>
 </LinearLayout>
 </LinearLayout>
