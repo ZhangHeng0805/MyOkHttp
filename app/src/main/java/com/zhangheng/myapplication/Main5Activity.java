@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
+import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +36,8 @@ import okhttp3.Call;
 
 public class Main5Activity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText editText1;
+    private SlidingDrawer m5_SD;
+    private EditText editText1,m5_et_url,m5_et_name,m5_et_password;
     private TextView tv_pro,textView;
     private ProgressBar progressBar;
     private Button button1,button2;
@@ -57,6 +59,10 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
         progressBar=findViewById(R.id.progress_uploadfile);
         tv_pro=findViewById(R.id.text_progress_uploadfile);
         textView=findViewById(R.id.text_uploadfile);
+        m5_et_url=findViewById(R.id.m5_et_url);
+        m5_et_name=findViewById(R.id.m5_et_name);
+        m5_et_password=findViewById(R.id.m5_et_password);
+        m5_SD=findViewById(R.id.m5_SD);
 
         radioGroup=findViewById(R.id.rg_upload);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -86,7 +92,7 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
     }
 
 
-    public void multiFileUpload(String url,String filepath)
+    public void multiFileUpload(String url,String username,String password,String filepath)
     {
         String[] strs=filepath.split("/");
         String name=strs[strs.length-1];
@@ -98,8 +104,8 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
             return;
         }
         Map<String, String> params = new HashMap<>();
-        params.put("username", "星曦向荣");
-        params.put("password", "305666");
+        params.put("username", username);
+        params.put("password", password);
 //        String url = mBaseUrl + "user!uploadFile";
         OkHttpUtils
                 .post()//
@@ -139,12 +145,14 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
                 progressBar.setProgress(0);
                 tv_pro.setText("0%");
                 textView.setText("");
-                String url="http://zhangheng.free.idcfengye.com/uploadjson/files";
+                String url=m5_et_url.getText().toString();
+                String username=m5_et_name.getText().toString();
+                String password=m5_et_password.getText().toString();
                 String path = editText1.getText().toString();
                 if (path.length()<4){
                     Toast.makeText(Main5Activity.this,"请输入文件路径或路径过短",Toast.LENGTH_SHORT).show();
                 }else {
-                    multiFileUpload(url,path);
+                    multiFileUpload(url,username,password,path);
                 }
                 break;
             case R.id.btn_upload_01:

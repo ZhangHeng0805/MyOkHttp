@@ -1,45 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".Main5Activity">
-            <Button
-                android:id="@+id/btn_uploadfile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                android:text="上         传"/>
 
            <LinearLayout
+               android:id="@+id/line1"
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
-               android:layout_marginTop="10dp">
-
-               <ProgressBar
-                   android:id="@+id/progress_uploadfile"
-                   style="?android:progressBarStyleHorizontal"
-                   android:layout_width="wrap_content"
+               android:layout_marginTop="10dp"
+               android:orientation="vertical"
+               >
+               <Button
+                   android:id="@+id/btn_uploadfile"
+                   android:layout_width="match_parent"
                    android:layout_height="wrap_content"
-                   android:layout_marginLeft="10dp"
-                   android:layout_marginRight="5dp"
-                   android:layout_weight="15"
-                   android:max="100" />
-               <TextView
-                   android:id="@+id/text_progress_uploadfile"
-                   android:layout_width="wrap_content"
+                   android:textSize="25sp"
+                   android:textStyle="bold"
+                   android:text="上         传"/>
+               <LinearLayout
+                   android:layout_width="match_parent"
                    android:layout_height="wrap_content"
-                   android:layout_weight="1"
-                   android:text="0%" />
+                   android:orientation="horizontal">
+                   <ProgressBar
+                       android:id="@+id/progress_uploadfile"
+                       style="?android:progressBarStyleHorizontal"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_marginLeft="10dp"
+                       android:layout_marginRight="5dp"
+                       android:layout_weight="15"
+                       android:max="100" />
+                   <TextView
+                       android:id="@+id/text_progress_uploadfile"
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:layout_weight="1"
+                       android:text="0%" />
+               </LinearLayout>
            </LinearLayout>
             <ScrollView
+                android:id="@+id/scro1"
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:background="#F8F6F0">
+                android:background="#F8F6F0"
+                android:layout_below="@+id/line1">
                 <TextView
                     android:id="@+id/text_uploadfile"
                     android:layout_width="match_parent"
@@ -49,13 +58,18 @@
                     android:text="返回内容"
                     android:textColor="#000000"/>
             </ScrollView>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/scro1">
             <EditText
                 android:id="@+id/et_upload_01"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="请输入文件路径"
+
                 />
 
             <RadioGroup
@@ -106,4 +120,84 @@
                 android:id="@+id/list_view_upload"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-</LinearLayout>
+    </LinearLayout>
+    <SlidingDrawer
+        android:id="@+id/m5_SD"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:content="@+id/myweb_content"
+        android:handle="@+id/myweb_layout"
+        android:orientation="horizontal"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        >
+        <LinearLayout
+            android:id="@+id/myweb_layout"
+            android:layout_width="20dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/zanting"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/myweb_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F1E1CC"
+            android:paddingLeft="2dp"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:textColor="#000000"
+                android:text="上传设置栏"
+                android:textSize="25sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:text="上传网址："
+                android:textSize="18sp"/>
+            <EditText
+                android:id="@+id/m5_et_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/upload_url"
+                android:hint="请输入上传的网址"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:text="账号:"
+                android:textSize="18sp"/>
+            <EditText
+                android:id="@+id/m5_et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/username"
+                android:hint="请输入上传的用户名"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center_vertical"
+                android:text="密码:"
+                android:textSize="18sp"/>
+            <EditText
+                android:id="@+id/m5_et_password"
+                android:inputType="textPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/password"
+                android:hint="请输入上传的密码"/>
+        </LinearLayout>
+    </SlidingDrawer>
+</RelativeLayout>
