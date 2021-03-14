@@ -72,8 +72,8 @@ public class Main6Activity extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onResponse(Bitmap response, int id) {
                         imageView.setImageBitmap(response);
-                        progressBar.setProgress((int) (100));
-                        tv_pro.setText(100 + "%");
+                        progressBar.setProgress( (100));
+                        tv_pro.setText("100%");
                     }
                     @Override
                     public void inProgress(float progress, long total, int id) {

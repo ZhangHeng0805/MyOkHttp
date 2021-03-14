@@ -60,7 +60,7 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
                 String filename = url.substring(url.indexOf("//")+2)/*.replace("/","_")*/;
                 String[] s=filename.split("/");
                 editText_name.setText(s[s.length-1]);
-                if (editText_name.getText().toString().length()>55){
+                if (editText_name.getText().toString().length()>65){
                     editText_name.setText("");
                     Toast ts=null;
                     Toast toast=Toast.makeText(Main4Activity.this, "文件名过长", Toast.LENGTH_SHORT);
@@ -111,7 +111,7 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
 
                         @Override
                         public void inProgress(float progress, long total, int id) {
-                            super.inProgress(progress, total, id);
+//                            super.inProgress(progress, total, id);
                             progressBar.setProgress((int) (progress * 100));
                             textView_pro.setText((int) (progress * 100) + "%");
                             if (progress == 1) {

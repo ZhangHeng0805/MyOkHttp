@@ -78,7 +78,7 @@ public class Main10Activity extends AppCompatActivity {
                         Gson gson = new Gson();
                         BooksRootBean bean = gson.fromJson(response, BooksRootBean.class);
                         String resultcode = bean.getResultcode();
-                        if (resultcode == "200") {
+                        if (resultcode.equals("200")) {
                             List<Result> result = bean.getResult();
                             if (result.size() > 0) {
                                 setAdapter(result);
