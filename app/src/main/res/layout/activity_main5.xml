@@ -69,9 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:hint="请输入文件路径"
-
                 />
-
             <RadioGroup
                 android:id="@+id/rg_upload"
                 android:layout_width="match_parent"
@@ -162,6 +160,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
+                android:gravity="center"
+                android:textColor="#E61616"
+                android:text="注意：上传单个文件大小不要超过100Mb"
+                android:textSize="20sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
                 android:gravity="center_vertical"
                 android:text="上传网址："
                 android:textSize="18sp"/>
@@ -198,6 +204,27 @@
                 android:layout_height="wrap_content"
                 android:text="@string/password"
                 android:hint="请输入上传的密码"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center"
+                    android:textColor="#000000"
+                    android:text="跳转页面栏"
+                    android:textSize="25sp"/>
+                <Button
+                    android:id="@+id/m5_btn_intent_url"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="使用自制的上传页面"
+                    android:textSize="20sp"
+                    />
+            </LinearLayout>
         </LinearLayout>
     </SlidingDrawer>
 </RelativeLayout>

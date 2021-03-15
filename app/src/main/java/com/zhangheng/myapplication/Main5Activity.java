@@ -40,7 +40,7 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
     private EditText editText1,m5_et_url,m5_et_name,m5_et_password;
     private TextView tv_pro,textView;
     private ProgressBar progressBar;
-    private Button button1,button2;
+    private Button button1,button2,m5_btn_intent_url;
     private ListView listView;
     private RadioGroup radioGroup;
     private static String[] PERMISSIONS_STORAGE = {
@@ -63,6 +63,8 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
         m5_et_name=findViewById(R.id.m5_et_name);
         m5_et_password=findViewById(R.id.m5_et_password);
         m5_SD=findViewById(R.id.m5_SD);
+        m5_btn_intent_url=findViewById(R.id.m5_btn_intent_url);
+        m5_btn_intent_url.setOnClickListener(this);
 
         radioGroup=findViewById(R.id.rg_upload);
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -189,6 +191,13 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
                 }else {
                     Toast.makeText(Main5Activity.this, "没有权限，请先获取权限", Toast.LENGTH_SHORT).show();
                 }
+                break;
+            case R.id.m5_btn_intent_url:
+                String html=getResources().getString(R.string.upload_html_url);
+                Intent intent=new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(html));
+                startActivity(intent);
                 break;
         }
     }

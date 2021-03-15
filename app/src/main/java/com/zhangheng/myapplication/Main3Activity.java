@@ -19,10 +19,11 @@ public class Main3Activity extends AppCompatActivity {
             "使用OkHttpUtil下载大文件",//4
             "上传文件和检索文件",//5
             "请求单张图片并显示",//6
-            "查询天气列表",//7
-            "生成二维码",//8
-            "新华字典查询",//9
-            "图书电商查询",//10
+            "查询天气列表（API）",//7
+            "生成二维码（API）",//8
+            "新华字典查询（API）",//9
+            "图书电商查询（API）",//10
+            "查询文件列表并下载（自制服务器）",//10
             };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,10 @@ public class Main3Activity extends AppCompatActivity {
                         break;
                     case 8:
                         intent=new Intent(Main3Activity.this,Main10Activity.class);
+                        startActivity(intent);
+                        break;
+                    case 9:
+                        intent=new Intent(Main3Activity.this,Main11Activity.class);
                         startActivity(intent);
                         break;
 
