@@ -155,7 +155,7 @@ public class Main11Activity extends AppCompatActivity implements View.OnClickLis
                         m11_listview_load.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                m11_et_upload_01.setText(strings[i]);
+                                m11_et_upload_01.setText(getResources().getString(R.string.download_url)+strings[i]);
                             }
                         });
                     }
@@ -218,7 +218,12 @@ public class Main11Activity extends AppCompatActivity implements View.OnClickLis
             case R.id.m11_btn_downloadfile:
                 m11_progress.setProgress(0);
                 m11_text_progress.setText(0+"%");
-                String downloadfile_url=getResources().getString(R.string.download_url)+m11_et_upload_01.getText().toString();
+                String downloadfile_url;
+                if (m11_et_upload_01.getText().toString().startsWith("http")){
+                    downloadfile_url=m11_et_upload_01.getText().toString();
+                }else {
+                    downloadfile_url=getResources().getString(R.string.download_url)+m11_et_upload_01.getText().toString();
+                }
                 if (filename!=null){
                     downloadFile(downloadfile_url,filename);
                 }else {
