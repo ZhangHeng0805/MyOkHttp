@@ -23,7 +23,8 @@ public class Main3Activity extends AppCompatActivity {
             "生成二维码（API）",//8
             "新华字典查询（API）",//9
             "图书电商查询（API）",//10
-            "查询文件列表并下载（自制服务器）",//10
+            "查询文件列表并下载（自制服务器）",//11
+            "高德地图",//12
             };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +82,10 @@ public class Main3Activity extends AppCompatActivity {
                         break;
                     case 9:
                         intent=new Intent(Main3Activity.this,Main11Activity.class);
+                        startActivity(intent);
+                        break;
+                    case 10:
+                        intent=new Intent(Main3Activity.this,Main12Activity.class);
                         startActivity(intent);
                         break;
 
