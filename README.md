@@ -1,7 +1,7 @@
 # MyOkHttp
 
 ## 项目参考依赖[**okhttputils**](https://github.com/hongyangAndroid/okhttputils)和原生的[okhttp](https://github.com/square/okhttp)
-## 本项目的Android的安装[APP下载]()
+## 本项目的Android的安装[APP下载](https://github.com/ZhangHeng0805/MyOkHttp/releases/download/V1.3/MyOkHttp_V1.3.apk)
 * 1、使用原生的OkHttp完成请求和提交文本数据
 * 2、使用Okhttputils完成大文件的下载，上传文件和分类检索本地文件，请求单张图片并显示
 * 3、以及使用一些API数据接口完成天气的查询，生成二维码，新华字典查询，图书电商查询。。。
