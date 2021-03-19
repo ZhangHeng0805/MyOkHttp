@@ -24,7 +24,7 @@ public class Main3Activity extends AppCompatActivity {
             "新华字典查询（API）",//9
             "图书电商查询（API）",//10
             "查询文件列表并下载（自制服务器）",//11
-            "高德地图",//12
+            "地图（高德地图）",//12
             };
     @Override
     protected void onCreate(Bundle savedInstanceState) {

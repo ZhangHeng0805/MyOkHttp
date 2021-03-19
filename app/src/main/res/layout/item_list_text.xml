@@ -4,8 +4,8 @@
     android:layout_height="wrap_content"
     android:textStyle="bold"
     android:gravity="center_vertical"
-    android:textSize="18sp"
+    android:textSize="20sp"
     android:background="#ECF5F4"
-    android:padding="10dp">
+    android:padding="15dp">
 
 </TextView>

@@ -12,17 +12,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
     <LinearLayout
+        android:layout_width="40sp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
+        <Button
+            android:id="@+id/m12_btn_locationtype"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Widget.Button"
+            android:text="定位方式"
+            />
+        <Button
+            android:id="@+id/m12_btn_mapstyle"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Widget.Button"
+            android:text="地图样式"
+            />
+        <Button
+            android:id="@+id/m12_btn_downloadmap"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Widget.Button"
+            android:text="下载地图"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/m12_LL_mapstyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentLeft="true"
-        android:background="#80f0f0f0"
+        android:paddingTop="5dp"
+        android:layout_marginTop="50dp"
+        android:background="#33000000"
         >
-        <!--<TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="地图样式"/>-->
         <RadioGroup
             android:id="@+id/m12_rg_mapstyle"
             android:layout_width="wrap_content"
@@ -56,5 +86,44 @@
             android:layout_height="wrap_content"
             android:checked="true"
             android:text="显示路况"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/m12_LL_locationtype"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp"
+        android:background="#33000000"
+        >
+        <RadioGroup
+            android:id="@+id/m12_rg_locationtype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <RadioButton
+                android:id="@+id/m12_rb_locationtype_01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="视角锁定，地图跟随视角"/>
+            <RadioButton
+                android:id="@+id/m12_rb_locationtype_02"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="视角解锁，地图跟随视角"/>
+            <RadioButton
+                android:id="@+id/m12_rb_locationtype_03"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="视角解锁，地图不跟随视角"/>
+            <RadioButton
+                android:id="@+id/m12_rb_locationtype_04"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="视角锁定，地图不跟随视角"/>
+
+        </RadioGroup>
     </LinearLayout>
 </RelativeLayout>
