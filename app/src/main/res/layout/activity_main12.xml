@@ -42,6 +42,23 @@
             android:text="下载地图"
             />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/m12_LL_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#CCFFFFFF"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="15dp"
+        android:padding="5dp"
+        android:layout_alignParentBottom="true">
+        <TextView
+            android:id="@+id/m12_tv_location"
+            android:layout_width="wrap_content"
+            android:textColor="@color/black"
+            android:layout_height="wrap_content"
+            android:text="详情"/>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/m12_LL_mapstyle"

@@ -5,37 +5,44 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
-import com.amap.api.location.AMapLocation;
-import com.amap.api.location.AMapLocationClient;
-import com.amap.api.location.AMapLocationClientOption;
-import com.amap.api.location.AMapLocationListener;
+
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
-import com.amap.api.maps.LocationSource;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
+import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.maps.model.MyLocationStyle;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeAddress;
+import com.amap.api.services.geocoder.RegeocodeQuery;
+import com.amap.api.services.geocoder.RegeocodeResult;
+import com.amap.api.services.geocoder.StreetNumber;
 
-public class Main12Activity extends AppCompatActivity implements View.OnClickListener {
+public class Main12Activity extends AppCompatActivity implements View.OnClickListener, GeocodeSearch.OnGeocodeSearchListener {
 
+    private GeocodeSearch geocodeSearch;
     private MapView mapView;
     private AMap aMap = null;
     private UiSettings mUiSettings;//定义一个UiSettings对象
     private RadioGroup m12_rg_mapstyle,m12_rg_locationtype;
     private CheckBox m12_cb_lukuang;
-    private LinearLayout m12_LL_mapstyle,m12_LL_locationtype;
+    private LinearLayout m12_LL_mapstyle,m12_LL_locationtype,m12_LL_message;
     private Button m12_btn_mapstyle,m12_btn_downloadmap,m12_btn_locationtype;
+    private TextView m12_tv_location;
+    private LatLonPoint latLng;
+    private int screenWidth,screenHeight;
 
 
     @Override
@@ -54,6 +61,8 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
         m12_btn_locationtype=findViewById(R.id.m12_btn_locationtype);
         m12_btn_locationtype.setOnClickListener(this);
         m12_rg_locationtype=findViewById(R.id.m12_rg_locationtype);
+        m12_tv_location=findViewById(R.id.m12_tv_location);
+        m12_LL_message=findViewById(R.id.m12_LL_message);
 
         if (Build.VERSION.SDK_INT >= 23) {
             int REQUEST_CODE_CONTACT = 101;
@@ -76,6 +85,15 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
             }
         }
 
+
+        screenWidth = getWindowManager().getDefaultDisplay().getWidth(); // 屏幕宽
+        screenHeight = getWindowManager().getDefaultDisplay().getHeight(); // 屏幕高
+        //取控件当前的布局参数
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) m12_tv_location.getLayoutParams();
+        //设置宽度值
+        params.width= (int) (screenWidth*0.7);
+        m12_tv_location.setLayoutParams(params);
+
         mapView=findViewById(R.id.m12_map);
         mapView.onCreate(savedInstanceState);
 
@@ -84,6 +102,28 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
         if (aMap == null) {
             aMap = mapView.getMap();
         }
+        geocodeSearch = new GeocodeSearch(this);
+        geocodeSearch.setOnGeocodeSearchListener(this);
+        aMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(Location location) {
+                double latitude =location.getLatitude();//经度  
+                double longitude=location.getLongitude();//纬度  
+                double altitude=location.getAltitude();//海拔 
+
+                latLng = new LatLonPoint(latitude,longitude);
+
+                m12_tv_location.setText(
+                        "经度:"+latitude
+                                + "\t纬度:"+longitude
+                        +"\t海拔:"+altitude
+                );
+                RegeocodeQuery query = new RegeocodeQuery(latLng, 200,GeocodeSearch.AMAP);
+                geocodeSearch.getFromLocationAsyn(query);
+            }
+        });
+
+
 
         mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
         mUiSettings.setCompassEnabled(true);//指南针
@@ -264,5 +304,23 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
                 break;
 
         }
+    }
+
+    @Override
+    public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
+        RegeocodeAddress regeocodeAddress = regeocodeResult.getRegeocodeAddress();
+        String country = regeocodeAddress.getCountry();//国家
+        String province = regeocodeAddress.getProvince();//省或直辖市
+        String city = regeocodeAddress.getCity();//城市
+        String township = regeocodeAddress.getTownship();//乡镇
+        String neighborhood = regeocodeAddress.getNeighborhood();//社区名称。
+        StreetNumber streetNumber = regeocodeAddress.getStreetNumber();//门牌信息。
+        String formatAddress = regeocodeAddress.getFormatAddress();//格式化地址。
+        m12_tv_location.setText(formatAddress/*+"\n"+m12_tv_location.getText().toString()*/);
+    }
+
+    @Override
+    public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+
     }
 }
