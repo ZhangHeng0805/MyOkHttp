@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.format.Time;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -26,6 +27,9 @@ import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
 import com.amap.api.maps.MapView;
 import com.amap.api.maps.UiSettings;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.services.core.LatLonPoint;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.services.geocoder.GeocodeResult;
@@ -34,6 +38,18 @@ import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.geocoder.StreetNumber;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.zhangheng.myapplication.util.TimeUtil;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import okhttp3.Call;
 
 public class Main12Activity extends AppCompatActivity implements View.OnClickListener, GeocodeSearch.OnGeocodeSearchListener {
 
@@ -44,13 +60,17 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
     private RadioGroup m12_rg_mapstyle,m12_rg_locationtype;
     private CheckBox m12_cb_lukuang;
     private LinearLayout m12_LL_mapstyle,m12_LL_locationtype,m12_LL_message;
-    private Button m12_btn_mapstyle,m12_btn_downloadmap,m12_btn_locationtype;
+    private Button m12_btn_mapstyle,m12_btn_downloadmap,m12_btn_locationtype,m12_btn_refresh;
     private TextView m12_tv_location;
     private LatLonPoint latLng;
+    private boolean f=true;
     private int screenWidth,screenHeight;
     private static final int PERMISSON_REQUESTCODE = 0;
      // 判断是否需要检测，防止不停的弹框
     private boolean isNeedCheck = true;
+    private String username=null;
+    private  double latitude=0,longitude=0;
+
 
 
     @Override
@@ -71,6 +91,11 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
         m12_rg_locationtype=findViewById(R.id.m12_rg_locationtype);
         m12_tv_location=findViewById(R.id.m12_tv_location);
         m12_LL_message=findViewById(R.id.m12_LL_message);
+        m12_btn_refresh=findViewById(R.id.m12_btn_refresh);
+        m12_btn_refresh.setOnClickListener(this);
+
+        Intent intent=getIntent();
+        username = intent.getStringExtra("name");
 
         checkPermission();
 
@@ -94,8 +119,8 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
         aMap.setOnMyLocationChangeListener(new AMap.OnMyLocationChangeListener() {
             @Override
             public void onMyLocationChange(Location location) {
-                double latitude =location.getLatitude();//经度  
-                double longitude=location.getLongitude();//纬度  
+                latitude=location.getLatitude();//经度  
+                longitude=location.getLongitude();//纬度  
                 double altitude=location.getAltitude();//海拔 
                 latLng = new LatLonPoint(latitude,longitude);
                 m12_tv_location.setText(
@@ -105,6 +130,7 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
                 );
                 RegeocodeQuery query = new RegeocodeQuery(latLng, 200,GeocodeSearch.AMAP);
                 geocodeSearch.getFromLocationAsyn(query);
+
             }
         });
 
@@ -190,6 +216,7 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
     protected void onResume() {
         super.onResume();
         mapView.onResume();
+        refreshMap();
     }
 
     @Override
@@ -253,7 +280,7 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
 
         m12_LL_locationtype.setVisibility(View.GONE);
         m12_btn_locationtype.setTextColor(getColor(R.color.black));
-        m12_btn_locationtype.setText("定位方式");
+        m12_btn_locationtype.setText("定位视角");
 
     }
 
@@ -286,7 +313,29 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
                     closeView();
                 }
                 break;
+            case R.id.m12_btn_refresh:
+                refreshMap();
+                break;
 
+        }
+    }
+    private void refreshMap(){
+        com.zhangheng.myapplication.Object.Location location1=new com.zhangheng.myapplication.Object.Location();
+        if (username!=null) {
+            if (latitude != 0&&longitude!=0) {
+                if (aMap == null) {
+                    aMap = mapView.getMap();
+                } else {
+                    aMap.clear();
+                }
+                String time=TimeUtil.getSystemTime();
+                    location1.setUsername(username);
+                    location1.setLatitude(String.valueOf(latitude));
+                    location1.setLongitude(String.valueOf(longitude));
+                    location1.setTime(time);
+                    location1.setState("1");//1公开；0隐藏
+                    locationList(location1);
+            }
         }
     }
 
@@ -416,6 +465,66 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
         }catch(Throwable e){
             e.printStackTrace();
         }
+    }
+    private void locationList(com.zhangheng.myapplication.Object.Location location){
+        List<com.zhangheng.myapplication.Object.Location> list=new ArrayList<>();
+        String url=getResources().getString(R.string.location_url)+"location";
+        OkHttpUtils
+                .post()
+                .url(url)
+                .addParams("username",location.getUsername())
+                .addParams("latitude",location.getLatitude())
+                .addParams("longitude",location.getLongitude())
+                .addParams("time",location.getTime())
+                .addParams("state",location.getState())
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        f=false;
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        if (response!=null){
+                            Gson gson=new Gson();
+                            List<com.zhangheng.myapplication.Object.Location> l = gson.fromJson(response, new TypeToken<List<com.zhangheng.myapplication.Object.Location>>() {
+                            }.getType());
+                            if (l.size()>0){
+                                f=true;
+                                for (com.zhangheng.myapplication.Object.Location loc:l) {
+                                    LatLng latLng = new LatLng(Double.valueOf(loc.getLatitude()), Double.valueOf(loc.getLongitude()));
+                                    MarkerOptions markerOption = new MarkerOptions();
+                                    markerOption.position(latLng);
+                                    markerOption.title(loc.getUsername());
+                                    markerOption.snippet("更新于：\n"+loc.getTime());
+                                    if (loc.getState()!=null) {
+                                        switch (loc.getState()) {
+                                            case "1":
+                                                markerOption.visible(true);
+                                                break;
+                                            case "0":
+                                                markerOption.visible(false);
+                                            default:
+                                                markerOption.visible(true);
+                                        }
+                                    }
+                                    Marker marker = aMap.addMarker(markerOption);
+                                    if (loc.getUsername().equals(username)) {
+                                        marker.showInfoWindow();
+                                    }
+
+                                }
+                            }else {
+                                f=false;
+                            }
+                        }else {
+                            f=false;
+                        }
+                    }
+                });
+
+
     }
 
 }

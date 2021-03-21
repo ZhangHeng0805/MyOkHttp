@@ -147,7 +147,9 @@ public class M12_LoginActivity extends AppCompatActivity {
 
                                     }else {
                                         tv1_notic.setText("默认账号密码错误！");
+                                        et1_pwd.setText("");
                                     }
+
                                 }
 
                         }
@@ -159,7 +161,12 @@ public class M12_LoginActivity extends AppCompatActivity {
                                     startActivity(intent);
 
                                 }else {
-                                    tv1_notic.setText("默认账号密码错误！");
+                                    if (open){
+
+                                    }else {
+                                        tv1_notic.setText("默认账号密码错误！");
+                                        et1_pwd.setText("");
+                                    }
                                 }
                             }
 
@@ -167,7 +174,6 @@ public class M12_LoginActivity extends AppCompatActivity {
                     }else {
                         tv1_notic.setText("账号和密码不能为空！");
                     }
-                    et1_pwd.setText("");
                     break;
 
                 case R.id.tv_wangji:
@@ -312,6 +318,7 @@ public class M12_LoginActivity extends AppCompatActivity {
                             open=false;
                         }else {
                             if (response.equals("true")) {
+                                Toast.makeText(M12_LoginActivity.this,"服务器已连接，请登录！",Toast.LENGTH_SHORT).show();
                                 open = true;
                             } else {
                                 tv1_notic.setText(response);
@@ -341,7 +348,7 @@ public class M12_LoginActivity extends AppCompatActivity {
                         }else {
                             tv1_notic.setText("错误：" + e.getMessage());
                         }
-
+                        et1_pwd.setText("");
                     }
 
                     @Override
@@ -361,7 +368,6 @@ public class M12_LoginActivity extends AppCompatActivity {
                                     editor2.putString("check", "1");
                                     editor2.commit();
                                     //Log.d("check","1");
-                                    tv1_notic.setText("");
                                 } else {
                                     sharedPreferences1=getSharedPreferences("myuser",MODE_PRIVATE);
                                     SharedPreferences.Editor editor1=sharedPreferences1.edit();
@@ -372,7 +378,7 @@ public class M12_LoginActivity extends AppCompatActivity {
                                     editor2.clear();
                                     editor2.commit();
                                     //Log.d("check","0"+sharedPreferences1.getString("Check","0"));
-                                    tv1_notic.setText("");
+
                                 }
                                 Intent intent = new Intent();
                                 intent.putExtra("name", et1.getText().toString().trim());
@@ -381,7 +387,10 @@ public class M12_LoginActivity extends AppCompatActivity {
                                 Toast.makeText(M12_LoginActivity.this, "登陆成功！"+resuilt.getMessage(), Toast.LENGTH_SHORT).show();
                                 finish();
                                 b[0] = true;
+                                tv1_notic.setText("");
+                                et1_pwd.setText("");
                             } else {
+                                et1_pwd.setText("");
                                 if (open) {
                                     tv1_notic.setText(resuilt.getTitle() + "\n" + resuilt.getMessage());
                                 }

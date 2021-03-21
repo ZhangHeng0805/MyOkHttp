@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             style="@style/TextAppearance.AppCompat.Widget.Button"
-            android:text="定位方式"
+            android:text="定位视角"
             />
         <Button
             android:id="@+id/m12_btn_mapstyle"
@@ -40,6 +40,14 @@
             android:layout_height="wrap_content"
             style="@style/TextAppearance.AppCompat.Widget.Button"
             android:text="下载地图"
+            />
+        <Button
+            android:id="@+id/m12_btn_refresh"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/TextAppearance.AppCompat.Widget.Button"
+            android:text="刷新地图"
             />
     </LinearLayout>
     <LinearLayout

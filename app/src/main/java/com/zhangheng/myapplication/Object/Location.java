@@ -9,6 +9,8 @@ public class Location {
     private String latitude;//经度
 
     private String longitude;//纬度
+    private String time;//时间
+    private String state;//状态
 
     public String getUsername() {
         return username;
@@ -32,5 +34,21 @@ public class Location {
 
     public void setLongitude(String longitude) {
         this.longitude = longitude;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }
