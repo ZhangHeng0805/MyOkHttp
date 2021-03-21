@@ -85,7 +85,7 @@ public class Main3Activity extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     case 10:
-                        intent=new Intent(Main3Activity.this,Main12Activity.class);
+                        intent=new Intent(Main3Activity.this,M12_LoginActivity.class);
                         startActivity(intent);
                         break;
 

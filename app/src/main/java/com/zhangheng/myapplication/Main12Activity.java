@@ -3,11 +3,16 @@ package com.zhangheng.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -43,6 +48,9 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
     private TextView m12_tv_location;
     private LatLonPoint latLng;
     private int screenWidth,screenHeight;
+    private static final int PERMISSON_REQUESTCODE = 0;
+     // 判断是否需要检测，防止不停的弹框
+    private boolean isNeedCheck = true;
 
 
     @Override
@@ -64,27 +72,7 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
         m12_tv_location=findViewById(R.id.m12_tv_location);
         m12_LL_message=findViewById(R.id.m12_LL_message);
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            int REQUEST_CODE_CONTACT = 101;
-            String[] permissions = {
-                    Manifest.permission.INTERNET,
-                    Manifest.permission.ACCESS_WIFI_STATE,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-                    Manifest.permission.ACCESS_NETWORK_STATE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-
-            };
-            //验证是否许可权限
-            for (String str : permissions) {
-                if (this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
-                    //申请权限
-                    this.requestPermissions(permissions, REQUEST_CODE_CONTACT);
-                }
-            }
-        }
-
+        checkPermission();
 
         screenWidth = getWindowManager().getDefaultDisplay().getWidth(); // 屏幕宽
         screenHeight = getWindowManager().getDefaultDisplay().getHeight(); // 屏幕高
@@ -96,7 +84,6 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
 
         mapView=findViewById(R.id.m12_map);
         mapView.onCreate(savedInstanceState);
-
 
         //初始化地图控制器对象
         if (aMap == null) {
@@ -110,9 +97,7 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
                 double latitude =location.getLatitude();//经度  
                 double longitude=location.getLongitude();//纬度  
                 double altitude=location.getAltitude();//海拔 
-
                 latLng = new LatLonPoint(latitude,longitude);
-
                 m12_tv_location.setText(
                         "经度:"+latitude
                                 + "\t纬度:"+longitude
@@ -122,7 +107,6 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
                 geocodeSearch.getFromLocationAsyn(query);
             }
         });
-
 
 
         mUiSettings = aMap.getUiSettings();//实例化UiSettings类对象
@@ -168,7 +152,7 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
-        Location(4);
+        Location(4);//设置定位模式
         m12_rg_locationtype.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -318,9 +302,120 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
         String formatAddress = regeocodeAddress.getFormatAddress();//格式化地址。
         m12_tv_location.setText(formatAddress/*+"\n"+m12_tv_location.getText().toString()*/);
     }
-
     @Override
     public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
 
     }
+
+    //检查申请权限
+    private void checkPermission(){
+        if (Build.VERSION.SDK_INT >= 23) {
+            int REQUEST_CODE_CONTACT = 101;
+            String[] permissions = {
+                    Manifest.permission.INTERNET,
+                    Manifest.permission.ACCESS_WIFI_STATE,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+                    Manifest.permission.ACCESS_NETWORK_STATE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            };
+            //验证是否许可权限
+            for (String str : permissions) {
+                if (this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
+                    //申请权限
+                    this.requestPermissions(permissions, REQUEST_CODE_CONTACT);
+                }else {
+
+                }
+            }
+        }
+    }
+    //提示权限弹窗
+    private void showMissingPermissionDialog() {
+        try{
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("提示");
+            builder.setMessage("当前应用缺少必要权限。\\n\\n请点击\\\"设置\\\"-\\\"权限\\\"-打开所需权限");
+
+            // 拒绝, 退出应用
+            builder.setNegativeButton("取消",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try{
+                                finish();
+                            } catch (Throwable e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+            builder.setPositiveButton("设置",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                startAppSettings();
+                            } catch (Throwable e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+            builder.setCancelable(false);
+
+            builder.show();
+        }catch(Throwable e){
+            e.printStackTrace();
+        }
+    }
+    //启动应用的设置
+    private void startAppSettings() {
+        try{
+            Intent intent = new Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+    /**
+     * 检测是否说有的权限都已经授权
+     *
+     * @param grantResults
+     * @return
+     * @since 2.5.0
+     */
+    private boolean verifyPermissions(int[] grantResults) {
+        try{
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }catch(Throwable e){
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    @TargetApi(23)
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] paramArrayOfInt) {
+        try{
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (requestCode == PERMISSON_REQUESTCODE) {
+                    if (!verifyPermissions(paramArrayOfInt)) {
+                        showMissingPermissionDialog();
+                        isNeedCheck = false;
+                    }
+                }
+            }
+        }catch(Throwable e){
+            e.printStackTrace();
+        }
+    }
+
 }
