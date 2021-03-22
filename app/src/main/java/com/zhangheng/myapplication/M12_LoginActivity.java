@@ -39,7 +39,7 @@ public class M12_LoginActivity extends AppCompatActivity {
     final int NOTIFYID=1;
     private boolean open=false;
     private SlidingDrawer sd_1;
-    SharedPreferences sharedPreferences,sharedPreferences1,sharedPreferences2;
+    private SharedPreferences sharedPreferences,sharedPreferences1,sharedPreferences2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,11 +121,12 @@ public class M12_LoginActivity extends AppCompatActivity {
                         sharedPreferences=getSharedPreferences("userinfo",MODE_PRIVATE);
                         String username=sharedPreferences.getString("username","");
                         String userpwd=sharedPreferences.getString("userpwd","");
-                        boolean[] login = login(et1.getText().toString().trim(), et1_pwd.getText().toString().trim());
+
                         //判断输入是否空
                         //判断服务器是否开启
                         if (open){
 //                            Toast.makeText(M12_LoginActivity.this, "验证中！，请稍后", Toast.LENGTH_SHORT).show();
+                            boolean[] login = login(et1.getText().toString().trim(), et1_pwd.getText().toString().trim());
                             if (login[0]){
                                 Intent intent = new Intent();
                                 intent.putExtra("name", et1.getText().toString().trim());
@@ -272,7 +273,7 @@ public class M12_LoginActivity extends AppCompatActivity {
         }
     }
     public void yanzheng(){
-        String url=getResources().getString(R.string.location_url);
+        String url=getResources().getString(R.string.location_url)+"yanzheng";
         OkHttpUtils
                 .get()
                 .url(url)

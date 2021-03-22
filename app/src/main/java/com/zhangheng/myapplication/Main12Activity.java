@@ -282,6 +282,11 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
         m12_btn_locationtype.setTextColor(getColor(R.color.black));
         m12_btn_locationtype.setText("定位视角");
 
+        if(username!=null){
+            m12_btn_refresh.setVisibility(View.VISIBLE);
+        }else {
+            m12_btn_refresh.setVisibility(View.GONE);
+        }
     }
 
 
