@@ -385,7 +385,7 @@ public class M12_LoginActivity extends AppCompatActivity {
                                 intent.putExtra("name", et1.getText().toString().trim());
                                 intent.setClass(M12_LoginActivity.this, Main12Activity.class);
                                 startActivity(intent);
-                                Toast.makeText(M12_LoginActivity.this, "登陆成功！"+resuilt.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(M12_LoginActivity.this, "登录成功！"+resuilt.getMessage(), Toast.LENGTH_SHORT).show();
                                 finish();
                                 b[0] = true;
                                 tv1_notic.setText("");

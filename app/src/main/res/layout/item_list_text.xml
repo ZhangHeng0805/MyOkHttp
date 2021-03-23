@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:textStyle="bold"
     android:gravity="center_vertical"
-    android:textSize="20sp"
+    android:textSize="18sp"
+    android:textColor="@color/black"
     android:background="#ECF5F4"
     android:padding="15dp">
 

@@ -141,7 +141,6 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
                 }
                 //                String filename = "1.png";
                 downloadFile(url,filename);
-
                 break;
         }
     }

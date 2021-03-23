@@ -3,7 +3,7 @@ package com.zhangheng.myapplication.Object;
 public class User {
 
     private Integer id;
-    private String lastName;
+    private String name;
     private String email;
 
     public Integer getId() {
@@ -14,12 +14,12 @@ public class User {
         this.id = id;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getName() {
+        return name;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmail() {
@@ -32,6 +32,6 @@ public class User {
 
     @Override
     public String toString() {
-        return "\t|id："+id+"\t\t|姓名："+lastName+"\t\t|邮箱："+email;
+        return "\t|id："+id+"\t\t|姓名："+name+"\t\t|邮箱："+email;
     }
 }

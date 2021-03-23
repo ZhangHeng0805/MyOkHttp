@@ -61,6 +61,12 @@
             android:layout_weight="1"
             android:text="0%"/>
     </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#FF9800"
+        android:text="提示：可以用作一个下载工具，下载的存储路径为手机内存的根目录下；"
+        />
     <ScrollView
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"

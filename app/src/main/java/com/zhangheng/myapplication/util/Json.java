@@ -16,7 +16,7 @@ public class Json {
     public static User jsonUser(String json) throws JSONException {
         User user=new User();
         JSONObject json1 = new JSONObject(json);
-        user.setLastName((String) json1.opt("lastName"));
+        user.setName((String) json1.opt("name"));
         user.setId((Integer) json1.opt("id"));
         user.setEmail((String) json1.opt("email"));
         return user;
@@ -29,7 +29,7 @@ public class Json {
             JSONObject jsonObject = json2.getJSONObject(i);
             if (jsonObject!=null){
                 User user=new User();
-                user.setLastName(jsonObject.optString("lastName"));
+                user.setName(jsonObject.optString("name"));
                 user.setId(jsonObject.optInt("id"));
                 user.setEmail(jsonObject.optString("email"));
                 list.add(user);

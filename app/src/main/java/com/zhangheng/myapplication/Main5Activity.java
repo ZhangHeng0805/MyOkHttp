@@ -1,11 +1,13 @@
 package com.zhangheng.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -201,23 +203,44 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
                 break;
         }
     }
-    private void openFile(File file){
-        try {
+    private void openFile(File file) {
+        if (!file.exists()) {
+            //如果文件不存在
+            Toast.makeText(this, "打开失败，原因：文件已经被移动或者删除", Toast.LENGTH_SHORT).show();
+        } else {
+            try {
 //        Uri uri = Uri.parse("file://"+file.getAbsolutePath());
-        Intent intent1 = new Intent();
+                Intent intent1 = new Intent();
         intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        //设置intent的Action属性
-        intent1.setAction(Intent.ACTION_VIEW);
-        //获取文件file的MIME类型
-        String type = getMIMEType(file);
-        //设置intent的data和Type属性。
-        intent1.setDataAndType(/*uri*/Uri.fromFile(file), type);
-        //跳转
-        startActivity(intent1);
-        }catch (Exception e){
-            e.printStackTrace();
+
+//                intent1.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                //设置intent的Action属性
+                intent1.setAction(Intent.ACTION_VIEW);
+                //获取文件file的MIME类型
+                String type = getMIMEType(file);
+                Uri uri = null;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    //判断版本是否在7.0以上
+                    uri =
+                            FileProvider.getUriForFile(this,
+                                    this.getPackageName() + ".fileprovider",
+                                    file);
+                    //添加这一句表示对目标应用临时授权该Uri所代表的文件
+                    intent1.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                } else {
+                    uri = Uri.fromFile(file);
+                }
+                //设置intent的data和Type属性。
+                intent1.setDataAndType(/*uri*/uri, type);
+
+                //跳转
+                startActivity(intent1);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
+
     private String getMIMEType(File file)
     {
         String type="*/*";

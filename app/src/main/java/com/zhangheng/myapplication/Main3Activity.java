@@ -2,33 +2,62 @@ package com.zhangheng.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.zhangheng.myapplication.Object.Resuilt;
+import com.zhangheng.myapplication.getphoneMessage.Address;
+import com.zhangheng.myapplication.getphoneMessage.RegisterMessage;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
 import okhttp3.Call;
 
-public class Main3Activity extends AppCompatActivity {
+public class Main3Activity extends Activity {
+
+    private String[] permissions = {
+            Manifest.permission.INTERNET,
+            Manifest.permission.ACCESS_WIFI_STATE,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
+            Manifest.permission.ACCESS_NETWORK_STATE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_PHONE_STATE,
+    };
 
     private ListView listView;
+    private TextView m3_tv_service, m3_tv_ipAddress;
     private AlertDialog.Builder builder;
     private SharedPreferences sharedPreferences;
-    private String[] strArr = new String[] {
+    private String[] strArr = new String[]{
             "原生OkHttp的Get和Post请求文本数据",//1
             "使用OkHttpUtil的Post提交文本数据",//2
             "使用OkHttpUtil下载大文件",//4
@@ -40,14 +69,41 @@ public class Main3Activity extends AppCompatActivity {
             "图书电商查询（API）",//10
             "查询文件列表并下载（自制服务器）",//11
             "地图（高德地图）",//12
-            };
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
-        listView=findViewById(R.id.list_view_1);
+//        checkPermission();
+        listView = findViewById(R.id.list_view_1);
+        m3_tv_service = findViewById(R.id.m3_tv_service);
+        m3_tv_ipAddress = findViewById(R.id.m3_tv_ipAddress);
         setAdapter();
         getupdatelist();
+        String model = android.os.Build.MODEL; // 手机型号
+        String sdk = android.os.Build.VERSION.SDK; // SDK号
+        String release = "Android" + android.os.Build.VERSION.RELEASE; // android系统版本号
+        String s = model + "\t" + sdk + "\t" + release;
+            //获取自己手机号码
+            TelephonyManager phoneManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
+
+            if (checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    Activity#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for Activity#requestPermissions for more details.
+                return;
+            }
+            String getPhone = phoneManager.getLine1Number();//得到电话号码
+
+            m3_tv_ipAddress.setText("电话："+getPhone+" 手机型号"+model+" sdk版本号"+sdk+" os版本号"+release);
+
+//        m3_tv_ipAddress.setText(s);
+
     }
     private void setAdapter(){
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -109,6 +165,11 @@ public class Main3Activity extends AppCompatActivity {
         });
     }
 
+    public String getLocalMacAddress() {
+        WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        WifiInfo info = wifi.getConnectionInfo();
+        return info.getMacAddress();
+    }
     public void getupdatelist(){
         String url=getResources().getString(R.string.upload_html_url)
                 +"filelist/updatelist/"+getResources().getString(R.string.app_name);
@@ -120,7 +181,8 @@ public class Main3Activity extends AppCompatActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         if (e.getMessage().indexOf("404")>1||e.getMessage().indexOf("not found")>1){
-                            Toast.makeText(Main3Activity.this,"服务器未未连接",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Main3Activity.this,"服务器未连接",Toast.LENGTH_SHORT).show();
+                            m3_tv_service.setText("服务器未连接");
                         }else {
                             Toast.makeText(Main3Activity.this,"错误："+e.getMessage(),Toast.LENGTH_SHORT).show();
                         }
@@ -137,6 +199,7 @@ public class Main3Activity extends AppCompatActivity {
                         }
                         if (resuilt!=null) {
                             Toast.makeText(Main3Activity.this,"服务器已连接",Toast.LENGTH_SHORT).show();
+                            m3_tv_service.setText("服务器已连接");
                             if (!resuilt.getTitle().equals("null")) {
                                 if (resuilt.getTitle().equals( getResources().getString(R.string.app_name))) {
                                     sharedPreferences=getSharedPreferences("update",MODE_PRIVATE);
@@ -215,4 +278,223 @@ public class Main3Activity extends AppCompatActivity {
         });
         builder.create().show();
     }
+
+    //权限检查
+
+    //是否需要检测后台定位权限，设置为true时，如果用户没有给予后台定位权限会弹窗提示
+    private boolean needCheckBackLocation = false;
+    //如果设置了target > 28，需要增加这个权限，否则不会弹出"始终允许"这个选择框
+    private static String BACK_LOCATION_PERMISSION = "android.permission.ACCESS_BACKGROUND_LOCATION";
+
+    private static final int PERMISSON_REQUESTCODE = 0;
+
+    /**
+     * 判断是否需要检测，防止不停的弹框
+     */
+    private boolean isNeedCheck = true;
+
+    @Override
+    protected void onResume() {
+        try{
+            super.onResume();
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (isNeedCheck) {
+                    checkPermissions(permissions);
+                }
+            }
+            checkPermission();
+        }catch(Throwable e){
+            e.printStackTrace();
+        }
+    }
+
+    //检查申请权限
+    private void checkPermission(){
+        if (Build.VERSION.SDK_INT >= 23) {
+            int REQUEST_CODE_CONTACT = 101;
+            //验证是否许可权限
+            for (String str : permissions) {
+                if (this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
+                    //申请权限
+//                    this.requestPermissions(permissions, REQUEST_CODE_CONTACT);
+                    isNeedCheck = true;
+                }else {
+
+                }
+            }
+        }
+    }
+    /**
+     * @param
+     * @since 2.5.0
+     */
+    @TargetApi(23)
+    private void checkPermissions(String... permissions) {
+        try{
+            if (Build.VERSION.SDK_INT >= 23 && getApplicationInfo().targetSdkVersion >= 23) {
+                List<String> needRequestPermissonList = findDeniedPermissions(permissions);
+                if (null != needRequestPermissonList
+                        && needRequestPermissonList.size() > 0) {
+                    try {
+                        String[] array = needRequestPermissonList.toArray(new String[needRequestPermissonList.size()]);
+                        Method method = getClass().getMethod("requestPermissions", new Class[]{String[].class, int.class});
+                        method.invoke(this, array, 0);
+                    } catch (Throwable e) {
+
+                    }
+                }
+            }
+
+        }catch(Throwable e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取权限集中需要申请权限的列表
+     *
+     * @param permissions
+     * @return
+     * @since 2.5.0
+     */
+    @TargetApi(23)
+    private List<String> findDeniedPermissions(String[] permissions) {
+        try{
+            List<String> needRequestPermissonList = new ArrayList<String>();
+            if (Build.VERSION.SDK_INT >= 23 && getApplicationInfo().targetSdkVersion >= 23) {
+                for (String perm : permissions) {
+                    if (checkMySelfPermission(perm) != PackageManager.PERMISSION_GRANTED
+                            || shouldShowMyRequestPermissionRationale(perm)) {
+                        if(!needCheckBackLocation
+                                && BACK_LOCATION_PERMISSION.equals(perm)) {
+                            continue;
+                        }
+                        needRequestPermissonList.add(perm);
+                    }
+                }
+            }
+            return needRequestPermissonList;
+        }catch(Throwable e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private int checkMySelfPermission(String perm) {
+        try {
+            Method method = getClass().getMethod("checkSelfPermission", new Class[]{String.class});
+            Integer permissionInt = (Integer) method.invoke(this, perm);
+            return permissionInt;
+        } catch (Throwable e) {
+        }
+        return -1;
+    }
+
+    private boolean shouldShowMyRequestPermissionRationale(String perm) {
+        try {
+            Method method = getClass().getMethod("shouldShowRequestPermissionRationale", new Class[]{String.class});
+            Boolean permissionInt = (Boolean) method.invoke(this, perm);
+            return permissionInt;
+        } catch (Throwable e) {
+        }
+        return false;
+    }
+
+    /**
+     * 检测是否说有的权限都已经授权
+     *
+     * @param grantResults
+     * @return
+     * @since 2.5.0
+     */
+    private boolean verifyPermissions(int[] grantResults) {
+        try{
+            for (int result : grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }catch(Throwable e){
+            e.printStackTrace();
+        }
+        return true;
+    }
+
+    @TargetApi(23)
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions, int[] paramArrayOfInt) {
+        try{
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (requestCode == PERMISSON_REQUESTCODE) {
+                    if (!verifyPermissions(paramArrayOfInt)) {
+                        showMissingPermissionDialog();
+                        isNeedCheck = false;
+                    }
+                }
+            }
+        }catch(Throwable e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 显示提示信息
+     *
+     * @since 2.5.0
+     */
+    private void showMissingPermissionDialog() {
+        try{
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("提示");
+            builder.setMessage("当前应用缺少必要权限。\n\n请点击\"设置\"-\"权限\"-打开所需权限");
+
+            // 拒绝, 退出应用
+            builder.setNegativeButton("退出应用",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try{
+                                finish();
+                            } catch (Throwable e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+            builder.setPositiveButton("去设置",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                startAppSettings();
+                            } catch (Throwable e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+
+            builder.setCancelable(false);
+
+            builder.show();
+        }catch(Throwable e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 启动应用的设置
+     *
+     * @since 2.5.0
+     */
+    private void startAppSettings() {
+        try{
+            Intent intent = new Intent(
+                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+            intent.setData(Uri.parse("package:" + getPackageName()));
+            startActivity(intent);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
 }
