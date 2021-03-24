@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -36,7 +39,7 @@ import java.util.Map;
 
 import okhttp3.Call;
 
-public class Main5Activity extends AppCompatActivity implements View.OnClickListener {
+public class Main5Activity extends Activity implements View.OnClickListener {
 
     private SlidingDrawer m5_SD;
     private EditText editText1,m5_et_url,m5_et_name,m5_et_password;
@@ -160,8 +163,12 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
                 }
                 break;
             case R.id.btn_upload_01:
-
-                Toast.makeText(Main5Activity.this,"检索中，请稍后。。。",Toast.LENGTH_SHORT).show();
+                final ProgressDialog progressDialog= new ProgressDialog(this);
+                progressDialog.setMessage("检索中，请稍后。。。");
+                progressDialog.setIndeterminate(true);// 是否形成一个加载动画  true表示不明确加载进度形成转圈动画  false 表示明确加载进度
+                progressDialog.setCancelable(false);//点击返回键或者dialog四周是否关闭dialog  true表示可以关闭 false表示不可关闭
+                progressDialog.show();
+//                Toast.makeText(Main5Activity.this,"检索中，请稍后。。。",Toast.LENGTH_SHORT).show();
 
                 boolean b = ReadAndWrite.RequestPermissions(this, PERMISSIONS_STORAGE[0]);
                 if (b){
@@ -178,13 +185,23 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
                         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                                 Main5Activity.this, R.layout.item_list_text, localpath);
                         listView.setAdapter(adapter);
-
+                        progressDialog.dismiss();
+                        Toast.makeText(Main5Activity.this,"单击选择文件，长按查看文件",Toast.LENGTH_SHORT).show();
                         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 editText1.setText(localpath[i]);
+
+
+                            }
+                        });
+                        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                            @Override
+                            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 File file=new File(localpath[i]);
+//                                Toast.makeText(Main5Activity.this,String.valueOf(i),Toast.LENGTH_SHORT).show();
                                 openFile(file);
+                                return false;
                             }
                         });
                     }
@@ -211,8 +228,7 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
             try {
 //        Uri uri = Uri.parse("file://"+file.getAbsolutePath());
                 Intent intent1 = new Intent();
-        intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
+//        intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                intent1.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 //设置intent的Action属性
                 intent1.setAction(Intent.ACTION_VIEW);
@@ -221,9 +237,8 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
                 Uri uri = null;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     //判断版本是否在7.0以上
-                    uri =
-                            FileProvider.getUriForFile(this,
-                                    this.getPackageName() + ".fileprovider",
+                    uri = FileProvider.getUriForFile(Main5Activity.this,
+                                    "com.zhangheng.myapplication" + ".fileprovider",
                                     file);
                     //添加这一句表示对目标应用临时授权该Uri所代表的文件
                     intent1.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -232,7 +247,6 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
                 }
                 //设置intent的data和Type属性。
                 intent1.setDataAndType(/*uri*/uri, type);
-
                 //跳转
                 startActivity(intent1);
             } catch (Exception e) {
@@ -251,13 +265,14 @@ public class Main5Activity extends AppCompatActivity implements View.OnClickList
             return type;
         }
         /* 获取文件的后缀名 */
-        String end=fName.substring(dotIndex,fName.length()).toLowerCase();
+        String end=fName.substring(dotIndex).toLowerCase();
         if(end=="")return type;
         //在MIME和文件类型的匹配表中找到对应的MIME类型。
         for(int i=0;i<MIME_MapTable.length;i++){
             if(end.equals(MIME_MapTable[i][0]))
                 type = MIME_MapTable[i][1];
         }
+        Log.d("文件类型：",type);
         return type;
     }
     private final String[][] MIME_MapTable={

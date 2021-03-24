@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -338,7 +339,7 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
                     location1.setLatitude(String.valueOf(latitude));
                     location1.setLongitude(String.valueOf(longitude));
                     location1.setTime(time);
-                    location1.setState("1");//1公开；0隐藏
+                    location1.setState("t");//t公开；f隐藏
                     locationList(location1);
             }
         }
@@ -505,18 +506,23 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
                                     markerOption.snippet("更新于：\n"+loc.getTime());
                                     if (loc.getState()!=null) {
                                         switch (loc.getState()) {
-                                            case "1":
+                                            case "t":
                                                 markerOption.visible(true);
                                                 break;
-                                            case "0":
+                                            case "f":
                                                 markerOption.visible(false);
+                                                break;
                                             default:
                                                 markerOption.visible(true);
+                                                break;
                                         }
                                     }
+//                                    Log.d("位置状态：",loc.getState());
                                     Marker marker = aMap.addMarker(markerOption);
+                                    if (marker.isVisible()) {
                                     if (loc.getUsername().equals(username)) {
-                                        marker.showInfoWindow();
+                                            marker.showInfoWindow();
+                                        }
                                     }
 
                                 }

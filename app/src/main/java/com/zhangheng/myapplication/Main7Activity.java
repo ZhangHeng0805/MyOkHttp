@@ -3,6 +3,7 @@ package com.zhangheng.myapplication;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -49,6 +50,7 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
     private LocationManager locationManager;
     private String locationProvider,city;       //位置提供器
     private GeocodeSearch geocodeSearch;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +101,11 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.m7_btn_query:
+                progressDialog= new ProgressDialog(this);
+                progressDialog.setMessage("查询中，请稍后。。。");
+                progressDialog.setIndeterminate(true);// 是否形成一个加载动画  true表示不明确加载进度形成转圈动画  false 表示明确加载进度
+                progressDialog.setCancelable(false);//点击返回键或者dialog四周是否关闭dialog  true表示可以关闭 false表示不可关闭
+                progressDialog.show();
                 String city = m7_et_city.getText().toString();
                 getRealWeather(city);
                 break;
@@ -121,6 +128,7 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         m7_text_realtime_city.setText("错误：" + e.getMessage());
+                        progressDialog.dismiss();
                     }
 
                     @Override
@@ -181,6 +189,7 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
                             }
                             m7_text_realtime_city.setText("错误码：" + jsonRootBean.getError_code());
                         }
+                        progressDialog.dismiss();
                     }
                 });
     }

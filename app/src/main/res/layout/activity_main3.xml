@@ -31,12 +31,12 @@
                 android:id="@+id/m3_tv_service"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="2dp"/>
+                android:layout_marginBottom="1dp"/>
             <TextView
                 android:id="@+id/m3_tv_ipAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"/>
+                android:layout_marginTop="1dp"/>
         </LinearLayout>
     </LinearLayout>
     <ListView

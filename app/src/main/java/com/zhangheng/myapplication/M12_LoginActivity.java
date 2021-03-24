@@ -1,6 +1,7 @@
 package com.zhangheng.myapplication;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -40,12 +41,13 @@ public class M12_LoginActivity extends AppCompatActivity {
     private boolean open=false;
     private SlidingDrawer sd_1;
     private SharedPreferences sharedPreferences,sharedPreferences1,sharedPreferences2;
+    private ProgressDialog progressDialog,progressDialog1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_m12_login);
 
-        yanzheng();
         btn_zhuce= (Button) findViewById(R.id.bnt_zhuce);
         btn_login= (Button) findViewById(R.id.bnt_login);
         et2= (EditText) findViewById(R.id.et2);
@@ -62,8 +64,13 @@ public class M12_LoginActivity extends AppCompatActivity {
         iv_login= (TextView) findViewById(R.id.iv_login);
         rb_jizhu= (CheckBox) findViewById(R.id.rb_jizhu);
         tv1_notic=findViewById(R.id.tv1_notic);
-
         setOnClickListener();
+        yanzheng();
+        progressDialog= new ProgressDialog(this);
+        progressDialog.setMessage("服务器连接中，请稍后。。。");
+        progressDialog.setIndeterminate(true);// 是否形成一个加载动画  true表示不明确加载进度形成转圈动画  false 表示明确加载进度
+        progressDialog.setCancelable(false);//点击返回键或者dialog四周是否关闭dialog  true表示可以关闭 false表示不可关闭
+        progressDialog.show();
     }
 
     @Override
@@ -99,23 +106,33 @@ public class M12_LoginActivity extends AppCompatActivity {
             switch (v.getId()){
 
                 case R.id.bnt_zhuce:
-                    if(et2.getText().toString().trim().length()>=1&&et2_pwd.getText().toString().trim().length()>=1
-                            && et2_pwd_true.getText().toString().trim().length()>=1){
-                        if(et2_pwd.getText().toString().equals(et2_pwd_true.getText().toString())){
-                            et1.setText(et2.getText().toString().trim());
-                            //et1_pwd.setText(et2_pwd_true.getText().toString());
-                            zhuCe(et2.getText().toString().trim(),et2_pwd_true.getText().toString().trim());
-                            Toast.makeText(M12_LoginActivity.this,"注册提交中！",Toast.LENGTH_SHORT).show();
-                            et2_pwd.setText("");et2_pwd_true.setText("");
+                    if(et2.getText().toString().trim().length()>=1&&et2.getText().toString().trim().length()<=18){
+                        if (et2_pwd.getText().toString().trim().length()>=6
+                                &&et2_pwd.getText().toString().trim().length()<=18) {
+                            if (et2_pwd.getText().toString().equals(et2_pwd_true.getText().toString())) {
+                                et1.setText(et2.getText().toString().trim());
+                                //et1_pwd.setText(et2_pwd_true.getText().toString());
+                                zhuCe(et2.getText().toString().trim(), et2_pwd_true.getText().toString().trim());
+                                Toast.makeText(M12_LoginActivity.this, "注册提交中！", Toast.LENGTH_SHORT).show();
+                                et2_pwd.setText("");
+                                et2_pwd_true.setText("");
+                            } else {
+                                tv2_notic.setText("输入的两次密码不同，请重新输入");
+                            }
                         }else {
-                            tv2_notic.setText("输入的两次密码不同，请重新输入");
+                            tv2_notic.setText("密码不能为空，且长度限制范围6~18位");
                         }
                     }else {
-                        tv2_notic.setText("下面为必填项，不能为空！");
+                        tv2_notic.setText("账号不能为空！,且长度最大限制18位");
                     }
                     break;
 
                 case R.id.bnt_login:
+                    progressDialog1= new ProgressDialog(M12_LoginActivity.this);
+                    progressDialog1.setMessage("登录中中，请稍后。。。");
+                    progressDialog1.setIndeterminate(true);// 是否形成一个加载动画  true表示不明确加载进度形成转圈动画  false 表示明确加载进度
+                    progressDialog1.setCancelable(false);//点击返回键或者dialog四周是否关闭dialog  true表示可以关闭 false表示不可关闭
+                    progressDialog1.show();
                     if (et1.getText().toString().trim().length()>=1
                             &&et1_pwd.getText().toString().trim().length()>=1) {
                         sharedPreferences=getSharedPreferences("userinfo",MODE_PRIVATE);
@@ -127,7 +144,7 @@ public class M12_LoginActivity extends AppCompatActivity {
                         if (open){
 //                            Toast.makeText(M12_LoginActivity.this, "验证中！，请稍后", Toast.LENGTH_SHORT).show();
                             boolean[] login = login(et1.getText().toString().trim(), et1_pwd.getText().toString().trim());
-                            if (login[0]){
+                           /* if (login[0]){
                                 Intent intent = new Intent();
                                 intent.putExtra("name", et1.getText().toString().trim());
                                 intent.setClass(M12_LoginActivity.this, Main12Activity.class);
@@ -137,6 +154,7 @@ public class M12_LoginActivity extends AppCompatActivity {
                             }
                                 //判断账号密码与保存的是否一致
                                 else {
+                                progressDialog1.dismiss();
                                 //判断默认密码
                                 if (et1.getText().toString().trim().equals(getResources().getString(R.string.username))
                                         && et1_pwd.getText().toString().trim().equals(getResources().getString(R.string.password))){
@@ -153,8 +171,9 @@ public class M12_LoginActivity extends AppCompatActivity {
 
                                 }
 
-                        }
+                        }*/
                         } else {
+                            progressDialog1.dismiss();
                                 //判断默认密码
                                 if (et1.getText().toString().trim().equals(getResources().getString(R.string.username))
                                         && et1_pwd.getText().toString().trim().equals(getResources().getString(R.string.password))){
@@ -294,11 +313,20 @@ public class M12_LoginActivity extends AppCompatActivity {
                                 editor1.clear();
                                 editor1.commit();
                                 open=false;
-                            }else {
+                            }
+                            else {
                                 tv1_notic.setText("错误：" + e.getMessage());
                                 open=true;
                             }
+                        }else if (e.getMessage().startsWith("Unable to resolve host")){
+                            Toast.makeText(M12_LoginActivity.this,"网络异常",Toast.LENGTH_SHORT).show();
+                            tv1_notic.setText("网络异常，请使用默认账户登录" +
+                                    "\n账号：" + getResources().getString(R.string.username) +
+                                    "\n密码：" + getResources().getString(R.string.password));
+                            et1.setText(getResources().getString(R.string.username));
+                            et1_pwd.setText(getResources().getString(R.string.password));
                         }
+                        progressDialog.dismiss();
                     }
 
                     @Override
@@ -326,6 +354,7 @@ public class M12_LoginActivity extends AppCompatActivity {
                                 open = true;
                             }
                         }
+                        progressDialog.dismiss();
                     }
                 });
 
@@ -343,10 +372,18 @@ public class M12_LoginActivity extends AppCompatActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        progressDialog1.dismiss();
                         if (e.getMessage().indexOf("404") > 1 || e.getMessage().indexOf("not found") > 1) {
                             Toast.makeText(M12_LoginActivity.this,"对不起服务器未开，请使用默认账户登录",Toast.LENGTH_SHORT).show();
-                        }else {
+                        }else if (e.getMessage().startsWith("Unable to resolve host")){
+                            Toast.makeText(M12_LoginActivity.this,"网络异常",Toast.LENGTH_SHORT).show();
+                            tv1_notic.setText("网络异常，请使用默认账户登录" +
+                                    "\n账号：" + getResources().getString(R.string.username) +
+                                    "\n密码：" + getResources().getString(R.string.password));
+                            et1.setText(getResources().getString(R.string.username));
+                            et1_pwd.setText(getResources().getString(R.string.password));
+                        }
+                        else {
                             tv1_notic.setText("错误：" + e.getMessage());
                         }
                         et1_pwd.setText("");
@@ -396,6 +433,7 @@ public class M12_LoginActivity extends AppCompatActivity {
                                     tv1_notic.setText(resuilt.getTitle() + "\n" + resuilt.getMessage());
                                 }
                             }
+                        progressDialog1.dismiss();
                         }
 
                 });
@@ -418,6 +456,14 @@ public class M12_LoginActivity extends AppCompatActivity {
                             tv2_notic.setText("对不起服务器未开，请使用默认账户登录"+
                                     "\n账号："+getResources().getString(R.string.username)+
                                     "\n密码："+getResources().getString(R.string.password));
+                        }else if (e.getMessage().startsWith("Unable to resolve host")){
+                                Toast.makeText(M12_LoginActivity.this,"网络异常",Toast.LENGTH_SHORT).show();
+                            tv2_notic.setText("网络异常，请使用默认账户登录" +
+                                        "\n账号：" + getResources().getString(R.string.username) +
+                                        "\n密码：" + getResources().getString(R.string.password));
+                                et1.setText(getResources().getString(R.string.username));
+                                et1_pwd.setText(getResources().getString(R.string.password));
+
                         }
                     }
 

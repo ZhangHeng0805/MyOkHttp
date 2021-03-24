@@ -183,9 +183,14 @@ public class Main3Activity extends Activity {
                         if (e.getMessage().indexOf("404")>1||e.getMessage().indexOf("not found")>1){
                             Toast.makeText(Main3Activity.this,"服务器未连接",Toast.LENGTH_SHORT).show();
                             m3_tv_service.setText("服务器未连接");
-                        }else {
+                        }else if (e.getMessage().startsWith("Unable to resolve host")){
+                            Toast.makeText(Main3Activity.this,"网络异常",Toast.LENGTH_SHORT).show();
+                            m3_tv_service.setText("网络异常");
+                        }
+                        else{
                             Toast.makeText(Main3Activity.this,"错误："+e.getMessage(),Toast.LENGTH_SHORT).show();
                         }
+                        Log.e("错误：",e.getMessage());
                     }
 
                     @Override

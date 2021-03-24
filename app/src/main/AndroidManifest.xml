@@ -41,6 +41,18 @@
         <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService"></service>
 
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.zhangheng.myapplication.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:ignore="WrongManifestParent">
+            <!--元数据-->
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths"/>
+        </provider>
+
         <activity android:name=".Main12Activity" />
 
         <meta-data
@@ -61,8 +73,8 @@
         <activity android:name=".Main5Activity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
+
             </intent-filter>
         </activity>
         <activity android:name=".Main4Activity" />
@@ -75,6 +87,7 @@
         </activity>
         <activity android:name=".Main2Activity" />
         <activity android:name=".MainActivity" />
+
     </application>
 
 </manifest>
