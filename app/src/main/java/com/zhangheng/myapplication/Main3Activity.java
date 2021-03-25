@@ -229,28 +229,33 @@ public class Main3Activity extends Activity {
                         }catch (Exception e){
 
                         }
-                        if (resuilt!=null) {
-                            Toast.makeText(Main3Activity.this,"服务器已连接",Toast.LENGTH_SHORT).show();
-                            m3_tv_service.setText("服务器已连接");
-                            if (!resuilt.getTitle().equals("null")) {
-                                if (resuilt.getTitle().equals( getResources().getString(R.string.app_name))) {
-                                    sharedPreferences=getSharedPreferences("update",MODE_PRIVATE);
-                                    String urlname = sharedPreferences.getString("urlname", "");
-                                    if (!urlname.equals(resuilt.getMessage())) {
-                                        if (!versionCode.equals(appversion(resuilt.getMessage())))
-                                        showUpdate(resuilt.getMessage());
-                                    }else {
-                                        Log.d("urlname","urlname与更新地址一致");
+                        if (response.indexOf("WEB服务器没有运行")<1) {
+                            if (resuilt != null) {
+                                Toast.makeText(Main3Activity.this, "服务器已连接", Toast.LENGTH_SHORT).show();
+                                m3_tv_service.setText("服务器已连接");
+                                if (!resuilt.getTitle().equals("null")) {
+                                    if (resuilt.getTitle().equals(getResources().getString(R.string.app_name))) {
+                                        sharedPreferences = getSharedPreferences("update", MODE_PRIVATE);
+                                        String urlname = sharedPreferences.getString("urlname", "");
+                                        if (!urlname.equals(resuilt.getMessage())) {
+                                            if (!versionCode.equals(appversion(resuilt.getMessage())))
+                                                showUpdate(resuilt.getMessage());
+                                        } else {
+                                            Log.d("urlname", "urlname与更新地址一致");
+                                        }
+                                    } else {
+                                        Log.d("title", "title与应用的名称不一致");
                                     }
-                                }else {
-                                    Log.d("title","title与应用的名称不一致");
+                                } else {
+                                    Log.d("title", "title为null");
                                 }
                             } else {
-                                Log.d("title","title为null");
+                                Log.d("resuilt", "resuilt为空");
                             }
                         }else {
-                            Log.d("resuilt","resuilt为空");
+                            m3_tv_service.setText("WEB服务器没有运行");
                         }
+                        Log.d("更新：",response);
                     }
                 });
     }
