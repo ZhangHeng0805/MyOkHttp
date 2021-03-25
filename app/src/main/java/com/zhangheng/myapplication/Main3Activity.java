@@ -30,13 +30,17 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.zhangheng.myapplication.Object.Resuilt;
 import com.zhangheng.myapplication.getphoneMessage.Address;
+import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.getphoneMessage.RegisterMessage;
+import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 
@@ -52,6 +56,7 @@ public class Main3Activity extends Activity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_PHONE_STATE,
     };
+    private String getPhone,model,sdk,release,versionCode;
 
     private ListView listView;
     private TextView m3_tv_service, m3_tv_ipAddress;
@@ -80,10 +85,9 @@ public class Main3Activity extends Activity {
         m3_tv_service = findViewById(R.id.m3_tv_service);
         m3_tv_ipAddress = findViewById(R.id.m3_tv_ipAddress);
         setAdapter();
-        getupdatelist();
-        String model = android.os.Build.MODEL; // 手机型号
-        String sdk = android.os.Build.VERSION.SDK; // SDK号
-        String release = "Android" + android.os.Build.VERSION.RELEASE; // android系统版本号
+        model = android.os.Build.MODEL; // 手机型号
+        sdk = android.os.Build.VERSION.SDK; // SDK号
+        release = "Android" + android.os.Build.VERSION.RELEASE; // android系统版本号
         String s = model + "\t" + sdk + "\t" + release;
             //获取自己手机号码
             TelephonyManager phoneManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
@@ -98,12 +102,19 @@ public class Main3Activity extends Activity {
                 // for Activity#requestPermissions for more details.
                 return;
             }
-            String getPhone = phoneManager.getLine1Number();//得到电话号码
+            if (phoneManager.getLine1Number().startsWith("+86")){
+                getPhone=phoneManager.getLine1Number().replace("+86","");
+            }else {
+                getPhone = phoneManager.getLine1Number();//得到电话号码
+            }
+//            String getPhone = phoneManager.getLine1Number();//得到电话号码
+        versionCode = PhoneSystem.getVersionCode(this);
 
-            m3_tv_ipAddress.setText("电话："+getPhone+" 手机型号"+model+" sdk版本号"+sdk+" os版本号"+release);
+//        m3_tv_ipAddress.setText("电话："+getPhone+" 手机型号"+model+" sdk版本号"+sdk+" 版本号"+release);
+        m3_tv_ipAddress.setText("当前版本型号："+versionCode);
 
 //        m3_tv_ipAddress.setText(s);
-
+        getupdatelist();
     }
     private void setAdapter(){
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -173,9 +184,22 @@ public class Main3Activity extends Activity {
     public void getupdatelist(){
         String url=getResources().getString(R.string.upload_html_url)
                 +"filelist/updatelist/"+getResources().getString(R.string.app_name);
+        Map<String,String> map=new HashMap<>();
+        if (getPhone!=null) {
+            map.put("phonenum", getPhone);
+            map.put("model", model);
+            map.put("sdk", sdk);
+            map.put("release", release);
+            map.put("time", TimeUtil.getSystemTime());
+        }
         OkHttpUtils
-                .get()
+                .post()
                 .url(url)
+                .addParams("phonenum", getPhone)
+                .addParams("model", model)
+                .addParams("sdk", sdk)
+                .addParams("release", release)
+                .addParams("time", TimeUtil.getSystemTime())
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -186,6 +210,9 @@ public class Main3Activity extends Activity {
                         }else if (e.getMessage().startsWith("Unable to resolve host")){
                             Toast.makeText(Main3Activity.this,"网络异常",Toast.LENGTH_SHORT).show();
                             m3_tv_service.setText("网络异常");
+                        }else if (e.getMessage().indexOf("timeout")>=0){
+                            Toast.makeText(Main3Activity.this,"服务器连接超时",Toast.LENGTH_SHORT).show();
+                            m3_tv_service.setText("服务器连接超时");
                         }
                         else{
                             Toast.makeText(Main3Activity.this,"错误："+e.getMessage(),Toast.LENGTH_SHORT).show();
@@ -210,6 +237,7 @@ public class Main3Activity extends Activity {
                                     sharedPreferences=getSharedPreferences("update",MODE_PRIVATE);
                                     String urlname = sharedPreferences.getString("urlname", "");
                                     if (!urlname.equals(resuilt.getMessage())) {
+                                        if (!versionCode.equals(appversion(resuilt.getMessage())))
                                         showUpdate(resuilt.getMessage());
                                     }else {
                                         Log.d("urlname","urlname与更新地址一致");
@@ -226,7 +254,7 @@ public class Main3Activity extends Activity {
                     }
                 });
     }
-    public void showUpdate(final String name){
+    public String appversion(String name){
         String[] strings=name.split("/");
         String appname=strings[strings.length-1].replace(".apk","");
         String[] s = appname.split("_");
@@ -236,10 +264,14 @@ public class Main3Activity extends Activity {
         }else {
             app=s[0];
         }
+        return app;
+    }
+    public void showUpdate(final String name){
+        String app=appversion(name);
         builder=new AlertDialog.Builder(this)
                 .setTitle("更新")
                 .setMessage("有新的版本《"+app+"》可以更新，是否去下载更新包？" +
-                        "\n如果更新后还弹出更新，可以选不在弹出")
+                        "\n如果更新后还弹出更新，可以选忽略")
                 .setPositiveButton("去更新", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -257,12 +289,12 @@ public class Main3Activity extends Activity {
                 dialogInterface.dismiss();
             }
         })
-        .setNeutralButton("不再弹出", new DialogInterface.OnClickListener() {
+        .setNeutralButton("忽略此版本", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 AlertDialog.Builder builder1=new AlertDialog.Builder(Main3Activity.this)
                         .setTitle("提示")
-                        .setMessage("不在弹出代表<相同版本>的更新不在提示，如果有其他版本，还会继续提示更新")
+                        .setMessage("忽略此版本代表<相同版本>的更新不在提示，如果有其他版本，还会继续提示更新")
                         .setPositiveButton("知道了", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
