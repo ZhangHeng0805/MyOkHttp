@@ -582,7 +582,11 @@ public class Main12Activity extends Activity implements View.OnClickListener, Ge
 
             }
         }else {
-            Toast.makeText(Main12Activity.this,"天气错误："+i,Toast.LENGTH_SHORT).show();
+            if (i==1200){
+                Toast.makeText(Main12Activity.this, "请检查定位服务是否开启", Toast.LENGTH_SHORT).show();
+            }else {
+                Toast.makeText(Main12Activity.this, "天气错误：" + i, Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
