@@ -1,9 +1,9 @@
 package com.zhangheng.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +22,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.amap.api.maps.AMap;
@@ -39,8 +40,14 @@ import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.geocoder.StreetNumber;
+import com.amap.api.services.weather.LocalWeatherForecastResult;
+import com.amap.api.services.weather.LocalWeatherLive;
+import com.amap.api.services.weather.LocalWeatherLiveResult;
+import com.amap.api.services.weather.WeatherSearch;
+import com.amap.api.services.weather.WeatherSearchQuery;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -52,7 +59,7 @@ import java.util.Map;
 
 import okhttp3.Call;
 
-public class Main12Activity extends AppCompatActivity implements View.OnClickListener, GeocodeSearch.OnGeocodeSearchListener {
+public class Main12Activity extends Activity implements View.OnClickListener, GeocodeSearch.OnGeocodeSearchListener, WeatherSearch.OnWeatherSearchListener {
 
     private GeocodeSearch geocodeSearch;
     private MapView mapView;
@@ -71,6 +78,10 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
     private boolean isNeedCheck = true;
     private String username=null;
     private  double latitude=0,longitude=0;
+    private WeatherSearchQuery mquery;
+    private WeatherSearch mweathersearch;
+    private TextView m12_tv_city,m12_tv_weather,m12_tv_temperature,
+            m12_tv_wind,m12_tv_humidity,m12_tv_reportTime;
 
 
 
@@ -79,6 +90,12 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main12);
 
+        m12_tv_reportTime=findViewById(R.id.m12_tv_reportTime);
+        m12_tv_humidity=findViewById(R.id.m12_tv_humidity);
+        m12_tv_wind=findViewById(R.id.m12_tv_wind);
+        m12_tv_temperature=findViewById(R.id.m12_tv_temperature);
+        m12_tv_weather=findViewById(R.id.m12_tv_weather);
+        m12_tv_city=findViewById(R.id.m12_tv_city);
         m12_rg_mapstyle=findViewById(R.id.m12_rg_mapstyle);
         m12_cb_lukuang=findViewById(R.id.m12_cb_lukuang);
         m12_LL_mapstyle=findViewById(R.id.m12_LL_mapstyle);
@@ -140,7 +157,7 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
         mUiSettings.setCompassEnabled(true);//指南针
         mUiSettings.setScaleControlsEnabled(true);//控制比例尺控件是否显示
         mUiSettings.setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_LEFT);//设置logo位置
-
+        aMap.showIndoorMap(true);     //true：显示室内地图；false：不显示；
 
         aMap.setMapType(AMap.MAP_TYPE_NORMAL);//设置地图样式为普通
         m12_rg_mapstyle.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -356,6 +373,13 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
         StreetNumber streetNumber = regeocodeAddress.getStreetNumber();//门牌信息。
         String formatAddress = regeocodeAddress.getFormatAddress();//格式化地址。
         m12_tv_location.setText(formatAddress/*+"\n"+m12_tv_location.getText().toString()*/);
+
+        //检索参数为城市和天气类型，实况天气为WEATHER_TYPE_LIVE、天气预报为WEATHER_TYPE_FORECAST
+        mquery = new WeatherSearchQuery(city, WeatherSearchQuery.WEATHER_TYPE_LIVE);
+        mweathersearch=new WeatherSearch(this);
+        mweathersearch.setOnWeatherSearchListener(Main12Activity.this);
+        mweathersearch.setQuery(mquery);
+        mweathersearch.searchWeatherAsyn(); //异步搜索
     }
     @Override
     public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
@@ -538,4 +562,32 @@ public class Main12Activity extends AppCompatActivity implements View.OnClickLis
 
     }
 
+    @Override
+    public void onWeatherLiveSearched(LocalWeatherLiveResult localWeatherLiveResult, int i) {
+        if (i==1000){
+            if (localWeatherLiveResult != null&&localWeatherLiveResult.getLiveResult() != null) {
+                LocalWeatherLive liveResult = localWeatherLiveResult.getLiveResult();
+                String city = liveResult.getCity();//城市
+                String reportTime = liveResult.getReportTime()+"发布";//发布时间
+                String temperature = liveResult.getTemperature()+"℃";//温度"°"
+                String weather = liveResult.getWeather();//天气
+                String wind=liveResult.getWindDirection()+"风    "+liveResult.getWindPower()+"级";
+                String humidity = "湿度："+liveResult.getHumidity()+"%";
+                m12_tv_city.setText(city);
+                m12_tv_reportTime.setText(reportTime);
+                m12_tv_temperature.setText(temperature);
+                m12_tv_weather.setText(weather);
+                m12_tv_wind.setText(wind);
+                m12_tv_humidity.setText(humidity);
+
+            }
+        }else {
+            Toast.makeText(Main12Activity.this,"天气错误："+i,Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void onWeatherForecastSearched(LocalWeatherForecastResult localWeatherForecastResult, int i) {
+
+    }
 }
