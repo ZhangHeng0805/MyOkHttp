@@ -17,7 +17,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.gson.Gson;
+import com.zhangheng.myapplication.Object.ChatConfig;
 import com.zhangheng.myapplication.util.TimeUtil;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.ByteBuf;
@@ -37,6 +41,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import okhttp3.Call;
 
 public class Main13Activity extends AppCompatActivity implements View.OnClickListener {
 
@@ -67,6 +72,8 @@ public class Main13Activity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main13);
+        chatConfig();
+
         m13_et_ip=findViewById(R.id.m13_et_ip);
         m13_et_port=findViewById(R.id.m13_et_port);
         m13_et_info=findViewById(R.id.m13_et_info);
@@ -205,7 +212,7 @@ public class Main13Activity extends AppCompatActivity implements View.OnClickLis
                 mFuture = clientBootStrap.connect(mIp, mPort).sync();
                 if (mFuture.isSuccess()) {
                     mChannel = mFuture.channel();
-                   data="=====客户端"+mChannel.localAddress()+" 连接成功=====";
+                   data="=====客户端"+mChannel.localAddress()+" 启动成功=====";
                     mSendThread = new SendThread(mChannel);
                     mSendThread.start();
                 }else {
@@ -340,5 +347,31 @@ public class Main13Activity extends AppCompatActivity implements View.OnClickLis
             ctx.close();
         }
 
+    }
+
+    private void chatConfig(){
+        String url=getResources().getString(R.string.server_url)+"config/chatconfig";
+        OkHttpUtils
+                .get()
+                .url(url)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e("chatconfig错误：",e.getMessage());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Gson gson=new Gson();
+                        ChatConfig chatConfig = gson.fromJson(response, ChatConfig.class);
+                        if (chatConfig!=null){
+                            m13_et_ip.setText(chatConfig.getIp());
+                            m13_et_port.setText(chatConfig.getPort());
+                        }else {
+                            Log.d("chatconfig：","chatconfig为空");
+                        }
+                    }
+                });
     }
 }
