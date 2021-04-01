@@ -31,7 +31,16 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Main13Activity" android:label="局域网聊天室"></activity>
+        <activity android:name=".Main14Activity"></activity>
+
+        <service
+            android:name=".service.NettyService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".Main13Activity"
+            android:label="局域网聊天室" />
         <activity
             android:name=".M12_LoginActivity"
             android:label="@string/title_activity_m12__login">
