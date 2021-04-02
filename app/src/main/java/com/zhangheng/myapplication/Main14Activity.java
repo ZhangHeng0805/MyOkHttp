@@ -31,11 +31,12 @@ public class Main14Activity extends NettyActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main14);
         final Intent intent = new Intent(getApplication(), NettyService.class);
         startService(intent);
         etContent = findViewById(R.id.et_content);
         listView = findViewById(R.id.list_view);
-        btn = findViewById(R.id.btn);
+        btn = findViewById(R.id.m14_btn);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

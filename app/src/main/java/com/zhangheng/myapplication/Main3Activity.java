@@ -74,7 +74,9 @@ public class Main3Activity extends Activity {
             "图书电商查询（API）",//10
             "查询文件列表并下载（自制服务器）",//11
             "地图（高德地图）",//12
-            "自制局域网聊天室",//13
+            "自制网络聊天室",//13
+            "自制聊天室(暂时无效)",//14
+            "Fragment框架"
     };
 
     @Override
@@ -173,6 +175,14 @@ public class Main3Activity extends Activity {
                         break;
                     case 11:
                         intent=new Intent(Main3Activity.this,Main13Activity.class);
+                        startActivity(intent);
+                        break;
+                    case 12:
+                        intent=new Intent(Main3Activity.this,Main14Activity.class);
+                        startActivity(intent);
+                        break;
+                    case 13:
+                        intent=new Intent(Main3Activity.this,Main15Activity.class);
                         startActivity(intent);
                         break;
 
