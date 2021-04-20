@@ -496,6 +496,9 @@ public class Main12Activity extends Activity implements View.OnClickListener, Ge
             e.printStackTrace();
         }
     }
+
+
+
     private void locationList(com.zhangheng.myapplication.Object.Location location){
         List<com.zhangheng.myapplication.Object.Location> list=new ArrayList<>();
         String url=getResources().getString(R.string.location_url)+"location";

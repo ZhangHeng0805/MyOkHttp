@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.zhangheng.myapplication.Object.Resuilt;
+import com.zhangheng.myapplication.activity.Test1Activity;
 import com.zhangheng.myapplication.getphoneMessage.Address;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.getphoneMessage.RegisterMessage;
@@ -63,20 +64,21 @@ public class Main3Activity extends Activity {
     private AlertDialog.Builder builder;
     private SharedPreferences sharedPreferences;
     private String[] strArr = new String[]{
-            "原生OkHttp的Get和Post请求文本数据",//1
-            "使用OkHttpUtil的Post提交文本数据",//2
-            "使用OkHttpUtil下载大文件",//4
-            "上传文件和检索文件",//5
-            "请求单张图片并显示",//6
-            "查询天气列表（API）",//7
-            "生成二维码（API）",//8
-            "新华字典查询（API）",//9
-            "图书电商查询（API）",//10
-            "查询文件列表并下载（自制服务器）",//11
-            "地图（高德地图）",//12
-            "自制网络聊天室",//13
-            "自制聊天室(暂时无效)",//14
-            "Fragment框架"
+            "1.原生OkHttp的Get和Post请求文本数据",//1
+            "2.使用OkHttpUtil的Post提交文本数据",//2
+            "4.使用OkHttpUtil下载大文件",//4
+            "5.上传文件和检索文件",//5
+            "6.请求单张图片并显示",//6
+            "7.查询天气列表（API）",//7
+            "8.生成二维码（API）",//8
+            "9.新华字典查询（API）",//9
+            "10.图书电商查询（API）",//10
+            "11.查询文件列表并下载（自制服务器）",//11
+            "12.地图（高德地图）",//12
+            "13.自制网络聊天室",//13
+            "14.自制聊天室(无效)",//14
+            "15.购物软件框架",
+            "16.自制ListView",
     };
 
     @Override
@@ -183,6 +185,10 @@ public class Main3Activity extends Activity {
                         break;
                     case 13:
                         intent=new Intent(Main3Activity.this,Main15Activity.class);
+                        startActivity(intent);
+                        break;
+                    case 14:
+                        intent=new Intent(Main3Activity.this, Test1Activity.class);
                         startActivity(intent);
                         break;
 

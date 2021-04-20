@@ -9,6 +9,8 @@ public class Goods {
 
     private String goods_introduction;//介绍
 
+    private String goods_type;//类型
+
     private Integer goods_month_much;//月销量
 
     private double goods_price;//价格
@@ -18,6 +20,8 @@ public class Goods {
     private Integer store_id;//店铺id
 
     private String time;//时间
+
+    private int num;//数量
 
     public Integer getGoods_id() {
         return goods_id;
@@ -49,6 +53,14 @@ public class Goods {
 
     public void setGoods_introduction(String goods_introduction) {
         this.goods_introduction = goods_introduction;
+    }
+
+    public String getGoods_type() {
+        return goods_type;
+    }
+
+    public void setGoods_type(String goods_type) {
+        this.goods_type = goods_type;
     }
 
     public Integer getGoods_month_much() {
@@ -89,5 +101,13 @@ public class Goods {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
     }
 }
