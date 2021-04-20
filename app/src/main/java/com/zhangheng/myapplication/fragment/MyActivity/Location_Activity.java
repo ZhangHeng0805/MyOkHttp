@@ -53,9 +53,9 @@ public class Location_Activity extends Activity implements GeocodeSearch.OnGeoco
     private  double latitude=0,longitude=0;
     private LatLonPoint latLng;
     private GeocodeSearch geocodeSearch;
-    private TextView m15_myfragment_location_txt_locaton;
+    private TextView m15_myfragment_location_txt_locaton,m15_myfragment_location_txt_locatoninfo;
     private EditText m15_myfragment_location_et_locaton;
-    private Button m15_myfragment_location_btn_save;
+    private Button m15_myfragment_location_btn_save,m15_myfragment_location_btn_ref;
     private SharedPreferences preferences;
     private String phone;
 
@@ -68,6 +68,21 @@ public class Location_Activity extends Activity implements GeocodeSearch.OnGeoco
         m15_myfragment_location_txt_locaton=findViewById(R.id.m15_myfragment_location_txt_locaton);
         m15_myfragment_location_btn_save=findViewById(R.id.m15_myfragment_location_btn_save);
         m15_myfragment_location_et_locaton=findViewById(R.id.m15_myfragment_location_et_locaton);
+        m15_myfragment_location_txt_locatoninfo=findViewById(R.id.m15_myfragment_location_txt_locatoninfo);
+        m15_myfragment_location_btn_ref=findViewById(R.id.m15_myfragment_location_btn_ref);
+
+        m15_myfragment_location_btn_ref.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (latitude>0&&longitude>0) {
+                    latLng = new LatLonPoint(latitude, longitude);
+                    RegeocodeQuery query = new RegeocodeQuery(latLng, 200, GeocodeSearch.AMAP);
+                    geocodeSearch.getFromLocationAsyn(query);
+                }else {
+                    DialogUtil.dialog(Location_Activity.this,"定位失败","位置获取失败，请开启定位或者到空旷的地方");
+                }
+            }
+        });
 
         m15_myfragment_location_btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -129,8 +144,6 @@ public class Location_Activity extends Activity implements GeocodeSearch.OnGeoco
                                 + "\t纬度:"+longitude
                                 +"\t海拔:"+altitude
                 );
-                RegeocodeQuery query = new RegeocodeQuery(latLng, 200, GeocodeSearch.AMAP);
-                geocodeSearch.getFromLocationAsyn(query);
 
             }
         });
@@ -283,6 +296,7 @@ public class Location_Activity extends Activity implements GeocodeSearch.OnGeoco
             String neighborhood = regeocodeAddress.getNeighborhood();//社区名称。
             StreetNumber streetNumber = regeocodeAddress.getStreetNumber();//门牌信息。
             String formatAddress = regeocodeAddress.getFormatAddress();//格式化地址。
+            m15_myfragment_location_txt_locatoninfo.setText(formatAddress);
             m15_myfragment_location_et_locaton.setText(formatAddress);
         }else if (i==1200){
             Toast.makeText(Location_Activity.this, "请检查定位服务是否开启", Toast.LENGTH_SHORT).show();

@@ -27,10 +27,46 @@
             android:textSize="20sp"
             android:textColor="@color/white"/>
     </RelativeLayout>
+    <LinearLayout
+        android:id="@+id/m15_myfragment_location_LL1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/m15_fragment_my_titlebar"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/m15_myfragment_location_et_locaton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="请输入地址："
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="提示：可以手动输入详细位置，越详细越好"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/m15_myfragment_location_btn_ref"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="刷新位置"
+                />
+            <Button
+                android:id="@+id/m15_myfragment_location_btn_save"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="提交保存"
+                />
+        </LinearLayout>
+    </LinearLayout>
     <com.amap.api.maps.MapView
         android:id="@+id/m15_myfragment_location_map"
         android:layout_width="match_parent"
-        android:layout_below="@id/m15_fragment_my_titlebar"
+        android:layout_below="@id/m15_myfragment_location_LL1"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:layout_height="350dp"/>
@@ -48,25 +84,13 @@
             android:textColor="@color/black"
             android:textSize="18sp"
             />
-        <LinearLayout
+
+        <TextView
+            android:id="@+id/m15_myfragment_location_txt_locatoninfo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <EditText
-                android:id="@+id/m15_myfragment_location_et_locaton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="25"
-                android:hint="请输入地址："
-                />
-            <Button
-                android:id="@+id/m15_myfragment_location_btn_save"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="保存"
-                />
-        </LinearLayout>
-
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            />
     </LinearLayout>
 </RelativeLayout>
