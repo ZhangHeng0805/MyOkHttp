@@ -95,7 +95,7 @@ public class Registered_Activity extends Activity {
                 String password1=registered_et_password1.getText().toString();
                 if (phone.length()==11){
                     if (PhoneNumUtil.isMobile(phone)) {
-                        if (username.length() > 0 && username.length() <= 15) {
+                        if (username.length() > 0 && username.length() <= 10) {
                             if (password.length() >= 6 && password.length() <= 18) {
                                 if (password.equals(password1)) {
                                     Customer customer = new Customer();
@@ -116,7 +116,7 @@ public class Registered_Activity extends Activity {
                                 dialog("输入错误", "密码不能为空，且限制6~18个字符以内");
                             }
                         } else {
-                            dialog("输入错误", "用户名不能为空，且限制15个字符以内");
+                            dialog("输入错误", "用户名不能为空，且限制10个字符以内");
                         }
                     }else {
                         dialog("输入错误", "非法手机号，请输入正确的手机号码");
@@ -132,7 +132,7 @@ public class Registered_Activity extends Activity {
 
     private void submit(Customer customer){
         final ProgressDialog progressDialog=new ProgressDialog(getContext());
-        progressDialog.setMessage("刷新中。。。");
+        progressDialog.setMessage("注册中。。。");
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();

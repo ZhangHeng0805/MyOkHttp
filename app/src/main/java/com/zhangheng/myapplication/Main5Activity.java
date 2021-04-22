@@ -65,6 +65,7 @@ public class Main5Activity extends Activity implements View.OnClickListener {
         tv_pro=findViewById(R.id.text_progress_uploadfile);
         textView=findViewById(R.id.text_uploadfile);
         m5_et_url=findViewById(R.id.m5_et_url);
+        m5_et_url.setText(getResources().getString(R.string.zhangheng_url)+"uploadjson/files");
         m5_et_name=findViewById(R.id.m5_et_name);
         m5_et_password=findViewById(R.id.m5_et_password);
         m5_SD=findViewById(R.id.m5_SD);
@@ -212,7 +213,7 @@ public class Main5Activity extends Activity implements View.OnClickListener {
                 }
                 break;
             case R.id.m5_btn_intent_url:
-                String html=getResources().getString(R.string.upload_html_url);
+                String html=getResources().getString(R.string.zhangheng_url);
                 Intent intent=new Intent();
                 intent.setAction(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(html));

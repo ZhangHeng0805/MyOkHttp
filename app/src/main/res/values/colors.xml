@@ -6,7 +6,8 @@
     <color name="white_50">#80ffffff</color>
     <color name="white_80">#CCFFFFFF</color>
     <color name="white">#ffffff</color>
-    <color name="black_50">#33000000</color>
+    <color name="black_50">#80000000</color>
+    <color name="black_10">#1A000000</color>
     <color name="black">#000000</color>
     <color name="blue">#03A9F4</color>
     <color name="transparent">#00FFFFFF</color>

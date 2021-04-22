@@ -56,6 +56,7 @@ public class Main2Activity extends AppCompatActivity {
         et_email=findViewById(R.id.et_submit_email);
         btn_submit=findViewById(R.id.btn_submit);
         text1=findViewById(R.id.text1_submit);
+        et_url.setText(getResources().getString(R.string.zhangheng_url)+"user");
         setOnClickListener();
     }
     //使用Post请求

@@ -292,7 +292,7 @@ public class M12_LoginActivity extends AppCompatActivity {
         }
     }
     public void yanzheng(){
-        String url=getResources().getString(R.string.location_url)+"yanzheng";
+        String url=getResources().getString(R.string.zhangheng_url)+"yanzheng";
         OkHttpUtils
                 .get()
                 .url(url)
@@ -362,7 +362,7 @@ public class M12_LoginActivity extends AppCompatActivity {
 
     public boolean[] login(final String username, final String password){
         final boolean[] b = {false};
-        String url=getResources().getString(R.string.location_url)+"login";
+        String url=getResources().getString(R.string.zhangheng_url)+"login";
         OkHttpUtils
                 .post()
                 .url(url)
@@ -440,7 +440,7 @@ public class M12_LoginActivity extends AppCompatActivity {
         return b;
     }
     private void zhuCe(final String username, final String password){
-        String url=getResources().getString(R.string.location_url)+"zhuce";
+        String url=getResources().getString(R.string.zhangheng_url)+"zhuce";
         OkHttpUtils
                 .post()
                 .url(url)

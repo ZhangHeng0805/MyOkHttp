@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:text="@string/select_user"
         android:hint="请输入网址："
         />
     <LinearLayout

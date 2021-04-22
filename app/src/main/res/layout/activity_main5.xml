@@ -175,7 +175,6 @@
                 android:id="@+id/m5_et_url"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/upload_url"
                 android:hint="请输入上传的网址"/>
             <TextView
                 android:layout_width="match_parent"

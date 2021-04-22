@@ -33,6 +33,7 @@ import com.zhangheng.myapplication.activity.Test1Activity;
 import com.zhangheng.myapplication.getphoneMessage.Address;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.getphoneMessage.RegisterMessage;
+import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -116,7 +117,7 @@ public class Main3Activity extends Activity {
         versionCode = PhoneSystem.getVersionCode(this);
 
 //        m3_tv_ipAddress.setText("电话："+getPhone+" 手机型号"+model+" sdk版本号"+sdk+" 版本号"+release);
-        m3_tv_ipAddress.setText("当前版本型号："+versionCode);
+        m3_tv_ipAddress.setText("应用版本号："+versionCode);
 
 //        m3_tv_ipAddress.setText(s);
         getupdatelist();
@@ -203,7 +204,7 @@ public class Main3Activity extends Activity {
         return info.getMacAddress();
     }
     public void getupdatelist(){
-        String url=getResources().getString(R.string.upload_html_url)
+        String url=getResources().getString(R.string.zhangheng_url)
                 +"filelist/updatelist/"+getResources().getString(R.string.app_name);
         Map<String,String> map=new HashMap<>();
         if (getPhone!=null) {
@@ -225,19 +226,10 @@ public class Main3Activity extends Activity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        if (e.getMessage().indexOf("404")>1||e.getMessage().indexOf("not found")>1){
-                            Toast.makeText(Main3Activity.this,"服务器未连接",Toast.LENGTH_SHORT).show();
-                            m3_tv_service.setText("服务器未连接");
-                        }else if (e.getMessage().startsWith("Unable to resolve host")){
-                            Toast.makeText(Main3Activity.this,"网络异常",Toast.LENGTH_SHORT).show();
-                            m3_tv_service.setText("网络异常");
-                        }else if (e.getMessage().indexOf("timeout")>=0){
-                            Toast.makeText(Main3Activity.this,"服务器连接超时",Toast.LENGTH_SHORT).show();
-                            m3_tv_service.setText("服务器连接超时");
-                        }
-                        else{
-                            Toast.makeText(Main3Activity.this,"错误："+e.getMessage(),Toast.LENGTH_SHORT).show();
-                        }
+                        String error = OkHttpMessageUtil.error(e);
+                        Toast.makeText(Main3Activity.this,"错误："+error,Toast.LENGTH_SHORT).show();
+                        m3_tv_service.setText(error);
+
                         Log.e("错误：",e.getMessage());
                     }
 
@@ -254,6 +246,7 @@ public class Main3Activity extends Activity {
                             if (resuilt != null) {
                                 Toast.makeText(Main3Activity.this, "服务器已连接", Toast.LENGTH_SHORT).show();
                                 m3_tv_service.setText("服务器已连接");
+                                m3_tv_service.setTextColor(getColor(R.color.black));
                                 if (!resuilt.getTitle().equals("null")) {
                                     if (resuilt.getTitle().equals(getResources().getString(R.string.app_name))) {
                                         sharedPreferences = getSharedPreferences("update", MODE_PRIVATE);
@@ -303,7 +296,7 @@ public class Main3Activity extends Activity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Intent intent=new Intent();
                         intent.setAction(Intent.ACTION_VIEW);
-                        String url = getResources().getString(R.string.upload_html_url)
+                        String url = getResources().getString(R.string.zhangheng_url)
                                 +"downloads/downupdate/"+name;
                         intent.setData(Uri.parse(url));
                         startActivity(intent);

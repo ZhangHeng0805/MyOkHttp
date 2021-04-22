@@ -15,7 +15,6 @@
         android:id="@+id/et_submit_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/insert_user"
         android:hint="请输入网址："
         />
 

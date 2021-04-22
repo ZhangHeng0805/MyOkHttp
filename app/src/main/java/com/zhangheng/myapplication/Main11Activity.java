@@ -155,7 +155,7 @@ public class Main11Activity extends AppCompatActivity implements View.OnClickLis
                         m11_listview_load.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                m11_et_upload_01.setText(getResources().getString(R.string.download_url)+strings[i]);
+                                m11_et_upload_01.setText(getResources().getString(R.string.zhangheng_url)+"downloads/show/"+strings[i]);
                             }
                         });
                     }
@@ -222,7 +222,7 @@ public class Main11Activity extends AppCompatActivity implements View.OnClickLis
                 if (m11_et_upload_01.getText().toString().startsWith("http")){
                     downloadfile_url=m11_et_upload_01.getText().toString();
                 }else {
-                    downloadfile_url=getResources().getString(R.string.download_url)+m11_et_upload_01.getText().toString();
+                    downloadfile_url=getResources().getString(R.string.zhangheng_url)+"downloads/show/"+m11_et_upload_01.getText().toString();
                 }
                 if (filename!=null){
                     downloadFile(downloadfile_url,filename);
@@ -233,7 +233,7 @@ public class Main11Activity extends AppCompatActivity implements View.OnClickLis
             case R.id.m11_btn_loadlist:
                 m11_progress.setProgress(0);
                 m11_text_progress.setText(0+"%");
-                String loadlist_url=getResources().getString(R.string.loadlist_url)+type;
+                String loadlist_url=getResources().getString(R.string.zhangheng_url)+"filelist/jsonlist/"+type;
                 String username=m11_et_name.getText().toString();
                 String password=m11_et_password.getText().toString();
                 getFileList(loadlist_url,username,password);

@@ -90,10 +90,10 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/btn"
                 android:padding="8dp"
-                android:hint="请输入1~15位的用户名"
+                android:hint="请输入1~10位的用户名"
                 android:textSize="20sp"
                 android:maxLines="1"
-                android:maxLength="15"
+                android:maxLength="10"
                 android:inputType="text"/>
         </LinearLayout>
         <LinearLayout

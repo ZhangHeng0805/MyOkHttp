@@ -501,7 +501,7 @@ public class Main12Activity extends Activity implements View.OnClickListener, Ge
 
     private void locationList(com.zhangheng.myapplication.Object.Location location){
         List<com.zhangheng.myapplication.Object.Location> list=new ArrayList<>();
-        String url=getResources().getString(R.string.location_url)+"location";
+        String url=getResources().getString(R.string.zhangheng_url)+"location";
         OkHttpUtils
                 .post()
                 .url(url)

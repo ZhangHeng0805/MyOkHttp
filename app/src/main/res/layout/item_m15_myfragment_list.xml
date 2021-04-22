@@ -14,7 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="20dp"
-        android:textStyle="bold"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/item_m15_myfragment_iv_icon"

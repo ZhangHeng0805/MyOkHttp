@@ -31,12 +31,19 @@
                 android:id="@+id/m3_tv_service"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="1dp"/>
+                android:gravity="center_vertical"
+                android:textColor="@color/red"
+                android:text="服务器状态加载中..."
+                android:layout_weight="1"
+                android:paddingTop="5dp"/>
             <TextView
                 android:id="@+id/m3_tv_ipAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"/>
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                android:text="应用版本号"
+                android:paddingBottom="0dp"/>
         </LinearLayout>
     </LinearLayout>
     <ListView

@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
        btn_submit=findViewById(R.id.btn_post_sumint);
        text1=findViewById(R.id.text1);
        editText1=findViewById(R.id.edit_url);
+       editText1.setText(getResources().getString(R.string.zhangheng_url)+"users");
        setOnclickListener();
     }
 

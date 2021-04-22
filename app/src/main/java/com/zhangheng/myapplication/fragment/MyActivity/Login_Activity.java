@@ -85,7 +85,7 @@ public class Login_Activity extends Activity {
     }
     private void submit(final UserCustomer user){
         final ProgressDialog progressDialog=new ProgressDialog(Login_Activity.this);
-        progressDialog.setMessage("刷新中。。。");
+        progressDialog.setMessage("登录中。。。");
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);
         progressDialog.show();

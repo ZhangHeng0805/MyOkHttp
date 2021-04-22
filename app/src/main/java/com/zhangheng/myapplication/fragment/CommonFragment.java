@@ -130,7 +130,11 @@ public class CommonFragment extends BaseFragment {
                 Goods goods = g.get(i);
                 int i1 = goodsList.indexOf(goods);
                 if (i1>=0){
-                    mListView.smoothScrollToPosition(i1);
+                    if (i1==goodsList.size()-1) {
+                        mListView.setSelection(i1+1);
+                    }else {
+                        mListView.setSelection(i1+1);
+                    }
                 }
             }
         });
@@ -148,7 +152,7 @@ public class CommonFragment extends BaseFragment {
                 Log.d(TAG, "onClick: 提交订单");
                 final SubmitGoods submitGoods = new SubmitGoods();
                 List<goods> goodslist=new ArrayList<>();
-                String[] strings = new String[g.size()+3];
+                String[] strings = new String[g.size()+5];
                 for (Goods goods:g){
                     com.zhangheng.myapplication.bean.shop.submitgoods.goods goods1 = new goods();
                     goods1.setId(goods.getGoods_id());
@@ -159,9 +163,23 @@ public class CommonFragment extends BaseFragment {
                     String s=g.get(i).getGoods_name()+" "+g.get(i).getGoods_price()+"元 × "+g.get(i).getNum();
                     strings[i]=s;
                 }
-                strings[g.size()+2]="已选商品:"+num+"件；总金额:"+pice+"元";
-                strings[g.size()+1]="联系电话:"+phone;
-                strings[g.size()]="地址:"+address;
+                strings[g.size()+4]="已选商品："+num+"件:总金额："+pice+"元";
+                if (phone!=null) {
+                    strings[g.size() + 3] = "联系电话：" + phone;
+                }else {
+                    strings[g.size() + 3] = "联系电话：空";
+                }
+                if (address!=null&&!address.equals("地址为空")) {
+                    strings[g.size()+2] = "地址：" + address;
+                }else {
+                    strings[g.size()+2] = "地址：空";
+                }
+                if (name!=null) {
+                    strings[g.size()+1] = "收货人：" + name;
+                }else {
+                    strings[g.size()+1] = "收货人：空";
+                }
+                strings[g.size()]="----------------------------";
                 submitGoods.setGoods_list(goodslist);
                 submitGoods.setCount_price(pice);
                 AlertDialog.Builder builder=new AlertDialog.Builder(getContext());
@@ -180,11 +198,11 @@ public class CommonFragment extends BaseFragment {
                         if (phone!=null&&name!=null&&password!=null) {
                             submitGoods.setName(name);
                             submitGoods.setPhone(phone);
-                            if (address!=null) {
+                            if (address!=null&&!address.equals("地址为空")) {
                                 submitGoods.setAddress(address);
                                 OkHttp2(submitGoods);
                             }else {
-                                DialogUtil.dialog(getContext(),"地址为空","请前往\"我的\"—\"设置地址\"进行设置后,再来操作");
+                                DialogUtil.dialog(getContext(),"地址为空","请前往\"我的\"-\"设置地址\"进行设置后,再来操作");
                             }
                         }else {
                             DialogUtil.dialog(getContext(),"请登录后操作","请前往\"我的\"进行登录后,再来操作");

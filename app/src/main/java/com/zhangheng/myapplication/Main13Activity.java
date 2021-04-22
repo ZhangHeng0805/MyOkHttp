@@ -350,7 +350,7 @@ public class Main13Activity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void chatConfig(){
-        String url=getResources().getString(R.string.server_url)+"config/chatconfig";
+        String url=getResources().getString(R.string.zhangheng_url)+"config/chatconfig";
         OkHttpUtils
                 .get()
                 .url(url)

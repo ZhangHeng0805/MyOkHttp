@@ -10,7 +10,10 @@ public class OkHttpMessageUtil {
             msg="网络异常";
         }else if (e.getMessage().indexOf("timeout")>=0){
             msg="服务器连接超时";
-        }else {
+        }else if (e.getMessage().startsWith("failed to connect to")||e.getMessage().startsWith("Failed to connect to")){
+            msg="服务器连接失败";
+        }
+        else {
             msg=e.getMessage();
         }
         return msg;

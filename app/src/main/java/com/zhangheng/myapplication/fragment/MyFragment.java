@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.preference.DialogPreference;
 import android.util.Log;
 import android.view.Gravity;
@@ -32,6 +33,7 @@ import com.zhangheng.myapplication.base.BaseFragment;
 import com.zhangheng.myapplication.bean.shop.Customer;
 import com.zhangheng.myapplication.fragment.MyActivity.Location_Activity;
 import com.zhangheng.myapplication.fragment.MyActivity.Login_Activity;
+import com.zhangheng.myapplication.fragment.MyActivity.UserInfoActivity;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -81,6 +83,13 @@ public class MyFragment extends BaseFragment {
                             DialogUtil.dialog(getContext(),"请登录后在操作","用户没有登录，请登录后在操作");
                         }
                         break;
+                    case 1:
+                        String html=getResources().getString(R.string.zhangheng_url)+"registration";
+                        Intent intent=new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.setData(Uri.parse(html));
+                        startActivity(intent);
+                        break;
                 }
             }
         });
@@ -90,7 +99,8 @@ public class MyFragment extends BaseFragment {
             public void onClick(View view) {
                 getPreferences();
                 if (phone!=null&&name!=null&&password!=null){
-                    start();
+                    Intent intent = new Intent(getActivity(), UserInfoActivity.class);
+                    startActivity(intent);
                 }else {
                     Intent intent = new Intent(getActivity(), Login_Activity.class);
                     startActivity(intent);
@@ -173,6 +183,10 @@ public class MyFragment extends BaseFragment {
                             String url=getResources().getString(R.string.zhangheng_url)+"downloads/show/"+customer.getIcon();
                             Glide.with(getContext()).load(url).into(m15_fragment_my_iv_usericon);
                             m15_fragment_my_txt_useraddress.setText(customer.getAddress());
+                            SharedPreferences sharedPreferences=getContext().getSharedPreferences("customeruser",MODE_PRIVATE);
+                            SharedPreferences.Editor editor=sharedPreferences.edit();
+                            editor.putString("address",customer.getAddress());
+                            editor.commit();
                         }else {
                             AlertDialog.Builder d=new AlertDialog.Builder(getContext());
                             d.setTitle("网络加载失败");
@@ -260,10 +274,12 @@ public class MyFragment extends BaseFragment {
         }
 
         private String[] info={
-                "位置设置"
+                "位置设置",
+                "注册商家"
         };
         private Integer[] icon={
-                R.drawable.location
+                R.drawable.location,
+                R.drawable.zhuce,
         };
 
         @Override

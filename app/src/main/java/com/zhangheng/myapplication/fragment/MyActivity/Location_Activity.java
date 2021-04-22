@@ -8,7 +8,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.fragment.app.FragmentActivity;
 
 import com.amap.api.maps.AMap;
 import com.amap.api.maps.AMapOptions;
@@ -31,7 +30,6 @@ import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.geocoder.StreetNumber;
 import com.google.gson.Gson;
-import com.zhangheng.myapplication.Main12Activity;
 import com.zhangheng.myapplication.Object.Resuilt;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.util.DialogUtil;
@@ -215,7 +213,7 @@ public class Location_Activity extends Activity implements GeocodeSearch.OnGeoco
         phone = preferences.getString("phone", null);
     }
     private void savePreferences(String address){
-        preferences = getSharedPreferences("customeruser", MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences("customeruser", MODE_PRIVATE);
         SharedPreferences.Editor editor=preferences.edit();
         editor.putString("address",address);
         editor.commit();
