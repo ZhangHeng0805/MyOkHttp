@@ -1,6 +1,22 @@
 # MyOkHttp
 
 ## 项目参考依赖[**okhttputils**](https://github.com/hongyangAndroid/okhttputils)和原生的[okhttp](https://github.com/square/okhttp)
+# 项目功能列表
+* 1.原生OkHttp的Get和Post请求文本数据
+* 2.使用OkHttpUtil的Post提交文本数据
+* 4.使用OkHttpUtil下载大文件
+* 5.上传文件和检索本地文件
+* 6.请求单张图片并显示"
+* 7.查询天气列表（API）
+* 8.生成二维码（API）
+* 9.新华字典查询（API）
+* 10.图书电商查询（API）
+* 11.查询文件列表并下载（自制服务器）
+* 12.自制地图（高德地图）
+* 13.自制网络聊天室
+* 14.自制聊天室(无效)
+* 15.购物软件框架（自制服务器）
+* 16.自制下拉刷新的ListView（测试）
 ## 本项目的Android的安装[APP下载](https://github.com/ZhangHeng0805/MyOkHttp/releases/download/V1-3.26/MyOkHttp_V1-3.26.apk)
 * 1、使用原生的OkHttp完成请求和提交文本数据
 * 2、使用Okhttputils完成大文件的下载，上传文件和分类检索本地文件，请求单张图片并显示
