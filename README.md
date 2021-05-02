@@ -1,6 +1,6 @@
 # MyOkHttp
 
-## 项目参考依赖[**okhttputils**](https://github.com/hongyangAndroid/okhttputils)和原生的[okhttp](https://github.com/square/okhttp)
+## 项目参考依赖[**okhttputils**](https://github.com/hongyangAndroid/okhttputils)和原生的[okhttp](https://github.com/square/okhttp)和我的服务器[File-Management-Server](https://github.com/ZhangHeng0805/File-Management-Server)
 # 项目功能列表
 * 1.原生OkHttp的Get和Post请求文本数据
 * 2.使用OkHttpUtil的Post提交文本数据
