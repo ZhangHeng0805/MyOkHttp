@@ -225,6 +225,12 @@ public class Main12Activity extends Activity implements View.OnClickListener, Ge
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        exitMap();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
@@ -358,6 +364,25 @@ public class Main12Activity extends Activity implements View.OnClickListener, Ge
                     location1.setTime(time);
                     location1.setState("t");//t公开；f隐藏
                     locationList(location1);
+            }
+        }
+    }
+    private void exitMap(){
+        com.zhangheng.myapplication.Object.Location location1=new com.zhangheng.myapplication.Object.Location();
+        if (username!=null) {
+            if (latitude != 0&&longitude!=0) {
+                if (aMap == null) {
+                    aMap = mapView.getMap();
+                } else {
+                    aMap.clear();
+                }
+                String time=TimeUtil.getSystemTime();
+                location1.setUsername(username);
+                location1.setLatitude(String.valueOf(latitude));
+                location1.setLongitude(String.valueOf(longitude));
+                location1.setTime(time);
+                location1.setState("f");//t公开；f隐藏
+                locationList(location1);
             }
         }
     }
@@ -570,6 +595,7 @@ public class Main12Activity extends Activity implements View.OnClickListener, Ge
         if (i==1000){
             if (localWeatherLiveResult != null&&localWeatherLiveResult.getLiveResult() != null) {
                 LocalWeatherLive liveResult = localWeatherLiveResult.getLiveResult();
+
                 String city = liveResult.getCity();//城市
                 String reportTime = liveResult.getReportTime()+"发布";//发布时间
                 String temperature = liveResult.getTemperature()+"℃";//温度"°"

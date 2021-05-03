@@ -60,8 +60,8 @@ public class Main14Activity extends NettyActivity {
         final ChatInfo chatInfo = new ChatInfo();
         baseFeed.setData(chatInfo);
         chatInfo.setChatType(2);
-        chatInfo.setFrom(1);
-        chatInfo.setTo(50);
+        chatInfo.setFrom("1");
+        chatInfo.setTo("50");
         chatInfo.setMsgType(1);
         chatInfo.setMessage(message);
         NettyClient.getInstance().sendMessage(baseFeed, null);

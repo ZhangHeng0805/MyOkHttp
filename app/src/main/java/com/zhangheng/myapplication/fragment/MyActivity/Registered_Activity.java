@@ -131,7 +131,7 @@ public class Registered_Activity extends Activity {
     }
 
     private void submit(Customer customer){
-        final ProgressDialog progressDialog=new ProgressDialog(getContext());
+        final ProgressDialog progressDialog=new ProgressDialog(Registered_Activity.this);
         progressDialog.setMessage("注册中。。。");
         progressDialog.setIndeterminate(true);
         progressDialog.setCancelable(false);

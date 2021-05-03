@@ -13,7 +13,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
-        versionName "4.20"
+        versionName "4.30"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -48,5 +48,6 @@ dependencies {
     implementation files('libs/Volley.jar')
     // https://mvnrepository.com/artifact/io.netty/netty-all
     implementation group: 'io.netty', name: 'netty-all', version: '4.1.59.Final'
+    implementation 'com.lzy.widget:imagepicker:0.6.1'  //指定版本
 
 }

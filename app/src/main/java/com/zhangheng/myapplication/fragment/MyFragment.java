@@ -33,6 +33,7 @@ import com.zhangheng.myapplication.base.BaseFragment;
 import com.zhangheng.myapplication.bean.shop.Customer;
 import com.zhangheng.myapplication.fragment.MyActivity.Location_Activity;
 import com.zhangheng.myapplication.fragment.MyActivity.Login_Activity;
+import com.zhangheng.myapplication.fragment.MyActivity.OrderActivity;
 import com.zhangheng.myapplication.fragment.MyActivity.UserInfoActivity;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
@@ -49,6 +50,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class MyFragment extends BaseFragment {
 
     private TextView textView;
+
     private RelativeLayout m15_fragment_my_RL_user;
     private static final String TAG= MyFragment.class.getSimpleName();
     private TextView m15_fragment_my_txt_username,m15_fragment_my_txt_useraddress;
@@ -57,7 +59,6 @@ public class MyFragment extends BaseFragment {
     private String phone,name,password,address;
     private Button m15_fragment_my_btn_exit;
     private ListView m15_fragment_my_listview;
-
     @Override
     protected View initView() {
         Log.e(TAG,"我的框架Fragment页面被初始化了");
@@ -89,6 +90,15 @@ public class MyFragment extends BaseFragment {
                         intent.setAction(Intent.ACTION_VIEW);
                         intent.setData(Uri.parse(html));
                         startActivity(intent);
+                        break;
+                    case 2:
+                        getPreferences();
+                        if (phone!=null&&name!=null&&password!=null){
+                            Intent intent2 = new Intent(getContext(), OrderActivity.class);
+                            startActivity(intent2);
+                        }else {
+                            DialogUtil.dialog(getContext(),"请登录后在操作","用户没有登录，请登录后在操作");
+                        }
                         break;
                 }
             }
@@ -188,6 +198,8 @@ public class MyFragment extends BaseFragment {
                             editor.putString("address",customer.getAddress());
                             editor.commit();
                         }else {
+                            DialogUtil.dialog(getContext(),"账户错误","账户信息已经修改，请重新登录");
+                            exitState();
                             AlertDialog.Builder d=new AlertDialog.Builder(getContext());
                             d.setTitle("网络加载失败");
                             d.setMessage("");
@@ -230,7 +242,7 @@ public class MyFragment extends BaseFragment {
         Log.d(TAG, "getPreferences: "+phone+name);
     }
     private void clearPreferences(){
-        if (name!=null) {
+        if (name!=null||password!=null) {
             AlertDialog.Builder builder1 = new AlertDialog.Builder(getContext());
             builder1.setTitle("退出登录");
             builder1.setMessage("是否退出该账户的登录信息？");
@@ -238,10 +250,6 @@ public class MyFragment extends BaseFragment {
             builder1.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    preferences = mContext.getSharedPreferences("customeruser", MODE_PRIVATE);
-                    SharedPreferences.Editor editor1 = preferences.edit();
-                    editor1.clear();
-                    editor1.commit();
                     exitState();
                 }
             });
@@ -259,6 +267,10 @@ public class MyFragment extends BaseFragment {
         }
     }
     private void exitState(){
+        preferences = mContext.getSharedPreferences("customeruser", MODE_PRIVATE);
+        SharedPreferences.Editor editor1 = preferences.edit();
+        editor1.clear();
+        editor1.commit();
         m15_fragment_my_btn_exit.setVisibility(View.GONE);
         m15_fragment_my_iv_usericon.setImageResource(R.drawable.icon);
         m15_fragment_my_txt_username.setText("暂无用户，点击登录");
@@ -275,11 +287,13 @@ public class MyFragment extends BaseFragment {
 
         private String[] info={
                 "位置设置",
-                "注册商家"
+                "注册商家",
+                "订单列表",
         };
         private Integer[] icon={
                 R.drawable.location,
                 R.drawable.zhuce,
+                R.drawable.order,
         };
 
         @Override

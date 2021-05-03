@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,6 +72,8 @@ public class UserInfoActivity extends Activity {
         getImage();
         Listener();
     }
+
+
     private void Listener(){
         //返回图标
         login_iv_back.setOnClickListener(new View.OnClickListener() {
@@ -94,8 +97,12 @@ public class UserInfoActivity extends Activity {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String value = input.getText().toString();
                         if (value.length()>0&&value.length()<=10) {
-                            Log.d("修改用户名", "onClick: " + value);
-                            setUserName(value);
+                            if (!value.equals(name)) {
+                                Log.d("修改用户名", "onClick: " + value);
+                                setUserName(value);
+                            }else {
+                                dialog("用户名相同","新的用户名不能和旧的用户名相同");
+                            }
                         }else {
                             dialog("输入限制","用户名不能为空，且长度限制在10字符内");
                         }
@@ -154,6 +161,70 @@ public class UserInfoActivity extends Activity {
                     }
                 });
                 alert.show();
+            }
+        });
+        userinfo_RL_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getPreferences();
+                if (phone!=null&&password!=null){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(UserInfoActivity.this);
+                    final AlertDialog dialog = builder.create();
+                    View dialogView = View.inflate(UserInfoActivity.this, R.layout.item_update_password, null);
+                    dialog.setView(dialogView);
+                    dialog.show();
+
+                    final EditText et_old_pwd = dialogView.findViewById(R.id.et_old_password);
+                    final EditText et_new_pwd = dialogView.findViewById(R.id.et_new_password);
+                    final EditText et_new_pwd1 = dialogView.findViewById(R.id.et_new_password1);
+
+                    final Button btn_submit = dialogView.findViewById(R.id.btn_login);
+                    final Button btn_cancel = dialogView.findViewById(R.id.btn_cancel);
+
+                    btn_submit.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String old_pwd = et_old_pwd.getText().toString();
+                            String new_pwd = et_new_pwd.getText().toString();
+                            String new_pwd1 = et_new_pwd1.getText().toString();
+                            if (TextUtils.isEmpty(old_pwd) || TextUtils.isEmpty(new_pwd)||TextUtils.isEmpty(new_pwd1)) {
+                                Toast.makeText(UserInfoActivity.this, "输入框不能为空!", Toast.LENGTH_SHORT).show();
+                            }else {
+                                if (new_pwd.length()>=6&&new_pwd1.length()<=18) {
+                                    if (new_pwd.equals(new_pwd1)) {
+                                        if (!old_pwd.equals(new_pwd)) {
+                                            if (old_pwd.equals(password)) {
+                                                setPassword(new_pwd);
+                                                dialog.dismiss();
+                                            } else {
+                                                Toast.makeText(UserInfoActivity.this, "旧密码输入错误", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }else {
+                                            Toast.makeText(UserInfoActivity.this, "新旧密码不能相同", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(UserInfoActivity.this, "新密码两次输入不一致", Toast.LENGTH_SHORT).show();
+                                    }
+                                }else {
+                                    Toast.makeText(UserInfoActivity.this, "新密码长度限制6~18位", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+//                            Toast.makeText(UserInfoActivity.this, "", Toast.LENGTH_SHORT).show();
+//                            dialog.dismiss();
+                        }
+                    });
+
+                    btn_cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            dialog.dismiss();
+                        }
+                    });
+
+                }else {
+                    DialogUtil.dialog(UserInfoActivity.this,"没有登录","请登录后再来操作");
+                }
             }
         });
 
@@ -263,7 +334,7 @@ public class UserInfoActivity extends Activity {
                         AlertDialog.Builder builder=new AlertDialog.Builder(UserInfoActivity.this);
                         builder.setCancelable(false);
                         builder.setTitle("加载失败");
-                        builder.setMessage(error+"，无法进行注册");
+                        builder.setMessage("错误："+error);
                         builder.setPositiveButton("退出",new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -365,7 +436,7 @@ public class UserInfoActivity extends Activity {
                         }
                         progressDialog.dismiss();
                         if (resuilt!=null){
-                           if (resuilt.getTitle().equals("修改成功")){
+                           if (resuilt.getTitle().equals("用户名修改成功")){
                                dialog(resuilt.getTitle(),"恭喜 "+resuilt.getMessage()+" 喜得新名字！");
                                SharedPreferences sharedPreferences=getSharedPreferences("customeruser", MODE_PRIVATE);
                                SharedPreferences.Editor editor=sharedPreferences.edit();
@@ -446,7 +517,7 @@ public class UserInfoActivity extends Activity {
                         }
                         progressDialog.dismiss();
                         if (resuilt!=null){
-                            if (resuilt.getTitle().equals("修改成功")){
+                            if (resuilt.getTitle().equals("头像修改成功")){
                                 dialog(resuilt.getTitle(),"恭喜 "+name+" 喜得新头像！");
                                 userinfo_sp_usericon.setSelection(iconlist.indexOf(resuilt.getMessage()));
                                 userinfo_btn_usericon.setVisibility(View.GONE);
@@ -525,8 +596,8 @@ public class UserInfoActivity extends Activity {
                         }
                         progressDialog.dismiss();
                         if (resuilt!=null){
-                            if (resuilt.getTitle().equals("修改成功")){
-                                dialog(resuilt.getTitle(),"恭喜 "+name+" 喜得新密码！");
+                            if (resuilt.getTitle().equals("密码修改成功")){
+                                dialog("密码修改成功","请牢记新的密码！");
                                 SharedPreferences sharedPreferences=getSharedPreferences("customeruser", MODE_PRIVATE);
                                 SharedPreferences.Editor editor=sharedPreferences.edit();
                                 editor.putString("password",resuilt.getMessage());

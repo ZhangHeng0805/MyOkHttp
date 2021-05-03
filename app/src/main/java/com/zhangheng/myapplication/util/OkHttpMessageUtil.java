@@ -12,6 +12,8 @@ public class OkHttpMessageUtil {
             msg="服务器连接超时";
         }else if (e.getMessage().startsWith("failed to connect to")||e.getMessage().startsWith("Failed to connect to")){
             msg="服务器连接失败";
+        }else if (e.getMessage().startsWith("unexpected end of stream on")){
+            msg="找不到服务器";
         }
         else {
             msg=e.getMessage();

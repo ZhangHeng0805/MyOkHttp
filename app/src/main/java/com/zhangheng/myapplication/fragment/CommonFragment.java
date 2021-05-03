@@ -32,15 +32,19 @@ import com.zhangheng.myapplication.bean.shop.submitgoods.SubmitGoods;
 import com.zhangheng.myapplication.bean.shop.submitgoods.goods;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
+import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhangheng.myapplication.view.RefreshListView;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import okhttp3.Call;
 
@@ -64,7 +68,8 @@ public class CommonFragment extends BaseFragment {
     private double pice=0;//已选商品的总金额
     private static final String TAG=CommonFragment.class.getSimpleName();
     private SharedPreferences preferences;
-    private String phone,name,password,address;
+    private String phone,name,password,address,submit_id;
+    SimpleDateFormat time_sdf=new SimpleDateFormat("yyyyMMddHHmmss");
 
     private ProgressDialog progressDialog,progressDialog1;
     @Override
@@ -155,8 +160,11 @@ public class CommonFragment extends BaseFragment {
                 String[] strings = new String[g.size()+5];
                 for (Goods goods:g){
                     com.zhangheng.myapplication.bean.shop.submitgoods.goods goods1 = new goods();
-                    goods1.setId(goods.getGoods_id());
+                    goods1.setGoods_id(goods.getGoods_id());
+                    goods1.setGoods_name(goods.getGoods_name());
+                    goods1.setGoods_price(goods.getGoods_price());
                     goods1.setNum(goods.getNum());
+                    goods1.setStore_id(goods.getStore_id());
                     goodslist.add(goods1);
                 }
                 for (int i=0;i<g.size();i++){
@@ -200,6 +208,9 @@ public class CommonFragment extends BaseFragment {
                             submitGoods.setPhone(phone);
                             if (address!=null&&!address.equals("地址为空")) {
                                 submitGoods.setAddress(address);
+                                submit_id=time_sdf.format(new Date())+"_"+UUID.randomUUID().toString().substring(0,8);
+                                submitGoods.setTime(TimeUtil.getSystemTime());
+                                submitGoods.setSubmit_id(submit_id);
                                 OkHttp2(submitGoods);
                             }else {
                                 DialogUtil.dialog(getContext(),"地址为空","请前往\"我的\"-\"设置地址\"进行设置后,再来操作");
@@ -216,9 +227,9 @@ public class CommonFragment extends BaseFragment {
                     }
                 });
                 builder.show();
-
             }
         });
+
         m115_fragment_common_cb_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -509,7 +520,7 @@ public class CommonFragment extends BaseFragment {
                         if (response.equals("成功")){
                             AlertDialog.Builder d=new AlertDialog.Builder(getContext());
                             d.setTitle("订单提交成功");
-                            d.setMessage("本次消费："+pice+"元");
+                            d.setMessage("订单编号："+submit_id+"\t\n本次消费："+pice+"元");
                             d.setPositiveButton("知道了", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {

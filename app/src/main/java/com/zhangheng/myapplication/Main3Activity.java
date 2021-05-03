@@ -49,14 +49,14 @@ import okhttp3.Call;
 public class Main3Activity extends Activity {
 
     private String[] permissions = {
-            Manifest.permission.INTERNET,
-            Manifest.permission.ACCESS_WIFI_STATE,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_BACKGROUND_LOCATION,
-            Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_PHONE_STATE,
+            Manifest.permission.INTERNET,//网络
+            Manifest.permission.ACCESS_WIFI_STATE,//写入状态
+            Manifest.permission.ACCESS_COARSE_LOCATION,//粗略定位
+            Manifest.permission.ACCESS_FINE_LOCATION,//精确定位
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION,//后台定位
+            Manifest.permission.ACCESS_NETWORK_STATE,//网络状态
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,//写外部存储器
+            Manifest.permission.READ_PHONE_STATE,//读取手机状态
     };
     private String getPhone,model,sdk,release,versionCode;
 
@@ -336,7 +336,6 @@ public class Main3Activity extends Activity {
     }
 
     //权限检查
-
     //是否需要检测后台定位权限，设置为true时，如果用户没有给予后台定位权限会弹窗提示
     private boolean needCheckBackLocation = false;
     //如果设置了target > 28，需要增加这个权限，否则不会弹出"始终允许"这个选择框

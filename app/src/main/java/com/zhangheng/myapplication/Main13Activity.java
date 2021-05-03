@@ -57,12 +57,12 @@ public class Main13Activity extends AppCompatActivity implements View.OnClickLis
 
     private ScrollView m13_scrollview;
 
-    public static final int MSG_CONNECT = 0x001;
-    public static final int MSG_RECEIVE = 0x002;
-    public static final int MSG_SEND = 0x003;
+    private static final int MSG_CONNECT = 0x001;
+    private static final int MSG_RECEIVE = 0x002;
+    private static final int MSG_SEND = 0x003;
 
-    public static final String DATA_RECEIVE = "data_receive";
-    public static final String DATA_SEND = "data_send";
+    private static final String DATA_RECEIVE = "data_receive";
+    private static final String DATA_SEND = "data_send";
 
 
 
@@ -332,7 +332,6 @@ public class Main13Activity extends AppCompatActivity implements View.OnClickLis
             String data="";
             if (cause.getMessage().startsWith("Connection timed out")){
                 data="聊天连接超时";
-
             }else if (cause.getMessage().indexOf("Connection reset by peer")>=0){
                 data="聊天服务器断开连接，请退出!";
             }else if (cause.getMessage().indexOf("Connection refused")>=0){
@@ -354,13 +353,13 @@ public class Main13Activity extends AppCompatActivity implements View.OnClickLis
         OkHttpUtils
                 .get()
                 .url(url)
+                .addParams("port","1")
                 .build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         Log.e("chatconfig错误：",e.getMessage());
                     }
-
                     @Override
                     public void onResponse(String response, int id) {
                         Gson gson=new Gson();

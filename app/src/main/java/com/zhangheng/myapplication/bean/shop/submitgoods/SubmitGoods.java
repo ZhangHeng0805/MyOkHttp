@@ -1,9 +1,10 @@
 package com.zhangheng.myapplication.bean.shop.submitgoods;
 
 import java.util.List;
-import java.util.Map;
 
 public class SubmitGoods {
+
+    private String submit_id;
 
     private String name;
 
@@ -15,6 +16,16 @@ public class SubmitGoods {
 
     private double count_price;
 
+    private String time;
+
+
+    public String getSubmit_id() {
+        return submit_id;
+    }
+
+    public void setSubmit_id(String submit_id) {
+        this.submit_id = submit_id;
+    }
 
     public String getName() {
         return name;
@@ -54,5 +65,13 @@ public class SubmitGoods {
 
     public void setCount_price(double count_price) {
         this.count_price = count_price;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
     }
 }

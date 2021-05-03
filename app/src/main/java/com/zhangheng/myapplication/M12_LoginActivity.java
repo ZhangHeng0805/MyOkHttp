@@ -417,8 +417,7 @@ public class M12_LoginActivity extends AppCompatActivity {
                                     editor2.commit();
                                     //Log.d("check","0"+sharedPreferences1.getString("Check","0"));
 
-                                }
-                                Intent intent = new Intent();
+                                }Intent intent = new Intent();
                                 intent.putExtra("name", et1.getText().toString().trim());
                                 intent.setClass(M12_LoginActivity.this, Main12Activity.class);
                                 startActivity(intent);
