@@ -53,7 +53,6 @@
             android:name=".service.NettyService"
             android:enabled="true"
             android:exported="true" />
-
         <activity
             android:name=".Main13Activity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -65,7 +64,8 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
-        </activity> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
+        </activity>
+        <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService" />
 
         <provider

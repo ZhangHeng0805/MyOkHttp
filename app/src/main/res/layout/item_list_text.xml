@@ -8,5 +8,4 @@
     android:textColor="@color/black"
     android:background="#ECF5F4"
     android:padding="15dp">
-
 </TextView>

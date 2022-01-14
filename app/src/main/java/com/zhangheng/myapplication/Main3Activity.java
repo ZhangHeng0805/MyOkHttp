@@ -108,10 +108,12 @@ public class Main3Activity extends Activity {
                 // for Activity#requestPermissions for more details.
                 return;
             }
-            if (phoneManager.getLine1Number().startsWith("+86")){
-                getPhone=phoneManager.getLine1Number().replace("+86","");
-            }else {
-                getPhone = phoneManager.getLine1Number();//得到电话号码
+            if(phoneManager.getLine1Number()!=null) {
+                if (phoneManager.getLine1Number().startsWith("+86")) {
+                    getPhone = phoneManager.getLine1Number().replace("+86", "");
+                } else {
+                    getPhone = phoneManager.getLine1Number();//得到电话号码
+                }
             }
 //            String getPhone = phoneManager.getLine1Number();//得到电话号码
         versionCode = PhoneSystem.getVersionCode(this);
@@ -203,6 +205,10 @@ public class Main3Activity extends Activity {
         WifiInfo info = wifi.getConnectionInfo();
         return info.getMacAddress();
     }
+
+    /**
+     * 查询更新
+     */
     public void getupdatelist(){
         String url=getResources().getString(R.string.zhangheng_url)
                 +"filelist/updatelist/"+getResources().getString(R.string.app_name);
@@ -217,11 +223,7 @@ public class Main3Activity extends Activity {
         OkHttpUtils
                 .post()
                 .url(url)
-                .addParams("phonenum", getPhone)
-                .addParams("model", model)
-                .addParams("sdk", sdk)
-                .addParams("release", release)
-                .addParams("time", TimeUtil.getSystemTime())
+                .params(map)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -229,7 +231,6 @@ public class Main3Activity extends Activity {
                         String error = OkHttpMessageUtil.error(e);
                         Toast.makeText(Main3Activity.this,"错误："+error,Toast.LENGTH_SHORT).show();
                         m3_tv_service.setText(error);
-
                         Log.e("错误：",e.getMessage());
                     }
 
@@ -273,6 +274,12 @@ public class Main3Activity extends Activity {
                     }
                 });
     }
+
+    /**
+     * 应用版本信息格式化
+     * @param name
+     * @return
+     */
     public String appversion(String name){
         String[] strings=name.split("/");
         String appname=strings[strings.length-1].replace(".apk","");
@@ -285,6 +292,11 @@ public class Main3Activity extends Activity {
         }
         return app;
     }
+
+    /**
+     * 展示更新提示弹窗
+     * @param name
+     */
     public void showUpdate(final String name){
         String app=appversion(name);
         builder=new AlertDialog.Builder(this)
