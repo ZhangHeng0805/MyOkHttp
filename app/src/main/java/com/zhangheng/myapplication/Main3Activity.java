@@ -82,7 +82,7 @@ public class Main3Activity extends Activity {
             "14.购物软件框架（自制服务器）",//Main15Activity
             "15.自制下拉刷新的ListView（测试）",//Test1Activity
             "16.手机通讯录",//Main16Activity
-            "17.手机扫码",//
+            "17.手机扫码",//Main17Activity
     };
 
     @Override
@@ -197,7 +197,7 @@ public class Main3Activity extends Activity {
                         intent=new Intent(Main3Activity.this, Test1Activity.class);
                         startActivity(intent);
                         break;
-                    case 15:
+                    case 15://手机通讯录
                         intent=new Intent(Main3Activity.this, Main16Activity.class);
                         startActivity(intent);
                         break;
