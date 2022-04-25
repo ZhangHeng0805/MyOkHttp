@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.google.zxing.integration.android.IntentIntegrator;
 import com.zhangheng.myapplication.Object.Resuilt;
 import com.zhangheng.myapplication.activity.Test1Activity;
 import com.zhangheng.myapplication.getphoneMessage.Address;
@@ -64,22 +65,24 @@ public class Main3Activity extends Activity {
     private TextView m3_tv_service, m3_tv_ipAddress;
     private AlertDialog.Builder builder;
     private SharedPreferences sharedPreferences;
-    private String[] strArr = new String[]{
-            "1.原生OkHttp的Get和Post请求文本数据",//1
-            "2.使用OkHttpUtil的Post提交文本数据",//2
-            "4.使用OkHttpUtil下载大文件",//4
-            "5.上传文件和检索本地文件",//5
-            "6.请求单张图片并显示",//6
-            "7.查询天气列表（API）",//7
-            "8.生成二维码（API）",//8
-            "9.新华字典查询（API）",//9
-            "10.图书电商查询（API）",//10
-            "11.查询文件列表并下载（自制服务器）",//11
-            "12.自制地图（高德地图）",//12
-            "13.自制网络聊天室",//13
-            "14.自制聊天室(无效)",//14
-            "15.购物软件框架（自制服务器）",
-            "16.自制下拉刷新的ListView（测试）",
+    private String[] strTitle = new String[]{
+            "1.原生OkHttp的Get和Post请求文本数据",//MainActivity
+            "2.使用OkHttpUtil的Post提交文本数据",//Main2Activity
+            "3.使用OkHttpUtil下载大文件",//Main4Activity
+            "4.上传文件和检索本地文件",//Main5Activity
+            "5.请求单张图片并显示",//Main6Activity
+            "6.查询天气列表（API）",//Main7Activity
+            "7.生成二维码（API）",//Main8Activity
+            "8.新华字典查询（API）",//Main9Activity
+            "9.图书电商查询（API）",//Main10Activity
+            "10.查询文件列表并下载（自制服务器）",//Main11Activity
+            "11.自制地图（高德地图）",//M12_LoginActivity
+            "12.自制网络聊天室",//Main13Activity
+            "13.自制聊天室(无效)",//Main14Activity
+            "14.购物软件框架（自制服务器）",//Main15Activity
+            "15.自制下拉刷新的ListView（测试）",//Test1Activity
+            "16.手机通讯录",//Main16Activity
+            "17.手机扫码",//
     };
 
     @Override
@@ -126,7 +129,7 @@ public class Main3Activity extends Activity {
     }
     private void setAdapter(){
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                Main3Activity.this, R.layout.item_list_text, strArr);
+                Main3Activity.this, R.layout.item_list_text, strTitle);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -194,12 +197,25 @@ public class Main3Activity extends Activity {
                         intent=new Intent(Main3Activity.this, Test1Activity.class);
                         startActivity(intent);
                         break;
+                    case 15:
+                        intent=new Intent(Main3Activity.this, Main16Activity.class);
+                        startActivity(intent);
+                        break;
+                    case 16://手机扫码
+                        intent=new Intent(Main3Activity.this, Main17Activity.class);
+                        startActivity(intent);
+                        break;
+
 
                 }
             }
         });
     }
 
+    private void startIntent(Context context){
+        Intent intent=new Intent(Main3Activity.this, Main17Activity.class);
+        startActivity(intent);
+    }
     public String getLocalMacAddress() {
         WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = wifi.getConnectionInfo();
@@ -233,7 +249,6 @@ public class Main3Activity extends Activity {
                         m3_tv_service.setText(error);
                         Log.e("错误：",e.getMessage());
                     }
-
                     @Override
                     public void onResponse(String response, int id) {
                         Resuilt resuilt=null;

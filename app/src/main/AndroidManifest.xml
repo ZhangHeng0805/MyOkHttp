@@ -13,6 +13,8 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 声明后台定位权限 -->
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <!--
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -31,12 +33,20 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".fragment.MyActivity.OrderActivity"></activity>
+        <activity android:name=".Main17Activity"></activity>
+        <activity android:name=".Main16Activity" />
+        <activity android:name=".fragment.MyActivity.OrderActivity" />
         <activity android:name=".fragment.MyActivity.UserInfoActivity" />
         <activity android:name=".fragment.MyActivity.Location_Activity" />
         <activity android:name=".fragment.MyActivity.Registered_Activity" />
         <activity android:name=".fragment.MyActivity.Login_Activity" />
         <activity android:name=".activity.Test1Activity" />
+
+        <!-- 调整二维码扫描界面为竖屏 -->
+        <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="portrait"
+            tools:replace="screenOrientation" />
         <activity
             android:name=".Main15Activity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
@@ -53,6 +63,7 @@
             android:name=".service.NettyService"
             android:enabled="true"
             android:exported="true" />
+
         <activity
             android:name=".Main13Activity"
             android:configChanges="orientation|screenSize|keyboardHidden"
@@ -64,8 +75,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
-        </activity>
-        <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
+        </activity> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService" />
 
         <provider

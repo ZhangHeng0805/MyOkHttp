@@ -15,7 +15,7 @@
     android:text="点击跳过"
     android:background="@color/black_10"/>
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
@@ -25,12 +25,37 @@
         android:layout_height="200dp"
         android:src="@mipmap/logo"/>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:textSize="25dp"
         android:textStyle="bold"
         android:text="星曦向荣的工具应用-MyOkHttp"
         android:textColor="@color/black"
         />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="vertical"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textIsSelectable="true"
+            android:textColor="@color/blue"
+            android:text="作者：https://github.com/ZhangHeng0805"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/zhangheng_url"
+            android:textStyle="italic"
+            android:textIsSelectable="true"
+            />
     </LinearLayout>
 </RelativeLayout>
