@@ -18,6 +18,7 @@
 * 16.手机通讯录
 * 17.手机扫码
 > 说明：本项目的功能列表主页界面为```Main3Activity```
+> * 注意：本项目中res/value/string.xml文件中因涉及秘钥，所以没有上传该文件
 ## 本项目的Android的安装[APP下载](https://github.com/ZhangHeng0805/MyOkHttp/releases/download/V1-4.30/MyOkHttp_V1-4.30.apk)
 * 1、使用原生的OkHttp完成请求和提交文本数据
 * 2、使用Okhttputils完成大文件的下载，上传文件和分类检索本地文件，请求单张图片并显示
