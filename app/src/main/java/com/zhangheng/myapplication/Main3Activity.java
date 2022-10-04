@@ -1,12 +1,9 @@
 package com.zhangheng.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,12 +25,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.google.zxing.integration.android.IntentIntegrator;
 import com.zhangheng.myapplication.Object.Resuilt;
 import com.zhangheng.myapplication.activity.Test1Activity;
-import com.zhangheng.myapplication.getphoneMessage.Address;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
-import com.zhangheng.myapplication.getphoneMessage.RegisterMessage;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -72,7 +66,7 @@ public class Main3Activity extends Activity {
             "4.上传文件和检索本地文件",//Main5Activity
             "5.请求单张图片并显示",//Main6Activity
             "6.查询天气列表（API）",//Main7Activity
-            "7.生成二维码（API）",//Main8Activity
+            "7.生成二维码",//Main8Activity
             "8.新华字典查询（API）",//Main9Activity
             "9.图书电商查询（API）",//Main10Activity
             "10.查询文件列表并下载（自制服务器）",//Main11Activity
@@ -134,7 +128,7 @@ public class Main3Activity extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                Toast.makeText(Main3Activity.this,"点击："+i,Toast.LENGTH_SHORT).show();
+                Toast.makeText(Main3Activity.this,"点击：",Toast.LENGTH_SHORT).show();
                 Intent intent;
                 switch (i){
                     case 0:

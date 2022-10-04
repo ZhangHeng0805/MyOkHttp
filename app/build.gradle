@@ -3,6 +3,16 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 29
     buildToolsVersion "30.0.2"
+    //通过exclude去除重复的文件
+    packagingOptions {
+        exclude 'META-INF/INDEX.LIST' //新添加
+        exclude 'META-INF/rxjava.properties'
+//        exclude 'com.google.zxing:core:3.3.0' //新添加
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
@@ -15,7 +25,14 @@ android {
         versionCode 1
         versionName "4.30"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // 显式声明支持注解
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -47,7 +64,11 @@ dependencies {
     implementation files('libs/Android_Map3D_SDK_V7.8.0_20201231.jar')
     implementation files('libs/Volley.jar')
     // https://mvnrepository.com/artifact/io.netty/netty-all
-    implementation group: 'io.netty', name: 'netty-all', version: '4.1.59.Final'
-    implementation 'com.lzy.widget:imagepicker:0.6.1'  //指定版本
-    implementation 'com.journeyapps:zxing-android-embedded:3.5.0'//手机扫码
+    implementation 'io.netty:netty-all:4.1.59.Final'
+    implementation 'com.lzy.widget:imagepicker:0.6.1'
+    //指定版本
+    implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
+    //手机扫码
+    //    implementation files('libs/ZH_Utils.jar')
+    implementation files('lib/ZH_Utils.jar')
 }
