@@ -1,10 +1,5 @@
 package com.zhangheng.myapplication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -19,7 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.zhangheng.myapplication.Object.PhoneDto;
+import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.m16.PhoneUtil;
 
 import java.util.List;
@@ -63,6 +64,7 @@ public class Main16Activity extends AppCompatActivity {
         lv_main_list = (ListView) findViewById(R.id.m16_lv_main_list);
         MyAdapter myAdapter = new MyAdapter();
         lv_main_list.setAdapter(myAdapter);
+        DialogUtil.dialog(this,"通讯录联系人数","一共找到 "+phoneDtos.size()+" 个联系人");
         //给listview增加点击事件
       lv_main_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         @Override

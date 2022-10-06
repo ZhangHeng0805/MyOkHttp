@@ -71,4 +71,8 @@ dependencies {
     //手机扫码
     //    implementation files('libs/ZH_Utils.jar')
     implementation files('lib/ZH_Utils.jar')
+    //html解析
+    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.15.3'
+
 }

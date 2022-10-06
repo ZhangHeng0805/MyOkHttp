@@ -33,7 +33,8 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Main17Activity_1"></activity>
+        <activity android:name=".Main18Activity"></activity>
+        <activity android:name=".Main17Activity_1" />
         <activity android:name=".Main17Activity" />
         <activity android:name=".Main16Activity" />
         <activity android:name=".fragment.MyActivity.OrderActivity" />

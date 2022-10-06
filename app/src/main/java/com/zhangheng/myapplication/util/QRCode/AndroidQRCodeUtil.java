@@ -29,7 +29,7 @@ public class AndroidQRCodeUtil {
      */
     @Nullable
     public static Bitmap createQRCodeBitmap(String content, int width, int height){
-        return createQRCodeBitmap(content, width, height, "UTF-8", "H", "2", Color.BLACK, Color.WHITE);
+        return createQRCodeBitmap(content, width, height, "UTF-8", "H", "1", Color.BLACK, Color.WHITE);
     }
 
     /**
@@ -38,8 +38,8 @@ public class AndroidQRCodeUtil {
      * @param content 字符串内容
      * @param width 位图宽度,要求>=0(单位:px)
      * @param height 位图高度,要求>=0(单位:px)
-     * @param character_set 字符集/字符转码格式 (支持格式:{@link CharacterSetECI })。传null时,zxing源码默认使用 "ISO-8859-1"
-     * @param error_correction 容错级别 (支持级别:{@link ErrorCorrectionLevel })。传null时,zxing源码默认使用 "L"
+     * @param character_set 字符集/字符转码格式 (支持格式:{@link  })。传null时,zxing源码默认使用 "ISO-8859-1"
+     * @param error_correction 容错级别 (支持级别:{@link  })。传null时,zxing源码默认使用 "L"
      * @param margin 空白边距 (可修改,要求:整型且>=0), 传null时,zxing源码默认使用"4"。
      * @param color_black 黑色色块的自定义颜色值
      * @param color_white 白色色块的自定义颜色值

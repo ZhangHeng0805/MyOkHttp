@@ -59,25 +59,47 @@ public class Main3Activity extends Activity {
     private TextView m3_tv_service, m3_tv_ipAddress;
     private AlertDialog.Builder builder;
     private SharedPreferences sharedPreferences;
-    private String[] strTitle = new String[]{
-            "1.原生OkHttp的Get和Post请求文本数据",//MainActivity
-            "2.使用OkHttpUtil的Post提交文本数据",//Main2Activity
-            "3.使用OkHttpUtil下载大文件",//Main4Activity
-            "4.上传文件和检索本地文件",//Main5Activity
+    private final String[] strTitle = new String[]{
+//            "1.原生OkHttp的Get和Post请求文本数据",//MainActivity
+//            "2.使用OkHttpUtil的Post提交文本数据",//Main2Activity
+            "3.使用OkHttpUtil下载文件",//Main4Activity
+//            "4.上传文件和检索本地文件",//Main5Activity
             "5.请求单张图片并显示",//Main6Activity
             "6.查询天气列表（API）",//Main7Activity
             "7.生成二维码",//Main8Activity
             "8.新华字典查询（API）",//Main9Activity
             "9.图书电商查询（API）",//Main10Activity
-            "10.查询文件列表并下载（自制服务器）",//Main11Activity
+//            "10.查询文件列表并下载（自制服务器）",//Main11Activity
             "11.自制地图（高德地图）",//M12_LoginActivity
-            "12.自制网络聊天室",//Main13Activity
-            "13.自制聊天室(无效)",//Main14Activity
-            "14.购物软件框架（自制服务器）",//Main15Activity
-            "15.自制下拉刷新的ListView（测试）",//Test1Activity
+//            "12.自制网络聊天室",//Main13Activity
+//            "13.自制聊天室(无效)",//Main14Activity
+//            "14.购物软件框架（自制服务器）",//Main15Activity
+//            "15.自制下拉刷新的ListView（测试）",//Test1Activity
             "16.手机通讯录",//Main16Activity
             "17.手机扫码",//Main17Activity
+            "18.音乐资源爬虫",//Main18Activity
     };
+    private final static Map<Integer,Class<?>> contextMap=new HashMap<>();
+    static {
+        contextMap.put(1,MainActivity.class);
+        contextMap.put(2,Main2Activity.class);
+        contextMap.put(3,Main4Activity.class);
+        contextMap.put(4,Main5Activity.class);
+        contextMap.put(5,Main6Activity.class);
+        contextMap.put(6,Main7Activity.class);
+        contextMap.put(7,Main8Activity.class);
+        contextMap.put(8,Main9Activity.class);
+        contextMap.put(9,Main10Activity.class);
+        contextMap.put(10,Main11Activity.class);
+        contextMap.put(11,M12_LoginActivity.class);
+        contextMap.put(12,Main13Activity.class);
+        contextMap.put(13,Main14Activity.class);
+        contextMap.put(14,Main15Activity.class);
+        contextMap.put(15,Test1Activity.class);
+        contextMap.put(16,Main16Activity.class);
+        contextMap.put(17,Main17Activity.class);
+        contextMap.put(18,Main18Activity.class);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,79 +150,23 @@ public class Main3Activity extends Activity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(Main3Activity.this,"点击：",Toast.LENGTH_SHORT).show();
-                Intent intent;
-                switch (i){
-                    case 0:
-                        intent=new Intent(Main3Activity.this,MainActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 1:
-                        intent=new Intent(Main3Activity.this,Main2Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 2:
-                        intent=new Intent(Main3Activity.this,Main4Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 3:
-                        intent=new Intent(Main3Activity.this,Main5Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 4:
-                        intent=new Intent(Main3Activity.this,Main6Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 5:
-                        intent=new Intent(Main3Activity.this,Main7Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 6:
-                        intent=new Intent(Main3Activity.this,Main8Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 7:
-                        intent=new Intent(Main3Activity.this,Main9Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 8:
-                        intent=new Intent(Main3Activity.this,Main10Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 9:
-                        intent=new Intent(Main3Activity.this,Main11Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 10:
-                        intent=new Intent(Main3Activity.this,M12_LoginActivity.class);
-                        startActivity(intent);
-                        break;
-                    case 11:
-                        intent=new Intent(Main3Activity.this,Main13Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 12:
-                        intent=new Intent(Main3Activity.this,Main14Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 13:
-                        intent=new Intent(Main3Activity.this,Main15Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 14:
-                        intent=new Intent(Main3Activity.this, Test1Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 15://手机通讯录
-                        intent=new Intent(Main3Activity.this, Main16Activity.class);
-                        startActivity(intent);
-                        break;
-                    case 16://手机扫码
-                        intent=new Intent(Main3Activity.this, Main17Activity.class);
-                        startActivity(intent);
-                        break;
+                Intent intent = null;
+                ArrayAdapter<String> adapter1 = (ArrayAdapter<String>) adapterView.getAdapter();
+                String item = adapter1.getItem(i);
+                String[] split = item.split("\\.");
 
-
+                Integer integer=0;
+                if (split.length>=2) {
+                    integer = Integer.valueOf(split[0]);
+                }else {
+                    new RuntimeException("列表strTitle标题格式错误！格式为：数字.标题");
+                }
+                Class<?> aClass = Main3Activity.contextMap.get(integer);
+                if (aClass!=null){
+                    intent=new Intent(Main3Activity.this,aClass);
+                }
+                if (intent!=null) {
+                    startActivity(intent);
                 }
             }
         });

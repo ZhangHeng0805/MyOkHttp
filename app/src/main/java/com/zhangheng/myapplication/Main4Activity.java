@@ -1,9 +1,5 @@
 package com.zhangheng.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -18,33 +14,43 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.zhangheng.file.FiletypeUtil;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
+import com.zhangheng.myapplication.util.DialogUtil;
+import com.zhangheng.util.FormatUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 import okhttp3.Call;
 
 public class Main4Activity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText editText,editText_name;
+    private EditText editText, editText_name;
     private Button button;
     private ProgressBar progressBar;
-    private TextView textView,textView_pro;
+    private TextView textView, textView_pro;
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE };
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main4);
-        editText= findViewById(R.id.et_downfile_url);
-        editText_name= findViewById(R.id.et_downfile_name);
-        button= findViewById(R.id.btn_downfile);
-        progressBar= findViewById(R.id.progress_downfile);
-        textView= findViewById(R.id.text_downfile);
-        textView_pro= findViewById(R.id.text_progress_downfile);
+        editText = findViewById(R.id.et_downfile_url);
+        editText_name = findViewById(R.id.et_downfile_name);
+        button = findViewById(R.id.btn_downfile);
+        progressBar = findViewById(R.id.progress_downfile);
+        textView = findViewById(R.id.text_downfile);
+        textView_pro = findViewById(R.id.text_progress_downfile);
         button.setOnClickListener(this);
 
 
@@ -57,20 +63,26 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 String url = editText.getText().toString();
-                String filename = url.substring(url.indexOf("//")+2)/*.replace("/","_")*/;
-                String[] s=filename.split("/");
-                editText_name.setText(s[s.length-1]);
-                if (editText_name.getText().toString().length()>65){
-                    editText_name.setText("");
-                    Toast ts=null;
-                    Toast toast=Toast.makeText(Main4Activity.this, "文件名过长", Toast.LENGTH_SHORT);
-                    if (ts==null){
-                        ts=toast;
-                    }else {
-                        ts.cancel();
-                        ts=toast;
+                if (FormatUtil.isWebUrl(url)) {
+                    String filename = url.substring(url.indexOf("//") + 2);
+                    String[] s = filename.split("/");
+                    try {
+                        editText_name.setText(URLDecoder.decode(s[s.length - 1],"UTF-8"));
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
                     }
-                    ts.show();
+                    if (editText_name.getText().toString().length() > 65) {
+                        editText_name.setText("");
+                        Toast ts = null;
+                        Toast toast = Toast.makeText(Main4Activity.this, "文件名过长", Toast.LENGTH_SHORT);
+                        if (ts == null) {
+                            ts = toast;
+                        } else {
+                            ts.cancel();
+                            ts = toast;
+                        }
+                        ts.show();
+                    }
                 }
 
             }
@@ -83,24 +95,24 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
     }
 
     /*
-    * 下载大文件
-    * */
+     * 下载大文件
+     * */
 
-    public void downloadFile(String url,String filename){
+    public void downloadFile(String url, String filename) {
 //        ActivityCompat.requestPermissions(Main4Activity.this,PERMISSIONS_STORAGE,100);
         boolean b = ReadAndWrite.RequestPermissions(this, PERMISSIONS_STORAGE[1]);//写入权限
         if (b) {
+            String fileType = FiletypeUtil.getFileType(filename);
+            String destFileDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getResources().getString(R.string.app_name) + "/" + fileType;
             OkHttpUtils
                     .get()
                     .url(url)
                     .build()
-                    .execute(new FileCallBack(Environment.getExternalStorageDirectory().getAbsolutePath(), filename) {
+                    .execute(new FileCallBack(destFileDir, filename) {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             e.printStackTrace();
                             textView.setText("错误：" + e.getMessage());
-
-                            
                         }
 
                         @Override
@@ -119,7 +131,7 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
                             }
                         }
                     });
-        }else {
+        } else {
             Toast.makeText(Main4Activity.this, "没有权限，请先获取权限", Toast.LENGTH_SHORT).show();
 
         }
@@ -127,23 +139,28 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_downfile:
                 progressBar.setProgress(0);
                 String url = editText.getText().toString();
-                if (url.length()<4){
-                    Toast.makeText(Main4Activity.this,"输入内容过短",Toast.LENGTH_SHORT).show();
-
+//                if (url.length()<4){
+//                    Toast.makeText(Main4Activity.this,"输入内容过短",Toast.LENGTH_SHORT).show();
+//
+//                }
+                if (FormatUtil.isWebUrl(url)) {
+                    String filename = editText_name.getText().toString();
+                    if (filename.length() < 3) {
+//                        filename = url.substring(url.indexOf("//") + 2).replace("/", "_");
+                        filename=url.substring(url.lastIndexOf("/")+1);
+                    }
+                    downloadFile(url, filename);
+                }else {
+                    DialogUtil.dialog(this,"下载地址错误","请输入正确的下载地址");
                 }
-                String filename=editText_name.getText().toString();
-                if (filename.length()<3) {
-                    filename= url.substring(url.indexOf("//") + 2).replace("/", "_");
-                }
-                //                String filename = "1.png";
-                downloadFile(url,filename);
                 break;
         }
     }
+
     private void requestMyPermissions() {//动态申请读写权限
 
         if (ContextCompat.checkSelfPermission(this,

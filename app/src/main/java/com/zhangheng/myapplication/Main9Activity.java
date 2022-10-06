@@ -1,7 +1,5 @@
 package com.zhangheng.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -9,8 +7,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.Gson;
 import com.zhangheng.myapplication.bean.dictionary.DictionaryRootBean;
+import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -51,11 +52,13 @@ public class Main9Activity extends AppCompatActivity {
     }
 
     private void getDictionary(String word){
+        DialogUtil dialogUtil = new DialogUtil(this);
         String url="http://v.juhe.cn/xhzd/query";
         String key=getResources().getString(R.string.key_dictionary);
         Map<String,String> map=new HashMap<>();
         map.put("key",key);
         map.put("word",word);
+        dialogUtil.createProgressDialog("查询中...");
         OkHttpUtils
                 .get()
                 .url(url)
@@ -64,6 +67,7 @@ public class Main9Activity extends AppCompatActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        dialogUtil.closeProgressDialog();
                         Toast.makeText(Main9Activity.this,"错误"+e.getMessage(),Toast.LENGTH_SHORT).show();
                     }
                     @Override
@@ -104,6 +108,7 @@ public class Main9Activity extends AppCompatActivity {
                         }else {
                             Toast.makeText(Main9Activity.this,"错误码："+bean.getError_code(),Toast.LENGTH_SHORT).show();
                         }
+                        dialogUtil.closeProgressDialog();
                     }
                 });
     }

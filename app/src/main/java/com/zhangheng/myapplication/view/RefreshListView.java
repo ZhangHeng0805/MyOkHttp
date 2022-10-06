@@ -15,8 +15,6 @@ import com.zhangheng.myapplication.R;
 
 import java.text.SimpleDateFormat;
 
-import static android.widget.NumberPicker.OnScrollListener.SCROLL_STATE_IDLE;
-
 public class RefreshListView extends ListView implements AbsListView.OnScrollListener {
 
 
@@ -65,10 +63,8 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
     private void init() {
         initHeaderView();
         initAnimation();
-
-        initFooterView();
-
         setOnScrollListener(this);
+        initFooterView();
     }
 
 
@@ -125,7 +121,7 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
         mHeaderView.measure(0, 0);// 按照设置的规则测量
 
         mHeaderViewHeight = mHeaderView.getMeasuredHeight();
-        System.out.println(" measuredHeight: " + mHeaderViewHeight);
+//        System.out.println(" measuredHeight: " + mHeaderViewHeight);
 
 // 设置内边距, 可以隐藏当前控件 , -自身高度
         mHeaderView.setPadding(0, -mHeaderViewHeight, 0, 0);
@@ -141,12 +137,12 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 downY = ev.getY();
-                System.out.println("downY: " + downY);
+//                System.out.println("downY: " + downY);
 
                 break;
             case MotionEvent.ACTION_MOVE:
                 moveY = ev.getY();
-                System.out.println("moveY: " + moveY);
+//                System.out.println("moveY: " + moveY);
 // 如果是正在刷新中, 就执行父类的处理
                 if(currentState == REFRESHING){
                     return super.onTouchEvent(ev);
@@ -163,12 +159,12 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
                     mHeaderView.setPadding(0, paddingTop, 0, 0);
 
                     if(paddingTop >= 0 && currentState != RELEASE_REFRESH){// 头布局完全显示
-                        System.out.println("切换成释放刷新模式: " + paddingTop);
+//                        System.out.println("切换成释放刷新模式: " + paddingTop);
 // 切换成释放刷新模式
                         currentState = RELEASE_REFRESH;
                         updateHeader(); // 根据最新的状态值更新头布局内容
                     }else if(paddingTop < 0 && currentState != PULL_TO_REFRESH){ // 头布局不完全显示
-                        System.out.println("切换成下拉刷新模式: " + paddingTop);
+//                        System.out.println("切换成下拉刷新模式: " + paddingTop);
 // 切换成下拉刷新模式
                         currentState = PULL_TO_REFRESH;
                         updateHeader(); // 根据最新的状态值更新头布局内容
@@ -244,6 +240,7 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
 // 加载更多
             mFooterView.setPadding(0, -mFooterViewHeight, 0, 0);
             isLoadingMore = false;
+            setSelection(Integer.MAX_VALUE);
         }else {
 // 下拉刷新
             currentState = PULL_TO_REFRESH;
@@ -254,8 +251,8 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
             String time = getTime();
             mLastRefreshTime.setText("最进刷新时间: " + time);
         }
-
     }
+
 
 
     private String getTime() {
@@ -283,7 +280,7 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
 // 状态更新的时候
-        System.out.println("scrollState: " + scrollState);
+//        System.out.println("scrollState: " + scrollState);
         if(isLoadingMore){
             return; // 已经在加载更多.返回
         }
@@ -291,10 +288,10 @@ public class RefreshListView extends ListView implements AbsListView.OnScrollLis
 // 最新状态是空闲状态, 并且当前界面显示了所有数据的最后一条. 加载更多
         if(scrollState == SCROLL_STATE_FLING && getLastVisiblePosition() >= (getCount() - 1)){
             isLoadingMore = true;
-            System.out.println("scrollState: 开始加载更多");
+//            System.out.println("scrollState: 开始加载更多");
             mFooterView.setPadding(0, 0, 0, 0);
 
-            setSelection(getCount()); // 跳转到最后一条, 使其显示出加载更多.
+            setSelection(Integer.MAX_VALUE); // 跳转到最后一条, 使其显示出加载更多.
 
 
             if(mListener != null){

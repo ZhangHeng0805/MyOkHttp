@@ -30,7 +30,7 @@
         android:gravity="center"
         android:textSize="25dp"
         android:textStyle="bold"
-        android:text="星曦向荣的工具应用-MyOkHttp"
+        android:text="@string/hello"
         android:textColor="@color/black"
         />
     </LinearLayout>
@@ -48,7 +48,7 @@
             android:textStyle="bold"
             android:textIsSelectable="true"
             android:textColor="@color/blue"
-            android:text="作者：https://github.com/ZhangHeng0805"
+            android:text="@string/author"
             />
         <TextView
             android:layout_width="wrap_content"

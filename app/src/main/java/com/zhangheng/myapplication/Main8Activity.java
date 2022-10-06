@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.BinaryBitmap;
+import com.google.zxing.DecodeHintType;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.RGBLuminanceSource;
@@ -33,14 +34,16 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
+import cn.hutool.core.util.StrUtil;
 import okhttp3.Call;
 
 public class Main8Activity extends AppCompatActivity {
     private EditText m8_et_message;
     private Button m8_btn_submit;
-    private int Width ;
+    private int Width;
     private ImageView m8_image;
 
     private RadioGroup m8_RG_select;
@@ -49,7 +52,7 @@ public class Main8Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main8);
-        Width=(int) (getWindowManager().getDefaultDisplay().getWidth()* 0.95);
+        Width = (int) (getWindowManager().getDefaultDisplay().getWidth() * 0.98);
         m8_et_message = findViewById(R.id.m8_et_message);
         m8_btn_submit = findViewById(R.id.m8_btn_submit);
         m8_image = findViewById(R.id.m8_image);
@@ -58,16 +61,16 @@ public class Main8Activity extends AppCompatActivity {
             @Override
             public boolean onLongClick(View view) {
 
-                 new AlertDialog.Builder(Main8Activity.this)
-                         .setTitle("识别二维码")
-                         .setPositiveButton("识别", new DialogInterface.OnClickListener() {
-                             @Override
-                             public void onClick(DialogInterface dialogInterface, int i) {
-                                 String text = distinguishQRByLocal();
-                                 DialogUtil.dialog(Main8Activity.this,"识别结果",text);
-                             }
-                         })
-                         .setMessage("是否识别图中二维码？").show();
+                new AlertDialog.Builder(Main8Activity.this)
+                        .setTitle("识别二维码")
+                        .setPositiveButton("识别", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String text = distinguishQRByLocal();
+                                DialogUtil.dialog(Main8Activity.this, "识别结果", text);
+                            }
+                        })
+                        .setMessage("是否识别图中二维码？").show();
 
                 return true;
             }
@@ -78,12 +81,15 @@ public class Main8Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String text = m8_et_message.getText().toString();
-                int checkedBtnId = m8_RG_select.getCheckedRadioButtonId();
-
-                if (checkedBtnId == R.id.m8_rb_net) {
-                    getQRImageByNet(text);
-                } else if (checkedBtnId == R.id.m8_rb_local) {
-                    getQRImageByLocal(text);
+                if (!StrUtil.isEmptyIfStr(text)) {
+                    int checkedBtnId = m8_RG_select.getCheckedRadioButtonId();
+                    if (checkedBtnId == R.id.m8_rb_net) {
+                        getQRImageByNet(text);
+                    } else if (checkedBtnId == R.id.m8_rb_local) {
+                        getQRImageByLocal(text);
+                    }
+                }else {
+                    DialogUtil.dialog(Main8Activity.this,"输入错误","生成内容不能为空");
                 }
             }
         });
@@ -91,6 +97,7 @@ public class Main8Activity extends AppCompatActivity {
 
     /**
      * 识别本地二维码
+     *
      * @return
      */
     private String distinguishQRByLocal() {
@@ -101,8 +108,10 @@ public class Main8Activity extends AppCompatActivity {
         bitmap.getPixels(data, 0, width, 0, 0, width, height);
         RGBLuminanceSource source = new RGBLuminanceSource(width, height, data);
         BinaryBitmap bitmaps = new BinaryBitmap(new HybridBinarizer(source));
+        Hashtable<DecodeHintType, String> hints = new Hashtable<>();
+        hints.put(DecodeHintType.CHARACTER_SET, "UTF-8"); // 字符转码格式设置
         try {
-            String text = new MultiFormatReader().decode(bitmaps).getText();
+            String text = new MultiFormatReader().decode(bitmaps,hints).getText();
             return text;
         } catch (NotFoundException e) {
             e.printStackTrace();

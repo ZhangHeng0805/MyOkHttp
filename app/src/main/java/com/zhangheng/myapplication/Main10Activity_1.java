@@ -1,25 +1,21 @@
 package com.zhangheng.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.Gson;
 import com.zhangheng.myapplication.adapter.BookList_Adapter;
-import com.zhangheng.myapplication.bean.books.BooksRootBean;
-import com.zhangheng.myapplication.bean.books.Result;
 import com.zhangheng.myapplication.bean.books.bookslist.BookListBean;
 import com.zhangheng.myapplication.bean.books.bookslist.Data;
+import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +46,8 @@ public class Main10Activity_1 extends AppCompatActivity  {
 
     }
     private void getBooksList() {
+        DialogUtil dialogUtil = new DialogUtil(this);
+        dialogUtil.createProgressDialog();
         String url = "http://apis.juhe.cn/goodbook/query";
         String key =  getResources().getString(R.string.key_books);
         Map<String, String> map = new HashMap<>();
@@ -66,6 +64,7 @@ public class Main10Activity_1 extends AppCompatActivity  {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        dialogUtil.closeProgressDialog();
                         Toast.makeText(Main10Activity_1.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
@@ -87,7 +86,7 @@ public class Main10Activity_1 extends AppCompatActivity  {
                             Toast.makeText(Main10Activity_1.this, "错误码：" + bean.getError_code(), Toast.LENGTH_SHORT).show();
 
                         }
-
+                        dialogUtil.closeProgressDialog();
                     }
                 });
 

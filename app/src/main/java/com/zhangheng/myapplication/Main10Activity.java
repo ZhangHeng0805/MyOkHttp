@@ -1,7 +1,5 @@
 package com.zhangheng.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,9 +8,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.gson.Gson;
 import com.zhangheng.myapplication.bean.books.BooksRootBean;
 import com.zhangheng.myapplication.bean.books.Result;
+import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -57,6 +58,8 @@ public class Main10Activity extends AppCompatActivity {
         });
     }
     private void getBooksTypeList() {
+        DialogUtil dialogUtil = new DialogUtil(this);
+        dialogUtil.createProgressDialog();
         String url = "http://apis.juhe.cn/goodbook/catalog";
         String key = getResources().getString(R.string.key_books);
         Map<String, String> map = new HashMap<>();
@@ -70,6 +73,7 @@ public class Main10Activity extends AppCompatActivity {
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        dialogUtil.closeProgressDialog();
                         Toast.makeText(Main10Activity.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
@@ -99,6 +103,7 @@ public class Main10Activity extends AppCompatActivity {
                             }
 
                         }
+                        dialogUtil.closeProgressDialog();
                     }
                 });
 
