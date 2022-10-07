@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.bean.dictionary.DictionaryRootBean;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhy.http.okhttp.OkHttpUtils;

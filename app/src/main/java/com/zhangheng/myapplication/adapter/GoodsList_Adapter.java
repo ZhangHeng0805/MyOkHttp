@@ -1,8 +1,6 @@
 package com.zhangheng.myapplication.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -11,12 +9,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
-import com.zhangheng.myapplication.Main10Activity_2;
 import com.zhangheng.myapplication.R;
-import com.zhangheng.myapplication.bean.books.bookslist.Data;
 import com.zhangheng.myapplication.bean.shop.Goods;
 
 import java.util.List;

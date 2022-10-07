@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.adapter.BookList_Adapter;
 import com.zhangheng.myapplication.bean.books.bookslist.BookListBean;
 import com.zhangheng.myapplication.bean.books.bookslist.Data;

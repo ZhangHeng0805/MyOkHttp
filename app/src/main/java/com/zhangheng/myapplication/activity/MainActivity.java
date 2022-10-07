@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zhangheng.myapplication.Object.User;
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.okhttp.okHttp;
 import com.zhangheng.myapplication.util.Json;
 

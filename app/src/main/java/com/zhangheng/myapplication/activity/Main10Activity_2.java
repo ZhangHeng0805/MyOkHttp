@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 

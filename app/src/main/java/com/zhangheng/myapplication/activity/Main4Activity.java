@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.zhangheng.file.FiletypeUtil;
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.util.FormatUtil;

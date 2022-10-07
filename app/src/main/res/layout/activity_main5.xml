@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".Main5Activity">
+    tools:context=".activity.Main5Activity">
 
            <LinearLayout
                android:id="@+id/line1"

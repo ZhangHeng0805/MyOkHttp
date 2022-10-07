@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -12,7 +11,6 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,14 +21,11 @@ import android.widget.Toast;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.gson.Gson;
-import com.zhangheng.myapplication.Main13Activity;
 import com.zhangheng.myapplication.Netty.ChatInfo;
 import com.zhangheng.myapplication.Object.ChatConfig;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.adapter.ChatBaseAdapter;
 import com.zhangheng.myapplication.base.BaseFragment;
-import com.zhangheng.myapplication.bean.shop.Customer;
-import com.zhangheng.myapplication.listener.OnDoubleClickListener;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.TimeUtil;
@@ -38,7 +33,6 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import io.netty.bootstrap.Bootstrap;

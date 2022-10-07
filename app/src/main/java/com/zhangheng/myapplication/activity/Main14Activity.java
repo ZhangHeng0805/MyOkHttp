@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import com.zhangheng.myapplication.Netty.ChatInfo;
 import com.zhangheng.myapplication.Netty.NettyBaseFeed;
 import com.zhangheng.myapplication.Netty.NettyClient;
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.activity.NettyActivity;
 import com.zhangheng.myapplication.service.NettyService;
 

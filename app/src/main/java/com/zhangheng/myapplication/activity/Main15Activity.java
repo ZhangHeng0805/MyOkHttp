@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.widget.RadioGroup;
 
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.base.BaseFragment;
 import com.zhangheng.myapplication.fragment.CommonFragment;
 import com.zhangheng.myapplication.fragment.DownloadFragment;

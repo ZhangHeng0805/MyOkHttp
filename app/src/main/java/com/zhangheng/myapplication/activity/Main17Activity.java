@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.zhangheng.myapplication.R;
 import com.zhangheng.util.FormatUtil;
 
 /**

@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -22,8 +22,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.zhangheng.myapplication.Object.Flag;
 import com.zhangheng.myapplication.Object.Resuilt;
+import com.zhangheng.myapplication.R;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 

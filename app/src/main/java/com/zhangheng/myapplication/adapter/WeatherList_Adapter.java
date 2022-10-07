@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.zhangheng.myapplication.Main7Activity;
+import com.zhangheng.myapplication.activity.Main7Activity;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.bean.weather.Future;
 import com.zhangheng.myapplication.bean.weather.JsonRootBean;

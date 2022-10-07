@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import android.Manifest;
 import android.app.Activity;
@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.SystemUtil;
@@ -86,6 +87,22 @@ public class Main18Activity extends Activity {
         setContentView(R.layout.activity_main18);
         init();
         listener();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!mediaPlayer.isPlaying()){
+            mediaPlayer.start();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (!mediaPlayer.isPlaying()){
+            mediaPlayer.start();
+        }
     }
 
     private void init() {
@@ -206,7 +223,7 @@ public class Main18Activity extends Activity {
                 nextSong();
             }
         });
-
+        //进度条滑动监听
         m18_pro_progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -497,7 +514,7 @@ public class Main18Activity extends Activity {
     }
 
     public void nextSong() {
-        if (index < music_list.size()) {
+        if (index < music_list.size()-1) {
             index++;
         } else {
             index = 0;

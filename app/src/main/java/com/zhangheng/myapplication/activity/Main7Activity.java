@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -27,6 +27,7 @@ import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
 import com.amap.api.services.geocoder.RegeocodeResult;
 import com.google.gson.Gson;
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.adapter.WeatherList_Adapter;
 import com.zhangheng.myapplication.bean.weather.JsonRootBean;
 import com.zhy.http.okhttp.OkHttpUtils;

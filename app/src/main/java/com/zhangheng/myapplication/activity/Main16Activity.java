@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.zhangheng.myapplication.Object.PhoneDto;
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.m16.PhoneUtil;
 

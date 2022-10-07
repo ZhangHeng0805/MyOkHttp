@@ -2,29 +2,19 @@ package com.zhangheng.myapplication.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.zhangheng.myapplication.Main10Activity_1;
-import com.zhangheng.myapplication.Main10Activity_2;
+import com.zhangheng.myapplication.activity.Main10Activity_2;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.bean.books.bookslist.Data;
-import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.callback.BitmapCallback;
 
 import java.util.List;
-
-import okhttp3.Call;
 
 public class BookList_Adapter extends BaseAdapter {
     private final List<Data> data;

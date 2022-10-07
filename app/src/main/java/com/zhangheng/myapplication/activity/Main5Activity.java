@@ -1,18 +1,14 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -26,9 +22,9 @@ import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.util.LocalFileTool;
-import com.zhangheng.myapplication.util.OpenFile;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 

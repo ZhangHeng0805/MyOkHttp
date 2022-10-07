@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -22,6 +22,7 @@ import com.google.zxing.MultiFormatReader;
 import com.google.zxing.NotFoundException;
 import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.common.HybridBinarizer;
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.DisplyUtil;

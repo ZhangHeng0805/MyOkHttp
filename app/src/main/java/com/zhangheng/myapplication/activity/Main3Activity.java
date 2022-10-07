@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.zhangheng.myapplication.Object.Resuilt;
-import com.zhangheng.myapplication.activity.Test1Activity;
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.TimeUtil;

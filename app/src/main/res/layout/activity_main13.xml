@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
-    tools:context=".Main13Activity">
+    tools:context=".activity.Main13Activity">
     <LinearLayout
         android:id="@+id/m13_LL_top"
         android:layout_width="match_parent"

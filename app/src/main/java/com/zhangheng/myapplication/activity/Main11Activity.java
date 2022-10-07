@@ -1,4 +1,4 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,8 +20,7 @@ import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.zhangheng.myapplication.bean.FileList;
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -32,9 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -33,10 +33,10 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Main18Activity"></activity>
-        <activity android:name=".Main17Activity_1" />
-        <activity android:name=".Main17Activity" />
-        <activity android:name=".Main16Activity" />
+        <activity android:name=".activity.Main18Activity"></activity>
+        <activity android:name=".activity.Main17Activity_1" />
+        <activity android:name=".activity.Main17Activity" />
+        <activity android:name=".activity.Main16Activity" />
         <activity android:name=".fragment.MyActivity.OrderActivity" />
         <activity android:name=".fragment.MyActivity.UserInfoActivity" />
         <activity android:name=".fragment.MyActivity.Location_Activity" />
@@ -48,16 +48,16 @@
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
         <activity
-            android:name=".Main15Activity"
+            android:name=".activity.Main15Activity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
-        <activity android:name=".LauncherActivity">
+        <activity android:name=".activity.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Main14Activity" />
+        <activity android:name=".activity.Main14Activity" />
 
         <service
             android:name=".service.NettyService"
@@ -65,11 +65,11 @@
             android:exported="true" />
 
         <activity
-            android:name=".Main13Activity"
+            android:name=".activity.Main13Activity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="网络聊天室" />
         <activity
-            android:name=".M12_LoginActivity"
+            android:name=".activity.M12_LoginActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
             android:label="@string/title_activity_m12__login">
             <intent-filter>
@@ -92,7 +92,7 @@
         </provider>
 
         <activity
-            android:name=".Main12Activity"
+            android:name=".activity.Main12Activity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
 
         <meta-data
@@ -103,29 +103,29 @@
             android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Main11Activity"
+            android:name=".activity.Main11Activity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity
-            android:name=".Main10Activity_2"
+            android:name=".activity.Main10Activity_2"
             android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity
-            android:name=".Main10Activity_1"
+            android:name=".activity.Main10Activity_1"
             android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity
-            android:name=".Main10Activity"
+            android:name=".activity.Main10Activity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity
-            android:name=".Main9Activity"
+            android:name=".activity.Main9Activity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity
-            android:name=".Main8Activity"
+            android:name=".activity.Main8Activity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity
-            android:name=".Main7Activity"
+            android:name=".activity.Main7Activity"
             android:configChanges="orientation|screenSize|keyboardHidden" />
-        <activity android:name=".Main6Activity" />
+        <activity android:name=".activity.Main6Activity" />
         <activity
-            android:name=".Main5Activity"
+            android:name=".activity.Main5Activity"
             android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -133,16 +133,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Main4Activity" />
+        <activity android:name=".activity.Main4Activity" />
         <activity
-            android:name=".Main3Activity"
+            android:name=".activity.Main3Activity"
             android:configChanges="orientation|screenSize|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".Main2Activity" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".activity.Main2Activity" />
+        <activity android:name=".activity.MainActivity" />
     </application>
 
 </manifest>

@@ -1,9 +1,7 @@
-package com.zhangheng.myapplication;
+package com.zhangheng.myapplication.activity;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,6 +17,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.zhangheng.myapplication.Object.ChatConfig;
+import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -35,12 +34,9 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 
-import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.codec.string.StringDecoder;
-import io.netty.handler.codec.string.StringEncoder;
 import okhttp3.Call;
 
 public class Main13Activity extends AppCompatActivity implements View.OnClickListener {

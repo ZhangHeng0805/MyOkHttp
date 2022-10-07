@@ -6,28 +6,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.net.Uri;
-import android.preference.DialogPreference;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.FragmentActivity;
 
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
-import com.zhangheng.myapplication.M12_LoginActivity;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.base.BaseFragment;
 import com.zhangheng.myapplication.bean.shop.Customer;
