@@ -425,7 +425,7 @@ public class Main18Activity extends Activity {
                     sb.append(lrc.substring(lrc.indexOf("]") + 1) + "\n");
                 }
             }else {
-                sb.append("纯音乐请欣赏！");
+                sb.append("暂无歌词，请欣赏！");
             }
             m18_tv_result.setText(sb.toString());
 
