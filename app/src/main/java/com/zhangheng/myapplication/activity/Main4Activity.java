@@ -68,7 +68,7 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
                     String filename = url.substring(url.indexOf("//") + 2);
                     String[] s = filename.split("/");
                     try {
-                        editText_name.setText(URLDecoder.decode(s[s.length - 1],"UTF-8"));
+                        editText_name.setText(URLDecoder.decode(s[s.length - 1], "UTF-8"));
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
@@ -104,7 +104,8 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
         boolean b = ReadAndWrite.RequestPermissions(this, PERMISSIONS_STORAGE[1]);//写入权限
         if (b) {
             String fileType = FiletypeUtil.getFileType(filename);
-            String destFileDir = Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getResources().getString(R.string.app_name) + "/" + fileType;
+            String path = "/" + getResources().getString(R.string.app_name) + "/" + fileType +"/";
+            String destFileDir = Environment.getExternalStorageDirectory().getAbsolutePath() + path;
             OkHttpUtils
                     .get()
                     .url(url)
@@ -119,7 +120,9 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
                         @Override
                         public void onResponse(File response, int id) {
                             Log.e("路径", "response:" + response.getAbsolutePath());
-                            textView.setText("下载完成\n存储路径：" + response.getAbsolutePath());
+
+                            textView.setText("下载完成\n存储路径：" + path+response.getName());
+
                         }
 
                         @Override
@@ -152,11 +155,11 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
                     String filename = editText_name.getText().toString();
                     if (filename.length() < 3) {
 //                        filename = url.substring(url.indexOf("//") + 2).replace("/", "_");
-                        filename=url.substring(url.lastIndexOf("/")+1);
+                        filename = url.substring(url.lastIndexOf("/") + 1);
                     }
                     downloadFile(url, filename);
-                }else {
-                    DialogUtil.dialog(this,"下载地址错误","请输入正确的下载地址");
+                } else {
+                    DialogUtil.dialog(this, "下载地址错误", "请输入正确的下载地址");
                 }
                 break;
         }

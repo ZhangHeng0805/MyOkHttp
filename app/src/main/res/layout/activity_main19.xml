@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.Main19Activity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/m19_et_search_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="请输入影视名称"
+            android:layout_weight="15"
+            />
+        <Button
+            android:id="@+id/m19_btn_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn1"
+            android:layout_weight="1"
+            android:text="搜     索"/>
+    </LinearLayout>
+    <TextView
+        android:id="@+id/m19_tv_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="点击直接打开浏览器播放，长按将播放地址复制到剪切板"
+        />
+    <ListView
+        android:id="@+id/m19_lv_video"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</LinearLayout>

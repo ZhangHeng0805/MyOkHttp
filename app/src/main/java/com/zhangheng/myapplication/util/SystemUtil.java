@@ -1,8 +1,10 @@
 package com.zhangheng.myapplication.util;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.view.inputmethod.InputMethodManager;
 
 import com.zhangheng.myapplication.R;
 
@@ -24,6 +26,20 @@ public class SystemUtil {
             return true;
         } catch (Exception e) {
             return false;
+        }
+    }
+
+    /**
+     * 关闭输入法
+     * @param activity
+     */
+    public static void closeInput(Activity activity){
+        InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        boolean isOpen=imm.isActive();
+        if (isOpen) {
+            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken()
+                    , InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
 }

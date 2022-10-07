@@ -15,7 +15,6 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,13 +30,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.SystemUtil;
 import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhangheng.myapplication.view.RefreshListView;
-import com.zhangheng.util.MathUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -74,7 +74,7 @@ public class Main18Activity extends Activity {
     private progressThread progressThread;
 
     private List<Map<String, Object>> music_list = new ArrayList<>();//歌曲列表
-    private Integer page = 1;//结果页码
+    private int page = 1;//结果页码
     private Integer index = 0;//播放歌曲索引
     private Integer checked_id;//单选框id
     private String music_name = "", music_type = "", music_url = null;
@@ -90,9 +90,15 @@ public class Main18Activity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+//        SystemUtil.closeInput(Main18Activity.this);
+    }
+
+    @Override
     protected void onPause() {
         super.onPause();
-        if (!mediaPlayer.isPlaying()){
+        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
             mediaPlayer.start();
         }
     }
@@ -100,8 +106,16 @@ public class Main18Activity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (!mediaPlayer.isPlaying()){
+        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
             mediaPlayer.start();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            finish();
         }
     }
 
@@ -141,6 +155,7 @@ public class Main18Activity extends Activity {
         m18_btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SystemUtil.closeInput(Main18Activity.this);
                 DialogUtil dialogUtil = new DialogUtil(Main18Activity.this);
                 dialogUtil.createProgressDialog();
                 String search_name = m18_et_search_name.getText().toString();
@@ -149,9 +164,9 @@ public class Main18Activity extends Activity {
                     music_type = map_type.get(checked_id);
                     boolean b = ReadAndWrite.RequestPermissions(Main18Activity.this, Manifest.permission.INTERNET);
                     if (b) {
-                        music_list.clear();
-                        page = 1;
                         try {
+                            music_list.clear();
+                            page = 1;
                             getMusics(search_name, music_type, page);
                             page++;
                         } catch (Exception e) {
@@ -407,9 +422,7 @@ public class Main18Activity extends Activity {
         String name = map.get("title").toString();
         String author = map.get("author").toString();
         String text = "《" + name + "》- " + author;
-        DialogUtil dialogUtil = new DialogUtil(this);
         try {
-            dialogUtil.createProgressDialog();
             // 设置类型
 //            mediaPlayer.setAudioStreamType(AudioManager.);
             // 这里要reset一下啊 (当已经设置过音乐后，再调用此方法时，没有reset就会异常)
@@ -427,11 +440,22 @@ public class Main18Activity extends Activity {
             m18_tv_total_time.setText(TimeUtil.format(duration));
             mediaPlayer.start();
 
-            progressThread = new progressThread();
+
+            if (progressThread != null && progressThread.isAlive()) {
+                progressThread.stopThread();
+                progressThread = new progressThread();
+            } else {
+                progressThread = new progressThread();
+            }
             progressThread.start();
 
+
             String pic = map.get("pic").toString();
-            Glide.with(Main18Activity.this).load(pic).into(m18_iv_music_pic);
+            RequestOptions options = new RequestOptions().error(R.drawable.icon).bitmapTransform(new RoundedCorners(50));//图片圆角
+            Glide.with(this).load(pic) //图片地址
+                    .apply(options)
+                    .into(m18_iv_music_pic);
+
             m18_tv_music_title.setText(text);
 
             String lrc1 = music.get("lrc").toString();
@@ -441,7 +465,7 @@ public class Main18Activity extends Activity {
                 for (String lrc : lrcs) {
                     sb.append(lrc.substring(lrc.indexOf("]") + 1) + "\n");
                 }
-            }else {
+            } else {
                 sb.append("暂无歌词，请欣赏！");
             }
             m18_tv_result.setText(sb.toString());
@@ -449,9 +473,9 @@ public class Main18Activity extends Activity {
             music_url = url;
             m18_LL_console.setVisibility(View.VISIBLE);
 
-            if (mediaPlayer.isPlaying()){
+            if (mediaPlayer.isPlaying()) {
                 m18_iv_music_btn.setImageResource(R.drawable.bofang);
-            }else {
+            } else {
                 m18_iv_music_btn.setImageResource(R.drawable.zanting);
             }
         } catch (IOException e) {
@@ -459,54 +483,55 @@ public class Main18Activity extends Activity {
             Toast.makeText(Main18Activity.this, "歌曲 " + text + " 播放失败,自动切换下一首", Toast.LENGTH_LONG).show();
             nextSong();
         } finally {
-            dialogUtil.closeProgressDialog();
         }
     }
 
     class progressThread extends Thread {
         boolean flag = true;
-        int total;
-        int n=0;
 
         @Override
         public void run() {
             super.run();
-            total = mediaPlayer.getDuration();
-            while (flag) {
+            if (mediaPlayer != null) {
                 if (mediaPlayer.isPlaying()) {
-                    int currentPosition = mediaPlayer.getCurrentPosition();
-                    m18_pro_progress.setProgress(currentPosition); //实时获取播放音乐的位置并且设置进度条的位置
-                    try {
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    Main18Activity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            String format = TimeUtil.format(currentPosition);
-                            m18_tv_real_time.setText(format);
-                            double f= MathUtil.twoDecimalPlaces(currentPosition/total);
-                            String[] lrcs = music.get("lrc").toString().split("\\n");
-                            for (int i=0;i<lrcs.length;i++) {
-                                if (lrcs[i].indexOf("["+format) >-1){
-                                    n=i;
-                                    break;
+                    final int[] n = {0};
+                    String lrc = music.get("lrc").toString();
+                    String[] lrcs = lrc.split("\\n");
+                    final String[] format = new String[1];
+//                    int total = mediaPlayer.getDuration();
+                    while (flag) {
+                        int currentPosition = mediaPlayer.getCurrentPosition();
+                        m18_pro_progress.setProgress(currentPosition); //实时获取播放音乐的位置并且设置进度条的位
+                        Main18Activity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                format[0] = TimeUtil.format(currentPosition);
+                                m18_tv_real_time.setText(format[0]);
+                                if (!StrUtil.isEmptyIfStr(lrc)) {
+                                    for (int i = 0; i < lrcs.length; i++) {
+                                        if (lrcs[i].startsWith("[" + format[0])) {
+                                            n[0] = i;
+//                                            Log.d("i", String.valueOf(i));
+//                                            Log.d("time", format[0]);
+                                            Log.d("lic", lrcs[i]);
+                                            break;
+                                        }
+                                    }
+                                    int scrollBarSize = m18_tv_result.getLineHeight() * n[0];
+                                    m18_tv_result.scrollTo(0, scrollBarSize);
                                 }
                             }
-                            int scrollBarSize = m18_tv_result.getLineHeight()*n;
-                            m18_tv_result.scrollTo(0, scrollBarSize);
+                        });
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
                         }
-                    });
+                    }
                 }
             }
         }
-        private int getTextViewHeight(TextView view) {
-            Layout layout = view.getLayout();
-            int desired = layout.getLineTop(view.getLineCount());
-            int padding = view.getCompoundPaddingTop() + view.getCompoundPaddingBottom();
-            return desired + padding;
-        }
+
         //下面的函数是外部调用种植线程的，因为现在是不提倡直接带哦用stop方法的
         public void stopThread() {
             this.flag = false;
@@ -514,7 +539,7 @@ public class Main18Activity extends Activity {
     }
 
     public void nextSong() {
-        if (index < music_list.size()-1) {
+        if (index < music_list.size() - 1) {
             index++;
         } else {
             index = 0;
@@ -535,7 +560,8 @@ public class Main18Activity extends Activity {
         m18_iv_music_last.setClickable(true);
     }
 
-    public void getMusics(String name, String type, Integer page) throws Exception {
+    public boolean getMusics(String name, String type, Integer page) throws Exception {
+        final boolean[] flag = {false};
 //        List<Map<String, Object>> list = music_list;
         DialogUtil dialogUtil = new DialogUtil(this);
         dialogUtil.createProgressDialog();
@@ -600,12 +626,17 @@ public class Main18Activity extends Activity {
                         music.put("lrc", lrc != null ? lrc.replace("\\", "") : "");
                         music_list.add(music);
                     }
-                    setAdapter(music_list);
-                    music_name = name;
-                    m18_btn_continue.setVisibility(View.VISIBLE);
-                    //自动播放
-                    if (index == 0 && new Main18Activity().page <= 1) {
-                        playMusci(0);
+                    if (music_list.size() > 0) {
+                        setAdapter(music_list);
+                        music_name = name;
+                        m18_btn_continue.setVisibility(View.VISIBLE);
+                        //自动播放
+                        if (index == 0 && new Main18Activity().page <= 1) {
+                            playMusci(0);
+                        }
+                        flag[0] = true;
+                    } else {
+                        DialogUtil.dialog(Main18Activity.this, "搜索失败", "暂无搜索结果");
                     }
                 } else {
                     Log.e("音乐爬虫错误", "第三方音乐[" + Url + "]API错误：" + jsonObject.getStr("error"));
@@ -615,7 +646,7 @@ public class Main18Activity extends Activity {
 
             }
         });
-
+        return flag[0];
     }
 
 
@@ -678,6 +709,30 @@ public class Main18Activity extends Activity {
             channel.setVibrationPattern(new long[]{100, 100, 200});//震动的模式
             channel.shouldShowLights();//是否会闪光
             notifyMgr.createNotificationChannel(channel);
+        }
+    }
+
+    public void finish() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle("退出");
+        dialog.setMessage("离开后音乐将会停止,确定是否要离开？");
+        dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (mediaPlayer != null) {
+                    mediaPlayer.stop();
+                }
+                System.exit(0);
+            }
+        });
+        dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+//                Toast.makeText(Main18Activity.this, "取消退出", Toast.LENGTH_SHORT).show();
+            }
+        });
+        if (dialog != null) {
+            dialog.show();
         }
     }
 }

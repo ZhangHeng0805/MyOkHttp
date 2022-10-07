@@ -33,8 +33,10 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.Main18Activity"></activity>
-        <activity android:name=".activity.Main17Activity_1" />
+        <activity android:name=".activity.Main19Activity"
+            android:label="影视搜索"
+            ></activity>
+        <activity android:name=".activity.Main18Activity" />
         <activity android:name=".activity.Main17Activity" />
         <activity android:name=".activity.Main16Activity" />
         <activity android:name=".fragment.MyActivity.OrderActivity" />

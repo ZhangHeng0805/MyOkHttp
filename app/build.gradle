@@ -22,8 +22,8 @@ android {
         applicationId "com.zhangheng.myapplication"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 1
-        versionName "4.30"
+        versionCode 22
+        versionName "10.7"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // 显式声明支持注解
         javaCompileOptions {

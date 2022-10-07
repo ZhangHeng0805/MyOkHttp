@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:background="@color/zxing_custom_possible_result_points"
+    android:background="@drawable/bg_tv1"
     android:layout_margin="5dp"
     android:gravity="center_vertical"
     android:id="@+id/item_music_layout"

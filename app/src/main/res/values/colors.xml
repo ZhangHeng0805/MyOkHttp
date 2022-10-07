@@ -16,4 +16,12 @@
     <color name="bg_1">#CDDC39</color>
     <color name="gray">#EEEEEE</color>
     <color name="green">#11E700</color>
+    <color name="white_10">#1AFFFFFF</color>
+    <color name="black_80">#CC000000</color>
+    <color name="skyblue">#00BFFF</color>
+    <color name="cyan">#00FFFF</color>
+    <color name="mediumpurple">#7B68EE</color>
+    <color name="purple">#800080</color>
+    <color name="pink">#FFC0CB</color>
+    <color name="orange">#FFA500</color>
 </resources>
