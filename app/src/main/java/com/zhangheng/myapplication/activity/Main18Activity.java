@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -32,7 +33,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
-//import com.zhangheng.log.Log;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.util.DialogUtil;
@@ -55,6 +55,8 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import okhttp3.Call;
+
+//import com.zhangheng.log.Log;
 
 /**
  * 音乐爬虫
@@ -132,7 +134,7 @@ public class Main18Activity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
+            stopMusic(mediaPlayer);
             finish();
         }
         if (progressThread != null && progressThread.isAlive()) {
@@ -225,12 +227,14 @@ public class Main18Activity extends Activity {
         m18_iv_music_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mediaPlayer.isPlaying()) {
-                    mediaPlayer.pause();
-                    m18_iv_music_btn.setImageResource(R.drawable.zanting);
-                } else {
-                    mediaPlayer.start();
-                    m18_iv_music_btn.setImageResource(R.drawable.bofang);
+                if (mediaPlayer != null) {
+                    if (mediaPlayer.isPlaying()) {
+                        mediaPlayer.pause();
+                        m18_iv_music_btn.setImageResource(R.drawable.zanting);
+                    } else {
+                        mediaPlayer.start();
+                        m18_iv_music_btn.setImageResource(R.drawable.bofang);
+                    }
                 }
             }
         });
@@ -452,7 +456,8 @@ public class Main18Activity extends Activity {
         String text = "《" + name + "》- " + author;
         try {
             // 设置类型
-//            mediaPlayer.setAudioStreamType(AudioManager.);
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
             // 这里要reset一下啊 (当已经设置过音乐后，再调用此方法时，没有reset就会异常)
             mediaPlayer.reset();
 
@@ -460,15 +465,20 @@ public class Main18Activity extends Activity {
             Uri uri = Uri.parse(url);
 
             mediaPlayer.setDataSource(this, uri);// 设置文件源
+            Log.d(Log_Tag + "-正在播放", text);
+
             mediaPlayer.prepare();// 解析文件
-//            mediaPlayer.setVolume(100,100);
-            //设置进度
-            int duration = mediaPlayer.getDuration();
-            m18_pro_progress.setMax(duration);
-            m18_tv_total_time.setText(TimeUtil.format(duration));
             mediaPlayer.start();
 
 
+            mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                @Override
+                public boolean onError(MediaPlayer mp, int i, int i1) {
+                    stopMusic(mp);
+                    Log.e(Log_Tag, "mediaPlayer-ErrorListener what:" + i + " extra:" + i1);
+                    return false;
+                }
+            });
             if (progressThread != null && progressThread.isAlive()) {
                 progressThread.stopThread();
                 progressThread = new progressThread();
@@ -477,6 +487,11 @@ public class Main18Activity extends Activity {
             }
             progressThread.start();
 
+
+            //设置进度
+            int duration = mediaPlayer.getDuration();
+            m18_pro_progress.setMax(duration);
+            m18_tv_total_time.setText(TimeUtil.format(duration));
 
             String pic = map.get("pic").toString();
             RequestOptions options = new RequestOptions().error(R.drawable.icon).bitmapTransform(new RoundedCorners(50));//图片圆角
@@ -513,6 +528,14 @@ public class Main18Activity extends Activity {
         } finally {
         }
     }
+
+    private void stopMusic(MediaPlayer mp) {
+        if (mp != null) {
+            mp.stop();
+            mp.release();
+        }
+    }
+
 
     class progressThread extends Thread {
         boolean flag = true;
@@ -748,7 +771,7 @@ public class Main18Activity extends Activity {
             dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    mediaPlayer.stop();
+                    stopMusic(mediaPlayer);
                     if (progressThread != null && progressThread.isAlive()) {
                         progressThread.stopThread();
                     }
