@@ -18,6 +18,7 @@
 * 16.手机通讯录
 * 17.手机扫码
 * 18.音乐资源(爬虫)
+* 19.影视资源(爬虫)
 > * 说明：本项目的功能列表主页界面为```Main3Activity```
 > * 注意：本项目中```res/value/string.xml```文件中因涉及秘钥，所以没有上传该文件
 ## 本项目的Android的安装[APP下载](https://github.com/ZhangHeng0805/MyOkHttp/releases/download/V1-4.30/MyOkHttp_V1-4.30.apk)

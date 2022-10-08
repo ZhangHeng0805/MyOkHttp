@@ -77,8 +77,8 @@ public class Main3Activity extends Activity {
 //            "15.自制下拉刷新的ListView（测试）",//Test1Activity
             "16.手机通讯录",//Main16Activity
             "17.手机扫码",//Main17Activity
-            "18.音乐搜索(爬虫)",//Main18Activity
-            "19.影视搜索(爬虫)",//Main18Activity
+            "18.音乐资源(爬虫)",//Main18Activity
+            "19.影视资源(爬虫)",//Main18Activity
     };
     private final static Map<Integer,Class<?>> contextMap=new HashMap<>();
     static {
