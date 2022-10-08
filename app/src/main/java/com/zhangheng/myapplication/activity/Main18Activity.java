@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
+//import com.zhangheng.log.Log;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.util.DialogUtil;
@@ -59,6 +60,8 @@ import okhttp3.Call;
  * 音乐爬虫
  */
 public class Main18Activity extends Activity {
+
+    private final String Log_Tag = this.getClass().getSimpleName();
 
     private EditText m18_et_search_name;
     private Button m18_btn_search, m18_btn_continue;
@@ -90,24 +93,38 @@ public class Main18Activity extends Activity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
 //        SystemUtil.closeInput(Main18Activity.this);
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            m18_LL_console.setVisibility(View.VISIBLE);
+            m18_iv_music_btn.setImageResource(R.drawable.bofang);
+        } else {
+            m18_iv_music_btn.setImageResource(R.drawable.zanting);
+        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
-            mediaPlayer.start();
-        }
+//        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+////            mediaPlayer.start();
+////        }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
-            mediaPlayer.start();
+            if (m18_iv_music_btn.getDrawable().equals(getDrawable(R.drawable.bofang))) {
+                mediaPlayer.start();
+            }
         }
     }
 
@@ -115,7 +132,11 @@ public class Main18Activity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
             finish();
+        }
+        if (progressThread != null && progressThread.isAlive()) {
+            progressThread.stopThread();
         }
     }
 
@@ -231,11 +252,15 @@ public class Main18Activity extends Activity {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                progressThread.stopThread();
+
+                if (progressThread != null) {
+                    progressThread.stopThread();
+                }
                 m18_pro_progress.setProgress(0);
                 m18_tv_real_time.setText("00:00");
                 m18_tv_total_time.setText("00:00");
                 nextSong();
+
             }
         });
         //进度条滑动监听
@@ -417,6 +442,9 @@ public class Main18Activity extends Activity {
      * @param index
      */
     private void playMusci(Integer index) {
+        if (music_list.isEmpty()) {
+            return;
+        }
         Map<String, Object> map = music_list.get(index);
         music = map;
         String name = map.get("title").toString();
@@ -513,7 +541,7 @@ public class Main18Activity extends Activity {
                                             n[0] = i;
 //                                            Log.d("i", String.valueOf(i));
 //                                            Log.d("time", format[0]);
-                                            Log.d("lic", lrcs[i]);
+                                            Log.d(Log_Tag + "-lic", lrcs[i]);
                                             break;
                                         }
                                     }
@@ -587,7 +615,7 @@ public class Main18Activity extends Activity {
             @Override
             public void onError(Call call, Exception e, int id) {
                 dialogUtil.closeProgressDialog();
-                Log.e("音乐爬虫错误", e.toString());
+                Log.e(Log_Tag, "音乐爬虫错误:" + e.toString());
                 DialogUtil.dialog(Main18Activity.this, "搜索错误", e.getMessage());
             }
 
@@ -639,7 +667,7 @@ public class Main18Activity extends Activity {
                         DialogUtil.dialog(Main18Activity.this, "搜索失败", "暂无搜索结果");
                     }
                 } else {
-                    Log.e("音乐爬虫错误", "第三方音乐[" + Url + "]API错误：" + jsonObject.getStr("error"));
+                    Log.e(Log_Tag, "音乐爬虫错误:" + "第三方音乐[" + Url + "]API错误：" + jsonObject.getStr("error"));
                     DialogUtil.dialog(Main18Activity.this, "搜索失败", jsonObject.getStr("error"));
                 }
                 dialogUtil.closeProgressDialog();
@@ -713,26 +741,31 @@ public class Main18Activity extends Activity {
     }
 
     public void finish() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("退出");
-        dialog.setMessage("离开后音乐将会停止,确定是否要离开？");
-        dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (mediaPlayer != null) {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle("退出");
+            dialog.setMessage("离开后音乐将会停止,确定是否要离开？");
+            dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
                     mediaPlayer.stop();
+                    if (progressThread != null && progressThread.isAlive()) {
+                        progressThread.stopThread();
+                    }
+                    Main18Activity.super.finish();
                 }
-                System.exit(0);
-            }
-        });
-        dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            });
+            dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
 //                Toast.makeText(Main18Activity.this, "取消退出", Toast.LENGTH_SHORT).show();
+                }
+            });
+            if (dialog != null) {
+                dialog.show();
             }
-        });
-        if (dialog != null) {
-            dialog.show();
+        } else {
+            super.finish();
         }
     }
 }

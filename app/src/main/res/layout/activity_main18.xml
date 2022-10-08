@@ -197,6 +197,7 @@
             android:layout_height="60dp"
             android:background="@color/black_50"
             android:gravity="center"
+            android:layout_gravity="center"
             android:padding="8dp"
             android:scrollbars="vertical"
             android:text="歌词"
