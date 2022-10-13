@@ -78,7 +78,8 @@ public class Main3Activity extends Activity {
             "16.手机通讯录",//Main16Activity
             "17.手机扫码",//Main17Activity
             "18.音乐资源(爬虫)",//Main18Activity
-            "19.影视资源(爬虫)",//Main18Activity
+            "19.影视资源(爬虫)",//Main19Activity
+            "20.翻译(爬虫)",//Main20Activity
     };
     private final static Map<Integer,Class<?>> contextMap=new HashMap<>();
     static {
@@ -101,6 +102,7 @@ public class Main3Activity extends Activity {
         contextMap.put(17,Main17Activity.class);
         contextMap.put(18,Main18Activity.class);
         contextMap.put(19,Main19Activity.class);
+        contextMap.put(20,Main20Activity.class);
     }
 
     @Override
