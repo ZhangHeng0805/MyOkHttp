@@ -123,23 +123,23 @@ public class Main18Activity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
-            if (m18_iv_music_btn.getDrawable().equals(getDrawable(R.drawable.bofang))) {
-                mediaPlayer.start();
-            }
-        }
+//        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
+//            if (m18_iv_music_btn.getDrawable().equals(getDrawable(R.drawable.bofang))) {
+//                mediaPlayer.start();
+//            }
+//        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            stopMusic(mediaPlayer);
-            finish();
-        }
-        if (progressThread != null && progressThread.isAlive()) {
-            progressThread.stopThread();
-        }
+//        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+//            stopMusic(mediaPlayer);
+//            finish();
+//        }
+//        if (progressThread != null && progressThread.isAlive()) {
+//            progressThread.stopThread();
+//        }
     }
 
     private void init() {

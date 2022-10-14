@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,6 @@ import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
@@ -35,7 +35,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.hutool.core.text.UnicodeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+import cn.hutool.json.JSONUtil;
 import okhttp3.Call;
 
 /**
@@ -85,8 +89,8 @@ public class Main19Activity extends AppCompatActivity {
                 if (!StrUtil.isEmptyIfStr(name)) {
                     video_list.clear();
                     getVideo(name);
-                }else {
-                    DialogUtil.dialog(Main19Activity.this,"输入错误","搜索内容不能为空");
+                } else {
+                    DialogUtil.dialog(Main19Activity.this, "输入错误", "搜索内容不能为空");
                 }
             }
         });
@@ -112,7 +116,7 @@ public class Main19Activity extends AppCompatActivity {
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Map<String, String> map = list.get(i);
                 boolean b = SystemUtil.copyStr(Main19Activity.this, map.get("url"));
-                if (b){
+                if (b) {
                     Toast.makeText(Main19Activity.this, "播放地址已复制到剪切板中", Toast.LENGTH_SHORT).show();
                 }
                 return true;
@@ -161,12 +165,17 @@ public class Main19Activity extends AppCompatActivity {
             } else {
                 holder = (Holder) view.getTag();
             }
-            holder.item_video_name.setText("《"+map.get("name")+"》");
+            String name = map.get("name");
+            if (name.indexOf("<em>")>-1) {
+                name=name.replace("<em>","<font color='#dd5325'>")
+                .replace("</em>","</font>");
+            }
+            holder.item_video_name.setText(Html.fromHtml(name,Html.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL));
             holder.item_video_website.setText(map.get("web_name"));
             String tag_name = map.get("tag_name");
             if (!StrUtil.isEmptyIfStr(tag_name)) {
                 holder.item_video_tags.setText(tag_name);
-            }else {
+            } else {
                 holder.item_video_tags.setVisibility(View.GONE);
             }
             Glide.with(Main19Activity.this).load(map.get("web_icon")).into(holder.item_video_icon);
@@ -182,7 +191,7 @@ public class Main19Activity extends AppCompatActivity {
     private void getVideo(String name) {
         DialogUtil dialogUtil = new DialogUtil(this);
         dialogUtil.createProgressDialog("搜索中。。。");
-        String url = "https://cupfox.app/search?key=" + name;
+        String url = "https://cupfox.app/s/" + name;
         OkHttpUtils.get()
                 .url(url)
                 .build()
@@ -196,32 +205,44 @@ public class Main19Activity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
+                        Log.d("影视请求", response);
                         Document doc = Jsoup.parse(response);
-//                        m19_tv_result.setText(doc.title());
-                        Elements result_list = doc.getElementsByClass("search-result-list").select("div").select("a");
-                        for (Element e : result_list) {
-                            //播放地址
-                            String href = e.selectFirst("a").attr("href");
-                            //播放站名
-                            String web_name = e.selectFirst("span.website-name").text();
-                            //播放站点图标
-                            String web_icon = e.selectFirst("img.icon-website").attr("src");
-                            //标签名
-                            String tag_name = e.select("span.tag-name").text();
-                            //影视名
-                            String name = e.selectFirst("div.title").text();
-                            Map<String, String> video = new HashMap<>();
-                            video.put("name", name);
-                            video.put("url", href);
-                            video.put("web_name", web_name);
-                            video.put("web_icon", web_icon);
-                            video.put("tag_name", tag_name);
-                            video_list.add(video);
+                        Elements script = doc.select("script");
+                        String text = script.get(script.size() - 1).html();
+                        String jsonStr = UnicodeUtil.toString(text);
+                        JSONObject jsonObject = JSONUtil.parseObj(jsonStr);
+                        JSONArray jsonArray = jsonObject.getJSONObject("props")
+                                .getJSONObject("pageProps")
+                                .getJSONObject("resourceSearchResult")
+                                .getJSONArray("resources");
+                        for (Object o : jsonArray) {
+                            Map<String, String> map = new HashMap<>();
+                            JSONObject obj = JSONUtil.parseObj(o);
+                            String title = obj.getStr("text");
+                            map.put("name", title);
+                            String href = obj.getStr("url");
+                            map.put("url", href);
+                            String website = obj.getStr("website");
+                            map.put("web_name", website);
+                            String icon = obj.getStr("icon");
+                            map.put("web_icon", icon);
+                            JSONArray tags = obj.getJSONArray("tags");
+                            StringBuilder tags_sb = new StringBuilder();
+                            for (int i = 0; i < tags.size(); i++) {
+                                String str = tags.get(i).toString();
+                                if (i == tags.size() - 1) {
+                                    tags_sb.append(str);
+                                } else {
+                                    tags_sb.append(str + ",");
+                                }
+                            }
+                            map.put("tag_name", tags_sb.toString());
+                            video_list.add(map);
                         }
-                        setAdapter(video_list);
-                        if (video_list.size()>0){
+                        if (video_list.size() > 0) {
+                            setAdapter(video_list);
                             m19_tv_result.setVisibility(View.VISIBLE);
-                        }else {
+                        } else {
                             m19_tv_result.setVisibility(View.GONE);
                         }
                         dialogUtil.closeProgressDialog();

@@ -32,17 +32,30 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/m20_tv_translateResult"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textColor="@color/black_80"
-            android:textIsSelectable="true"
-            android:padding="10dp"
-            android:textSize="20sp"
-            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/m20_tv_translateResult"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textColor="@color/black_80"
+                android:textIsSelectable="true"
+                android:padding="10dp"
+                android:textSize="20sp"
+                android:layout_weight="9"
+                />
+            <ImageView
+                android:id="@+id/m20_iv_bofang"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/laba"
+                android:drawableTint="@color/skyblue"
+                android:padding="5dp"
+                android:autofillHints="播放"
+                />
+        </LinearLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
