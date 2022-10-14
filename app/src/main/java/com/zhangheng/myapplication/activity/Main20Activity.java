@@ -94,6 +94,8 @@ public class Main20Activity extends AppCompatActivity {
             public void onClick(View view) {
                 String text = m20_et_context.getText().toString();
                 if (!StrUtil.isEmptyIfStr(text)){
+                    m20_tv_translateResult.setText("");
+                    m20_tv_smartResult.setText("");
                     getTranslate(text,type_code);
                 }else {
                     DialogUtil.dialog(Main20Activity.this,"输入错误","搜索内容不能为空");
