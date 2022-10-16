@@ -20,6 +20,10 @@ public class OnDoubleClickListener implements View.OnTouchListener{
      */
     private DoubleClickCallback mCallback;
 
+    public OnDoubleClickListener() {
+
+    }
+
 
     public interface DoubleClickCallback {
         void onDoubleClick();

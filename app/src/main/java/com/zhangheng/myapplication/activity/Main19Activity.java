@@ -244,6 +244,7 @@ public class Main19Activity extends AppCompatActivity {
                             m19_tv_result.setVisibility(View.VISIBLE);
                         } else {
                             m19_tv_result.setVisibility(View.GONE);
+                            DialogUtil.dialog(Main19Activity.this,"搜索失败","暂无搜索结果");
                         }
                         dialogUtil.closeProgressDialog();
                     }

@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.util.DialogUtil;
+import com.zhangheng.myapplication.util.SystemUtil;
 import com.zhangheng.util.EncryptUtil;
 import com.zhangheng.util.RandomrUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -103,6 +104,7 @@ public class Main20Activity extends AppCompatActivity {
         m20_btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SystemUtil.closeInput(Main20Activity.this);
                 String text = m20_et_context.getText().toString();
                 if (!StrUtil.isEmptyIfStr(text)) {
                     m20_tv_translateResult.setText("");
@@ -234,6 +236,7 @@ public class Main20Activity extends AppCompatActivity {
             public void onError(Call call, Exception e, int id) {
                 Log.e(Tag, e.toString());
                 dialogUtil.closeProgressDialog();
+                DialogUtil.dialog(Main20Activity.this,"翻译错误",e.getMessage());
             }
 
             @Override

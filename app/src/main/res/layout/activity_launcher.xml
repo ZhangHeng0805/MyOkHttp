@@ -41,21 +41,26 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:orientation="vertical"
+        android:layout_marginBottom="10dp"
         >
         <TextView
+            android:id="@+id/launcher_tv_url1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textIsSelectable="true"
             android:textColor="@color/blue"
             android:text="@string/author"
+            android:padding="5dp"
             />
         <TextView
+            android:id="@+id/launcher_tv_url2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/zhangheng_url"
             android:textStyle="italic"
             android:textIsSelectable="true"
+            android:padding="5dp"
             />
     </LinearLayout>
 </RelativeLayout>

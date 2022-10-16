@@ -6,21 +6,29 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zhangheng.myapplication.R;
+import com.zhangheng.myapplication.util.SystemUtil;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class LauncherActivity extends Activity {
     private Button launcher_btn_exit;
-    private int i=4;//倒计时为i-1秒
+    private TextView launcher_tv_url1,launcher_tv_url2;
+
+    private int i=5;//倒计时为i-1秒
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
         launcher_btn_exit=findViewById(R.id.launcher_btn_exit);
+        launcher_tv_url1=findViewById(R.id.launcher_tv_url1);
+        launcher_tv_url2=findViewById(R.id.launcher_tv_url2);
+
         countDown();
     }
     private void countDown(){
@@ -58,6 +66,22 @@ public class LauncherActivity extends Activity {
                 startActivity(intent);
                 finish();
                 handler.removeCallbacks(runnable);
+            }
+        });
+        launcher_tv_url1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean b = SystemUtil.copyStr(LauncherActivity.this, launcher_tv_url1.getText().toString());
+                if (b)
+                Toast.makeText(LauncherActivity.this, "内容已复制到剪切板", Toast.LENGTH_SHORT).show();
+            }
+        });
+        launcher_tv_url2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean b = SystemUtil.copyStr(LauncherActivity.this, launcher_tv_url2.getText().toString());
+                if (b)
+                Toast.makeText(LauncherActivity.this, "内容已复制到剪切板", Toast.LENGTH_SHORT).show();
             }
         });
     }

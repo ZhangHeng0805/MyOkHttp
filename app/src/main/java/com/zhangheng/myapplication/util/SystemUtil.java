@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
 import com.zhangheng.myapplication.R;
@@ -33,13 +35,18 @@ public class SystemUtil {
      * 关闭输入法
      * @param activity
      */
-    public static void closeInput(Activity activity){
-        InputMethodManager imm = (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        boolean isOpen=imm.isActive();
-        if (isOpen) {
-            InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken()
-                    , InputMethodManager.HIDE_NOT_ALWAYS);
+    public static void closeInput(Activity activity) {
+        try {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            boolean isOpen = imm.isActive();
+            if (isOpen) {
+                InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                IBinder windowToken = activity.getCurrentFocus().getWindowToken();
+                inputMethodManager.hideSoftInputFromWindow(windowToken
+                        , InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }catch (Exception e){
+            Log.e(activity.getClass().getSimpleName()+"关闭输入错误",e.toString());
         }
     }
 }

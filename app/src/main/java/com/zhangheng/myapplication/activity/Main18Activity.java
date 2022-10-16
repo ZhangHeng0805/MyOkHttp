@@ -256,7 +256,7 @@ public class Main18Activity extends Activity {
         mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-
+                stopMusic(mediaPlayer);
                 if (progressThread != null) {
                     progressThread.stopThread();
                 }
