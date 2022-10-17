@@ -20,6 +20,8 @@ import com.google.zxing.integration.android.IntentResult;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.util.FormatUtil;
 
+import cn.hutool.core.util.StrUtil;
+
 /**
  * 手机扫码
  */
@@ -108,7 +110,7 @@ public class Main17Activity extends AppCompatActivity {
                 btn_cope.setVisibility(View.VISIBLE);
             }
 
-            if (FormatUtil.isWebUrl(contents)){
+            if (!StrUtil.isEmptyIfStr(contents)&&FormatUtil.isWebUrl(contents)){
                 btn_visit.setText("访问网址");
                 btn_visit.setTag(contents);
                 btn_visit.setVisibility(View.VISIBLE);

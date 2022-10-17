@@ -15,21 +15,22 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.zhangheng.myapplication.Object.Resuilt;
+import com.zhangheng.bean.Message;
 import com.zhangheng.myapplication.R;
+import com.zhangheng.myapplication.getphoneMessage.GetPhoneInfo;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
+import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
-import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -39,9 +40,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.hutool.core.comparator.VersionComparator;
 import okhttp3.Call;
 
 public class Main3Activity extends Activity {
+
+    private final String Tag=this.getClass().getSimpleName();
 
     private String[] permissions = {
             Manifest.permission.INTERNET,//网络
@@ -53,10 +57,12 @@ public class Main3Activity extends Activity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,//写外部存储器
             Manifest.permission.READ_PHONE_STATE,//读取手机状态
     };
-    private String getPhone,model,sdk,release,versionCode;
+    private String versionCode;
 
     private ListView listView;
     private TextView m3_tv_service, m3_tv_ipAddress;
+    private ImageView m3_iv_setting;
+
     private AlertDialog.Builder builder;
     private SharedPreferences sharedPreferences;
     private final String[] strTitle = new String[]{
@@ -115,38 +121,19 @@ public class Main3Activity extends Activity {
         listView = findViewById(R.id.list_view_1);
         m3_tv_service = findViewById(R.id.m3_tv_service);
         m3_tv_ipAddress = findViewById(R.id.m3_tv_ipAddress);
+        m3_iv_setting = findViewById(R.id.m3_iv_setting);
+
+        m3_iv_setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Main3Activity.this,SettingActivity.class);
+                startActivity(intent);
+            }
+        });
         setAdapter();
-        model = android.os.Build.MODEL; // 手机型号
-        sdk = android.os.Build.VERSION.SDK; // SDK号
-        release = "Android" + android.os.Build.VERSION.RELEASE; // android系统版本号
-        String s = model + "\t" + sdk + "\t" + release;
-            //获取自己手机号码
-            TelephonyManager phoneManager = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-
-            if (checkSelfPermission(Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    Activity#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for Activity#requestPermissions for more details.
-                return;
-            }
-            if(phoneManager.getLine1Number()!=null) {
-                if (phoneManager.getLine1Number().startsWith("+86")) {
-                    getPhone = phoneManager.getLine1Number().replace("+86", "");
-                } else {
-                    getPhone = phoneManager.getLine1Number();//得到电话号码
-                }
-            }
-//            String getPhone = phoneManager.getLine1Number();//得到电话号码
         versionCode = PhoneSystem.getVersionCode(this);
-
-//        m3_tv_ipAddress.setText("电话："+getPhone+" 手机型号"+model+" sdk版本号"+sdk+" 版本号"+release);
         m3_tv_ipAddress.setText("应用版本号："+versionCode);
 
-//        m3_tv_ipAddress.setText(s);
         getupdatelist();
     }
     private void setAdapter(){
@@ -178,10 +165,25 @@ public class Main3Activity extends Activity {
         });
     }
 
-    private void startIntent(Context context){
-        Intent intent=new Intent(Main3Activity.this, Main17Activity.class);
-        startActivity(intent);
+    public void getBuild(){
+        Log.d(Tag,"主板："+Build.BOARD);
+        Log.d(Tag,"Android系统定制商："+Build.BRAND );
+        Log.d(Tag,"cpu指令集："+Build.CPU_ABI);
+        Log.d(Tag,"设备参数："+Build.DEVICE);
+        Log.d(Tag,"显示屏参数："+Build.DISPLAY);
+        Log.d(Tag,"硬件名称："+Build.FINGERPRINT);
+        Log.d(Tag,"host："+Build.HOST);
+        Log.d(Tag,"修订版本列表："+Build.ID);
+        Log.d(Tag,"硬件制造商："+Build.MANUFACTURER);
+        Log.d(Tag,"版本："+Build.MODEL);
+        Log.d(Tag,"手机制造商："+Build.PRODUCT);
+        Log.d(Tag,"描述build的标签："+Build.TAGS);
+        Log.d(Tag,"时间："+Build.TIME);
+        Log.d(Tag,"builder类型："+Build.TYPE);
+        Log.d(Tag,"用户："+Build.USER);
     }
+
+
     public String getLocalMacAddress() {
         WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = wifi.getConnectionInfo();
@@ -192,20 +194,14 @@ public class Main3Activity extends Activity {
      * 查询更新
      */
     public void getupdatelist(){
-        String url=getResources().getString(R.string.zhangheng_url)
-                +"filelist/updatelist/"+getResources().getString(R.string.app_name);
-        Map<String,String> map=new HashMap<>();
-        if (getPhone!=null) {
-            map.put("phonenum", getPhone);
-            map.put("model", model);
-            map.put("sdk", sdk);
-            map.put("release", release);
-            map.put("time", TimeUtil.getSystemTime());
-        }
+//        getBuild();
+        ServerSetting setting = new ServerSetting(Main3Activity.this);
+        String url=setting.getMainUrl()
+                +"config/updateApp/"+getResources().getString(R.string.app_name);
         OkHttpUtils
                 .post()
                 .url(url)
-                .params(map)
+                .addHeader("User-Agent", GetPhoneInfo.getHead(getApplicationContext()))
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -213,45 +209,53 @@ public class Main3Activity extends Activity {
                         String error = OkHttpMessageUtil.error(e);
                         Toast.makeText(Main3Activity.this,"错误："+error,Toast.LENGTH_SHORT).show();
                         m3_tv_service.setText(error);
-                        Log.e("错误：",e.getMessage());
+                        m3_tv_service.setTextColor(getColor(R.color.red));
+                        Log.e(Tag,"错误："+e.getMessage());
                     }
                     @Override
                     public void onResponse(String response, int id) {
-                        Resuilt resuilt=null;
-                        Gson gson=new Gson();
-                        try {
-                            resuilt = gson.fromJson(response, Resuilt.class);
-                        }catch (Exception e){
-
-                        }
                         if (response.indexOf("WEB服务器没有运行")<1) {
-                            if (resuilt != null) {
-                                Toast.makeText(Main3Activity.this, "服务器已连接", Toast.LENGTH_SHORT).show();
-                                m3_tv_service.setText("服务器已连接");
-                                m3_tv_service.setTextColor(getColor(R.color.black));
-                                if (!resuilt.getTitle().equals("null")) {
-                                    if (resuilt.getTitle().equals(getResources().getString(R.string.app_name))) {
+                            Message msg = null;
+                            Gson gson = new Gson();
+                            try {
+                                msg = gson.fromJson(response, Message.class);
+                                if (msg.getCode()==200){
+                                    if (msg.getTitle().equals(getResources().getString(R.string.app_name))){
                                         sharedPreferences = getSharedPreferences("update", MODE_PRIVATE);
                                         String urlname = sharedPreferences.getString("urlname", "");
-                                        if (!urlname.equals(resuilt.getMessage())) {
-                                            if (!versionCode.equals(appversion(resuilt.getMessage())))
-                                                showUpdate(resuilt.getMessage());
-                                        } else {
-                                            Log.d("urlname", "urlname与更新地址一致");
+                                        String url_name = msg.getMessage();
+//                                        if (!StrUtil.isEmpty(urlname)){
+                                            if (!urlname.equals(url_name)) {
+                                                String version = appversion(url_name);
+                                                int compare = VersionComparator.INSTANCE.compare(version, versionCode);
+                                                if (compare > 0) {
+                                                    showUpdate(url_name);
+                                                }else {
+                                                    Log.d(Tag,"无需更新");
+                                                }
+//                                            }else {
+//                                                Log.d(Tag,"已忽略更新");
+//                                            }
+                                        }else {
+                                            saveUrlName(url_name);
                                         }
-                                    } else {
-                                        Log.d("title", "title与应用的名称不一致");
+                                    }else {
+                                        Log.e(Tag,"更新app名称不一致");
                                     }
-                                } else {
-                                    Log.d("title", "title为null");
+                                }else {
+                                    Log.d(Tag,msg.toString());
                                 }
-                            } else {
-                                Log.d("resuilt", "resuilt为空");
+                                m3_tv_service.setText("服务器已连接");
+                                m3_tv_service.setTextColor(getColor(R.color.black));
+                            } catch (Exception e) {
+                                Log.e(Tag,"更新错误"+e.toString());
                             }
                         }else {
                             m3_tv_service.setText("WEB服务器没有运行");
+                            m3_tv_service.setTextColor(getColor(R.color.orange));
                         }
-                        Log.d("更新：",response);
+
+                        Log.d(Tag,"更新："+response);
                     }
                 });
     }
@@ -287,11 +291,10 @@ public class Main3Activity extends Activity {
                 .setPositiveButton("去更新", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Intent intent=new Intent();
-                        intent.setAction(Intent.ACTION_VIEW);
                         String url = getResources().getString(R.string.zhangheng_url)
-                                +"downloads/downupdate/"+name;
-                        intent.setData(Uri.parse(url));
+                                +"fileload/download/"+name;
+                        Uri uri = Uri.parse(url);
+                        Intent intent=new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(intent);
                     }
                 })
@@ -310,10 +313,7 @@ public class Main3Activity extends Activity {
                         .setPositiveButton("知道了", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                sharedPreferences=getSharedPreferences("update",MODE_PRIVATE);
-                                SharedPreferences.Editor editor=sharedPreferences.edit();
-                                editor.putString("urlname",name);
-                                editor.apply();
+                                saveUrlName(name);
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -326,6 +326,13 @@ public class Main3Activity extends Activity {
             }
         });
         builder.create().show();
+    }
+
+    private void saveUrlName(String name) {
+        sharedPreferences=getSharedPreferences("update",MODE_PRIVATE);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        editor.putString("urlname",name);
+        editor.apply();
     }
 
     //权限检查

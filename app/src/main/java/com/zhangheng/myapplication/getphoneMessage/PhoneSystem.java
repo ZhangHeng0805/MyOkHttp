@@ -52,7 +52,7 @@ public class PhoneSystem {
                     pkName, 0).versionName;
             int versionCode = context.getPackageManager().getPackageInfo(
                     pkName, 0).versionCode;
-            return "V" + versionCode + "-" + versionName;
+            return "V" + versionCode + "." + versionName;
         } catch (Exception e) {
 
             e.printStackTrace();

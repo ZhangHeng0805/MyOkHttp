@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#8BC34A"
+        android:gravity="center_vertical"
         >
         <TextView
             android:layout_width="wrap_content"
@@ -26,6 +27,7 @@
             android:orientation="vertical"
             android:gravity="center_vertical"
             android:layout_marginLeft="10dp"
+            android:layout_weight="9"
             >
             <TextView
                 android:id="@+id/m3_tv_service"
@@ -45,6 +47,13 @@
                 android:text="应用版本号"
                 android:paddingBottom="0dp"/>
         </LinearLayout>
+        <ImageView
+            android:id="@+id/m3_iv_setting"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/setting"
+            android:padding="8dp"
+            />
     </LinearLayout>
     <ListView
         android:id="@+id/list_view_1"
