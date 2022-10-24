@@ -26,7 +26,7 @@ public class Address {
                         for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
                             InetAddress inetAddress = enumIpAddr.nextElement();
                             if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
-                                return inetAddress.getHostAddress();
+                                return "[Mobile]"+inetAddress.getHostAddress();
                             }
                         }
                     }
@@ -38,7 +38,7 @@ public class Address {
                 WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
                 WifiInfo wifiInfo = wifiManager.getConnectionInfo();
                 String ipAddress = intIP2StringIP(wifiInfo.getIpAddress());//得到IPV4地址
-                return ipAddress;
+                return "[WiFi]"+ipAddress;
             }
         } else {
             //当前无网络连接,请在设置中打开网络

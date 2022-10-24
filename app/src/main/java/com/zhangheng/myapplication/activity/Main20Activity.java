@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.util.DialogUtil;
+import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.SystemUtil;
 import com.zhangheng.util.EncryptUtil;
 import com.zhangheng.util.RandomrUtil;
@@ -236,7 +237,7 @@ public class Main20Activity extends AppCompatActivity {
             public void onError(Call call, Exception e, int id) {
                 Log.e(Tag, e.toString());
                 dialogUtil.closeProgressDialog();
-                DialogUtil.dialog(Main20Activity.this,"翻译错误",e.getMessage());
+                DialogUtil.dialog(Main20Activity.this,"翻译错误", OkHttpMessageUtil.error(e));
             }
 
             @Override

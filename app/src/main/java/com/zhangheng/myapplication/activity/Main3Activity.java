@@ -76,7 +76,7 @@ public class Main3Activity extends Activity {
             "8.新华字典查询（API）",//Main9Activity
             "9.图书电商查询（API）",//Main10Activity
 //            "10.查询文件列表并下载（自制服务器）",//Main11Activity
-            "11.自制地图（高德地图）",//M12_LoginActivity
+//            "11.自制地图（高德地图）",//M12_LoginActivity
 //            "12.自制网络聊天室",//Main13Activity
 //            "13.自制聊天室(无效)",//Main14Activity
 //            "14.购物软件框架（自制服务器）",//Main15Activity
@@ -210,7 +210,7 @@ public class Main3Activity extends Activity {
                         Toast.makeText(Main3Activity.this,"错误："+error,Toast.LENGTH_SHORT).show();
                         m3_tv_service.setText(error);
                         m3_tv_service.setTextColor(getColor(R.color.red));
-                        Log.e(Tag,"错误："+e.getMessage());
+                        Log.e(Tag,"错误："+e.toString());
                     }
                     @Override
                     public void onResponse(String response, int id) {

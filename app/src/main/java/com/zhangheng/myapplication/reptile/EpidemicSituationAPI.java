@@ -136,6 +136,52 @@ public class EpidemicSituationAPI {
                     Integer totalNum = dj.getInt("totalNum");
                     cMap.put("totalNum", totalNum.toString());
 
+                    /*省内地级市数据*/
+                    JSONArray subList = jc.getJSONArray("subList");
+                    StringBuilder sb = new StringBuilder("");
+                    if (!subList.isEmpty()) {
+                        sb.append("*地级市情况:\n");
+                        for (Object o : subList) {
+                            JSONObject object = JSONUtil.parseObj(o);
+                            String update_time = object.getStr("updateTime");
+                            Date d = TimeUtil.UnixToDate(update_time);
+                            sb.append("-《" + object.getStr("city") + "》");
+                            String confirmed1 = object.getStr("confirmed");
+                            if (!StrUtil.isEmpty(confirmed1)) {
+                                sb.append("累计确诊[" + confirmed1 + "] ");
+                            }
+                            String crued1 = object.getStr("crued");
+                            if (!StrUtil.isEmpty(crued1)) {
+                                sb.append("累计治愈[" + crued1 + "] ");
+                            }
+                            String died1 = object.getStr("died");
+                            if (!StrUtil.isEmpty(died1)) {
+                                sb.append("累计死亡[" + died1 + "] ");
+                            }
+                            String curConfirm1 = object.getStr("curConfirm");
+                            if (!StrUtil.isEmpty(curConfirm1)&&!curConfirm1.equals("0")) {
+                                sb.append("现有确诊[" + curConfirm1 + "] ");
+                            }
+                            String asymptomaticRelative1 = object.getStr("asymptomaticRelative");
+                            if (!StrUtil.isEmpty(asymptomaticRelative1)&&!asymptomaticRelative1.equals("0")) {
+                                sb.append("新增无症状[" + asymptomaticRelative1 + "] ");
+                            }
+                            String confirmedRelative1 = object.getStr("confirmedRelative");
+                            if (!StrUtil.isEmpty(confirmedRelative1)&&!confirmedRelative1.equals("0")) {
+                                sb.append("新增确诊[" + confirmedRelative1 + "] ");
+                            }
+                            String nativeRelativeDays = object.getStr("noNativeRelativeDays");
+                            if (!StrUtil.isEmpty(nativeRelativeDays)) {
+                                sb.append("无疫情情况[" + nativeRelativeDays + "] ");
+                            }
+//                            sb.append("更新时间[" + TimeUtil.toTime(d) + "]\n");
+                            sb.append("\n");
+
+                        }
+                    }
+                    cMap.put("subList", sb.toString());
+
+
                     case_list.add(cMap);
                 }
 //                map.put("caseList", case_list);
@@ -237,15 +283,18 @@ public class EpidemicSituationAPI {
                 //风险地区信息
                 JSONArray subList = dangerousAreas.getJSONArray("subList");
                 StringBuilder sb = new StringBuilder("");
-                if (subList.size() > 0) {
-                    for (Object sub : subList) {
-                        JSONObject jsonObject = JSONUtil.parseObj(sub);
-                        sb.append("- ["+jsonObject.getStr("level")+"]")
-                                .append(" "+jsonObject.getStr("area"))
-                                .append(" <新增:"+jsonObject.getInt("isNew")+">\n");
+                if (!subList.isEmpty()) {
+                    sb.append("*风险地区：\n");
+                    if (subList.size() > 0) {
+                        for (Object sub : subList) {
+                            JSONObject jsonObject = JSONUtil.parseObj(sub);
+                            sb.append("- [" + jsonObject.getStr("level") + "]")
+                                    .append(" " + jsonObject.getStr("area"))
+                                    .append(" <新增:" + jsonObject.getInt("isNew") + ">\n");
+                        }
                     }
                 }
-                map.put("dangerousAreas",sb.toString());
+                map.put("dangerousAreas", sb.toString());
 //                System.out.println(map);
             }
         } catch (Exception e) {
@@ -290,7 +339,7 @@ public class EpidemicSituationAPI {
                 .append("* 累计确诊:" + map1.get("confirmed") + " (较昨日" + numStyle(map2.get("confirmed")) + ")\n")
                 .append("* 累计治愈:" + map1.get("cured") + " (较昨日" + numStyle(map2.get("cured")) + ")\n")
                 .append("* 累计死亡:" + map1.get("died") + " (较昨日" + numStyle(map2.get("died")) + ")\n")
-                .append("* 更新时间:" + upateTime )
+                .append("* 更新时间:" + upateTime)
 //                .append("\n")
         ;
         summary[0] = sb.toString();
@@ -300,23 +349,58 @@ public class EpidemicSituationAPI {
         int i = 0;
         for (Map<String, String> c : provincial_data) {
             StringBuilder sb2 = new StringBuilder();
-            sb2.append("\t#" + c.get("area") + "：\n")
-                    .append("\t\t累计确诊[" + c.get("confirmed") + "]\n")
-                    .append("\t\t累计治愈[" + c.get("crued") + "]\n")
-                    .append("\t\t累计死亡[" + c.get("died") + "]\n")
-                    .append("\t\t新增确诊[" + c.get("confirmedRelative") + "]\n")
-                    .append("\t\t新增治愈[" + c.get("curedRelative") + "]\n")
-                    .append("\t\t新增死亡[" + c.get("diedRelative") + "]\n")
-                    .append("\t\t新增无症状[" + c.get("asymptomaticRelative") + "]\n")
-                    .append("\t\t新增本地无症状[" + c.get("asymptomaticLocalRelative") + "]\n")
-                    .append("\t\t累计无症状[" + c.get("asymptomatic") + "]\n")
-                    .append("\t\t新增本地确诊[" + c.get("nativeRelative") + "]\n")
-                    .append("\t\t现有确诊[" + c.get("curConfirm") + "]\n")
-                    .append("\t\t与昨天现有确诊相差[" + numStyle(Integer.valueOf(c.get("curConfirmRelative"))) + "]\n")
-                    .append("\t\t无新增情况[" + c.get("noNativeRelativeDays") + "]\n")
-                    .append("\t\t新增境外输入[" + c.get("overseasInputRelative") + "]\n")
-                    .append("\t\t中高风险地区[" + c.get("totalNum") + "]\n")
-                    .append("\t\t更新时间[" + c.get("updateTime") + "]\n")
+            sb2.append("#" + c.get("area") + "：\n")
+                    .append("累计确诊[" + c.get("confirmed") + "]\n")
+                    .append("累计治愈[" + c.get("crued") + "]\n")
+                    .append("累计死亡[" + c.get("died") + "]\n");
+
+            String confirmedRelative = c.get("confirmedRelative");
+            if (!StrUtil.isEmpty(confirmedRelative)&&!confirmedRelative.equals("0")) {
+                sb2.append("新增确诊[" + confirmedRelative + "]\n");
+            }
+            String curedRelative = c.get("curedRelative");
+            if (!StrUtil.isEmpty(curedRelative)&&!curedRelative.equals("0")) {
+                sb2.append("新增治愈[" + curedRelative + "]\n");
+            }
+            String diedRelative = c.get("diedRelative");
+            if (!StrUtil.isEmpty(diedRelative)&&!diedRelative.equals("0")) {
+                sb2.append("新增死亡[" + diedRelative + "]\n");
+            }
+            String asymptomaticRelative = c.get("asymptomaticRelative");
+            if (!StrUtil.isEmpty(asymptomaticRelative)&&!asymptomaticRelative.equals("0")) {
+                sb2.append("新增无症状[" + asymptomaticRelative + "]\n");
+            }
+            String asymptomaticLocalRelative = c.get("asymptomaticLocalRelative");
+            if (!StrUtil.isEmpty(asymptomaticLocalRelative)&&!asymptomaticLocalRelative.equals("0")) {
+                sb2.append("新增本地无症状[" + asymptomaticLocalRelative + "]\n");
+            }
+            String asymptomatic = c.get("asymptomatic");
+            if (!StrUtil.isEmpty(asymptomatic)&&!asymptomatic.equals("0")) {
+                sb2.append("累计无症状[" + asymptomatic + "]\n");
+            }
+            String nativeRelative = c.get("nativeRelative");
+            if (!StrUtil.isEmpty(nativeRelative)&&!nativeRelative.equals("0")) {
+                sb2.append("新增本地确诊[" + nativeRelative + "]\n");
+            }
+            String curConfirm = c.get("curConfirm");
+            if (!StrUtil.isEmpty(curConfirm)&&!curConfirm.equals("0")) {
+                sb2.append("现有确诊[" + curConfirm + "]\n");
+            }
+            String curConfirmRelative = c.get("curConfirmRelative");
+            if (!StrUtil.isEmpty(curConfirmRelative)&&!curConfirmRelative.equals("0")) {
+                sb2.append("与昨天现有确诊相差[" + numStyle(Integer.valueOf(curConfirmRelative)) + "]\n");
+            }
+            String noNativeRelativeDays = c.get("noNativeRelativeDays");
+            if (!StrUtil.isEmpty(noNativeRelativeDays)) {
+                sb2.append("无新增情况[" + noNativeRelativeDays + "]\n");
+            }
+            String overseasInputRelative = c.get("overseasInputRelative");
+            if (!StrUtil.isEmpty(overseasInputRelative)&&!overseasInputRelative.equals("0")) {
+                sb2.append("新增境外输入[" + overseasInputRelative + "]\n");
+            }
+            sb2.append("中高风险地区[" + c.get("totalNum") + "]\n")
+                    .append("更新时间[" + c.get("updateTime") + "]\n")
+                    .append(c.get("subList"))
 //                .append("\n")
             ;
             provincial[i++] = sb2.toString();
@@ -332,7 +416,7 @@ public class EpidemicSituationAPI {
                     .append("新增无症状感染[" + rd.get("asymptomaticRelative") + "]\n")
                     .append("高风险地区数[" + rd.get("highLevelNum") + "]\t")
                     .append("中风险地区数[" + rd.get("midLevelNum") + "]\n")
-                    .append(""+rd.get("dangerousAreas"));
+                    .append("" + rd.get("dangerousAreas"));
             risk[i++] = sb2.toString();
 //            System.out.println(sb2.toString());
         }

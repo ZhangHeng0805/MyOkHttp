@@ -1,21 +1,25 @@
 package com.zhangheng.myapplication.activity;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.reptile.EpidemicSituationAPI;
 import com.zhangheng.myapplication.util.DialogUtil;
+import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.SystemUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -32,7 +36,7 @@ import java.util.Map;
 import cn.hutool.core.util.StrUtil;
 import okhttp3.Call;
 
-public class Main21Activity extends AppCompatActivity {
+public class Main21Activity extends Activity {
 
     private final String Tag = this.getClass().getSimpleName();
 
@@ -41,6 +45,7 @@ public class Main21Activity extends AppCompatActivity {
     private RadioGroup m21_RG_check;
     private RadioButton m21_rb_risk, m21_rb_summary, m21_rb_provincial;
     private ListView m21_lv_result;
+    private ImageView m21_iv_explain;
 
     private Map<String, String[]> covid19_data = new HashMap<>();
 
@@ -65,6 +70,7 @@ public class Main21Activity extends AppCompatActivity {
         m21_rb_summary = findViewById(R.id.m21_rb_summary);
         m21_rb_provincial = findViewById(R.id.m21_rb_provincial);
         m21_lv_result = findViewById(R.id.m21_lv_result);
+        m21_iv_explain = findViewById(R.id.m21_iv_explain);
 
         listenerView();
     }
@@ -102,6 +108,31 @@ public class Main21Activity extends AppCompatActivity {
                 }
             }
         });
+        m21_iv_explain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Main21Activity.this);
+                builder.setTitle("数据说明");
+                StringBuilder sb = new StringBuilder();
+                sb.append("<b>1、数据来源：</b>");
+                sb.append("<p>来自国家卫健委、各省市区卫健委、各省市区政府、港澳台官方渠道公开数据；</p>");
+                sb.append("<b>2、数据统计原则：</b>");
+                sb.append("<p>a) 每日上午全国数据会优先使用国家卫健委公布的数据（此时各省市数据尚未及时更新，会出现全国数据大于各省份合计数的情况）；</p>");
+                sb.append("<p>b) 当各省公布数据总和大于国家卫健委公布的数据时，则全国数据切换为各省合计数；</p>");
+                sb.append("<p>c) 全国数据含港澳台地区数据；</p>");
+                sb.append("<b>3、数据更新时间：</b>");
+                sb.append("<p>7:00-10:00为数据更新高峰时间，数据若滞后敬请谅解；</p>");
+                sb.append("<p>实时更新全国、各省市区数据，因需要核实计算，与官方发布的时间相比，将有一定的时间延迟；</p>");
+                sb.append("<b>4、“较昨日”的新增确诊、新增无症状等数据来源于卫健委发布的新增病例数，其含义是由（各省）卫健委公布的最新数据减去前一日对应的数据所得；由于各省卫健委公布时间及方式各不相同且存在核减情况，故而部分数据可能会有一定的时间延迟；</b>");
+                sb.append("<br><b>【现有确诊数据说明】</b>");
+                sb.append("<p>1、各省、市的现有确诊=累计确诊-累计治愈-累计死亡；</p>");
+                sb.append("<p>2、部分省份的治愈和死亡人数分布状况公布不充分，其下辖市/区的已知治愈与死亡人数小于实际人数，导致出现：</p>");
+                sb.append("<p>a)市/区的现有确诊总和大于全省/直辖市的现有确诊总数；</p>");
+                sb.append("<p>b)待确认的现有确诊为负数，因此展示为0</p>");
+                builder.setMessage(Html.fromHtml(sb.toString(),Html.FROM_HTML_MODE_COMPACT));
+                builder.show();
+            }
+        });
     }
 
     private void getData(@Nullable String filter) {
@@ -119,7 +150,7 @@ public class Main21Activity extends AppCompatActivity {
             public void onError(Call call, Exception e, int id) {
                 Log.e(Tag, "请求错误：" + e.toString());
                 dialogUtil.closeProgressDialog();
-                DialogUtil.dialog(Main21Activity.this, "查询错误", e.getMessage());
+                DialogUtil.dialog(Main21Activity.this, "查询错误", OkHttpMessageUtil.error(e));
             }
 
             @Override

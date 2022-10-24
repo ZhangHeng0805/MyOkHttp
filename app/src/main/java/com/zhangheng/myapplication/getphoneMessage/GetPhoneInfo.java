@@ -14,6 +14,13 @@ import androidx.core.content.ContextCompat;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.util.PhoneInfoUtils;
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+
+import cn.hutool.core.util.StrUtil;
+
 import static android.content.Context.MODE_PRIVATE;
 import static android.content.Context.TELEPHONY_SERVICE;
 
@@ -22,7 +29,7 @@ import static android.content.Context.TELEPHONY_SERVICE;
 public class GetPhoneInfo {
     public static String getHead(Context context) {
         String head = "(model:" + model
-                + ") (sdk:" + sdk
+                + ") (sdk:" + Address.getIPAddress(context)
                 + ") (release:" + release
                 + ") (Appversion:" + versionCode(context)
                 + ") (tel:" + phoneNum(context)
@@ -112,13 +119,17 @@ public class GetPhoneInfo {
         BluetoothAdapter m_BluetoothAdapter = null; // Local Bluetooth adapter
         m_BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         id= Build.SERIAL;// 获取序列号
-        if (id=="unknown"){
+        if (id.equals("unknown")){
             id = m_BluetoothAdapter.getAddress();//蓝牙的MAC地址
+            if (id.equals("02:00:00:00:00:00")){
+                id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);//获取ANDROID_ID
+                if (id.equals("unknown")){
+                    id=null;
+                }
+            }
         }
-        if (id.equals("02:00:00:00:00:00")){
-            id = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);//获取ANDROID_ID
-        }
-        if (id==null) {
+
+        if (StrUtil.isEmpty(id)) {
             id = "85" + //自己拼接构造IMEI Pseudo-Unique ID
                     Build.BOARD.length() % 10 +
                     Build.BRAND.length() % 10 +
@@ -135,6 +146,23 @@ public class GetPhoneInfo {
                     Build.USER.length() % 10; //13 digits
         }
         return id;
+    }
+    public static String getLocalIpAddress() {
+        String localIp = "";
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface ni = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = ni.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress()) {
+                        localIp = inetAddress.getHostAddress();
+                    }
+                }
+            }
+        } catch (SocketException ex) {
+            ex.printStackTrace();
+        }
+        return localIp;
     }
 
 }

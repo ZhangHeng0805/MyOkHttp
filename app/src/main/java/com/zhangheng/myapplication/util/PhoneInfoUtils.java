@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.telephony.TelephonyManager;
 
+import cn.hutool.core.util.StrUtil;
+
 import static androidx.core.content.ContextCompat.checkSelfPermission;
 
 public class PhoneInfoUtils {
@@ -59,7 +61,9 @@ public class PhoneInfoUtils {
         }catch (Exception e){
             e.printStackTrace();
         }
-
+        if (StrUtil.isEmpty(nativePhoneNumber)){
+            nativePhoneNumber=null;
+        }
         return nativePhoneNumber;
     }
 

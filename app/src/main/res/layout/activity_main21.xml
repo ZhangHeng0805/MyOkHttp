@@ -6,7 +6,28 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activity.Main21Activity">
-
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="10dp"
+        android:background="@color/blue">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="疫情数据"
+            android:layout_centerInParent="true"
+            android:textSize="20sp"
+            android:textColor="@color/white"/>
+        <ImageView
+            android:id="@+id/m21_iv_explain"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginRight="8dp"
+            android:src="@drawable/wenhao"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

@@ -36,6 +36,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.util.DialogUtil;
+import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.SystemUtil;
 import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhangheng.myapplication.view.RefreshListView;
@@ -178,9 +179,9 @@ public class Main18Activity extends Activity {
         m18_btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SystemUtil.closeInput(Main18Activity.this);
                 DialogUtil dialogUtil = new DialogUtil(Main18Activity.this);
                 dialogUtil.createProgressDialog();
+                SystemUtil.closeInput(Main18Activity.this);
                 String search_name = m18_et_search_name.getText().toString();
                 if (!StrUtil.isEmptyIfStr(search_name)) {
                     checked_id = m18_RG_type.getCheckedRadioButtonId();
@@ -192,6 +193,7 @@ public class Main18Activity extends Activity {
                             page = 1;
                             getMusics(search_name, music_type, page);
                             page++;
+                            Toast.makeText(Main18Activity.this,"长按可以下载哦，下拉可以继续加载",Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
                             DialogUtil.dialog(Main18Activity.this, "搜索错误", e.toString());
                         }
@@ -200,6 +202,7 @@ public class Main18Activity extends Activity {
                     DialogUtil.dialog(Main18Activity.this, "输入错误", "请先输入音乐名称");
                 }
                 dialogUtil.closeProgressDialog();
+
             }
         });
         //继续加载按钮点击事件
@@ -639,7 +642,7 @@ public class Main18Activity extends Activity {
             public void onError(Call call, Exception e, int id) {
                 dialogUtil.closeProgressDialog();
                 Log.e(Log_Tag, "音乐爬虫错误:" + e.toString());
-                DialogUtil.dialog(Main18Activity.this, "搜索错误", e.getMessage());
+                DialogUtil.dialog(Main18Activity.this, "搜索错误", OkHttpMessageUtil.error(e));
             }
 
             @Override

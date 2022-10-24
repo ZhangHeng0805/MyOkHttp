@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.util.DialogUtil;
+import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.SystemUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -89,6 +90,8 @@ public class Main19Activity extends AppCompatActivity {
                 if (!StrUtil.isEmptyIfStr(name)) {
                     video_list.clear();
                     getVideo(name);
+//                    Toast.makeText(Main19Activity.this,"点击可以打开浏览器播放，长按可以复制播放地址",Toast.LENGTH_SHORT).show();
+
                 } else {
                     DialogUtil.dialog(Main19Activity.this, "输入错误", "搜索内容不能为空");
                 }
@@ -200,7 +203,7 @@ public class Main19Activity extends AppCompatActivity {
                     public void onError(Call call, Exception e, int id) {
                         dialogUtil.closeProgressDialog();
                         Log.e("影视爬虫请求错误", e.toString());
-                        DialogUtil.dialog(Main19Activity.this, "搜索错误", e.getMessage());
+                        DialogUtil.dialog(Main19Activity.this, "搜索错误", OkHttpMessageUtil.error(e));
                     }
 
                     @Override
