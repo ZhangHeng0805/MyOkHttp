@@ -93,11 +93,11 @@ public class SettingActivity extends Activity {
                         break;
                     case "意见反馈":
                         setFeedback();
-                        funName += ".setServer()";
+                        funName += ".setFeedback()";
                         break;
                     case "捐赠支持":
                         setDonation();
-                        funName += ".setServer()";
+                        funName += ".setDonation()";
                         break;
                     default:
                         Toast.makeText(SettingActivity.this, setting_meun[i], Toast.LENGTH_SHORT).show();
@@ -194,6 +194,7 @@ public class SettingActivity extends Activity {
         dialog.setView(layout);
         dialog.setTitle("管理员验证");
         dialog.setMessage("该设置需要进行管理员验证");
+
 
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override

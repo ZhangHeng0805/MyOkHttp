@@ -47,19 +47,13 @@
         <activity android:name=".activity.Main18Activity" />
         <activity android:name=".activity.Main17Activity" />
         <activity android:name=".activity.Main16Activity" />
-        <activity android:name=".fragment.MyActivity.OrderActivity" />
-        <activity android:name=".fragment.MyActivity.UserInfoActivity" />
-        <activity android:name=".fragment.MyActivity.Location_Activity" />
-        <activity android:name=".fragment.MyActivity.Registered_Activity" />
-        <activity android:name=".fragment.MyActivity.Login_Activity" />
+
         <activity android:name=".activity.Test1Activity" /> <!-- 调整二维码扫描界面为竖屏 -->
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
-        <activity
-            android:name=".activity.Main15Activity"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
+
         <activity android:name=".activity.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -67,25 +61,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.Main14Activity" />
 
         <service
             android:name=".service.NettyService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity
-            android:name=".activity.Main13Activity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:label="网络聊天室" />
-        <activity
-            android:name=".activity.M12_LoginActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:label="@string/title_activity_m12__login">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
-        </activity> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
+        <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService" />
 
         <provider
@@ -101,17 +83,11 @@
                 android:resource="@xml/file_provider_paths" />
         </provider>
 
-        <activity
-            android:name=".activity.Main12Activity"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
 
         <meta-data
             android:name="com.amap.api.v2.apikey"
             android:value="@string/key_gaode" />
 
-        <activity
-            android:name="com.amap.api.maps.offlinemap.OfflineMapActivity"
-            android:screenOrientation="portrait" />
         <activity
             android:name=".activity.Main11Activity"
             android:configChanges="orientation|screenSize|keyboardHidden" />

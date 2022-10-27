@@ -5,8 +5,9 @@
     android:textStyle="bold"
     android:gravity="center_vertical"
     android:textSize="18sp"
-    android:textColor="@color/black"
-    android:background="#ECF5F4"
+    android:textColor="@color/white"
+    android:text="菜单"
+    android:background="@drawable/bg_vice_city"
     android:layout_margin="15dp"
     android:padding="15dp">
 </TextView>

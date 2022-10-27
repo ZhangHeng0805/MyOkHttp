@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:shape="rectangle"
-    >
+    tools:ignore="MissingDefaultResource">
     <gradient
-        android:startColor="#135058"
-        android:endColor="#F1F2B5"
+        android:startColor="#3494E6"
+        android:endColor="#EC6EAD"
         android:angle="45"
         />
     <corners android:radius="8dp"/>
-    <padding android:bottom="5dp"
-        android:top="5dp"
-        android:left="5dp"
-        android:right="5dp"/>
 </shape>

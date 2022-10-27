@@ -193,7 +193,7 @@ public class Main18Activity extends Activity {
                             page = 1;
                             getMusics(search_name, music_type, page);
                             page++;
-                            Toast.makeText(Main18Activity.this,"长按可以下载哦，下拉可以继续加载",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Main18Activity.this, "长按可以下载哦，下拉可以继续加载", Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
                             DialogUtil.dialog(Main18Activity.this, "搜索错误", e.toString());
                         }
@@ -263,6 +263,7 @@ public class Main18Activity extends Activity {
                 if (progressThread != null) {
                     progressThread.stopThread();
                 }
+                stopMusic(mediaPlayer);
                 m18_pro_progress.setProgress(0);
                 m18_tv_real_time.setText("00:00");
                 m18_tv_total_time.setText("00:00");
@@ -458,6 +459,7 @@ public class Main18Activity extends Activity {
         String author = map.get("author").toString();
         String text = "《" + name + "》- " + author;
         try {
+
             // 设置类型
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
@@ -528,12 +530,11 @@ public class Main18Activity extends Activity {
             e.printStackTrace();
             Toast.makeText(Main18Activity.this, "歌曲 " + text + " 播放失败,自动切换下一首", Toast.LENGTH_LONG).show();
             nextSong();
-        } finally {
         }
     }
 
     private void stopMusic(MediaPlayer mp) {
-        if (mp != null) {
+        if (mp != null&&mp.isPlaying()) {
             mp.stop();
             mp.release();
         }
@@ -554,34 +555,41 @@ public class Main18Activity extends Activity {
                     final String[] format = new String[1];
 //                    int total = mediaPlayer.getDuration();
                     while (flag) {
-                        int currentPosition = mediaPlayer.getCurrentPosition();
-                        m18_pro_progress.setProgress(currentPosition); //实时获取播放音乐的位置并且设置进度条的位
-                        Main18Activity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                format[0] = TimeUtil.format(currentPosition);
-                                m18_tv_real_time.setText(format[0]);
-                                if (!StrUtil.isEmptyIfStr(lrc)) {
-                                    for (int i = 0; i < lrcs.length; i++) {
-                                        if (lrcs[i].startsWith("[" + format[0])) {
-                                            n[0] = i;
+                        try {
+                            int currentPosition = mediaPlayer.getCurrentPosition();
+                            m18_pro_progress.setProgress(currentPosition); //实时获取播放音乐的位置并且设置进度条的位
+                            Main18Activity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    format[0] = TimeUtil.format(currentPosition);
+                                    m18_tv_real_time.setText(format[0]);
+                                    if (!StrUtil.isEmptyIfStr(lrc)) {
+                                        for (int i = 0; i < lrcs.length; i++) {
+                                            if (lrcs[i].startsWith("[" + format[0])) {
+                                                n[0] = i;
 //                                            Log.d("i", String.valueOf(i));
 //                                            Log.d("time", format[0]);
-                                            Log.d(Log_Tag + "-lic", lrcs[i]);
-                                            break;
+                                                Log.d(Log_Tag + "-lic", lrcs[i]);
+                                                break;
+                                            }
                                         }
+                                        int scrollBarSize = m18_tv_result.getLineHeight() * n[0];
+                                        m18_tv_result.scrollTo(0, scrollBarSize);
                                     }
-                                    int scrollBarSize = m18_tv_result.getLineHeight() * n[0];
-                                    m18_tv_result.scrollTo(0, scrollBarSize);
                                 }
+                            });
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
                             }
-                        });
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
+                            stopThread();
+                            nextSong();
                         }
                     }
+
                 }
             }
         }
@@ -593,6 +601,7 @@ public class Main18Activity extends Activity {
     }
 
     public void nextSong() {
+//        stopMusic(mediaPlayer);
         if (index < music_list.size() - 1) {
             index++;
         } else {
@@ -604,6 +613,7 @@ public class Main18Activity extends Activity {
     }
 
     public void lastSong() {
+//        stopMusic(mediaPlayer);
         if (index > 0) {
             index--;
         } else {

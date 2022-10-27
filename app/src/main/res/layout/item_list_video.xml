@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:background="@drawable/bg_tv3"
+    android:background="@drawable/bg_tv1"
     android:layout_margin="5dp"
     android:paddingTop="15dp"
     android:paddingBottom="15dp"
@@ -16,7 +16,7 @@
         android:textStyle="bold"
         android:layout_centerVertical="true"
         android:layout_marginLeft="8dp"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/bg_1"
         android:layout_weight="8"
         android:textSize="20sp"
         android:text="影视名称"/>
@@ -25,9 +25,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="标签"
-
         android:textColor="@color/white_80"
-        android:background="@drawable/bg_tv1"
+        android:background="@drawable/bg_jshine"
         android:padding="4dp"
         android:layout_marginLeft="8dp"
         android:textSize="10sp"
@@ -38,7 +37,7 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:padding="3dp"
-        android:background="@drawable/bg_tv2"
+        android:background="@drawable/bg_jupiter"
         android:gravity="center_vertical"
         >
         <ImageView
@@ -47,12 +46,14 @@
             android:layout_height="15dp"
             android:layout_margin="2dp"
             android:src="@drawable/icon"/>
+
         <TextView
             android:id="@+id/item_video_website"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:textColor="@color/colorPrimary"
+            android:layout_margin="2dp"
+            android:textColor="@color/white_80"
             android:text="影视平台"/>
     </LinearLayout>
 

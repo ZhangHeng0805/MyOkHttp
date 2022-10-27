@@ -81,10 +81,6 @@ public class Main3Activity extends Activity {
             "8.新华字典查询（API）",//Main9Activity
             "9.图书电商查询（API）",//Main10Activity
 //            "10.查询文件列表并下载（自制服务器）",//Main11Activity
-//            "11.自制地图（高德地图）",//M12_LoginActivity
-//            "12.自制网络聊天室",//Main13Activity
-//            "13.自制聊天室(无效)",//Main14Activity
-//            "14.购物软件框架（自制服务器）",//Main15Activity
 //            "15.自制下拉刷新的ListView（测试）",//Test1Activity
             "16.手机通讯录",//Main16Activity
             "17.手机扫码",//Main17Activity
@@ -106,10 +102,6 @@ public class Main3Activity extends Activity {
         contextMap.put(8, Main9Activity.class);
         contextMap.put(9, Main10Activity.class);
         contextMap.put(10, Main11Activity.class);
-        contextMap.put(11, M12_LoginActivity.class);
-        contextMap.put(12, Main13Activity.class);
-        contextMap.put(13, Main14Activity.class);
-        contextMap.put(14, Main15Activity.class);
         contextMap.put(15, Test1Activity.class);
         contextMap.put(16, Main16Activity.class);
         contextMap.put(17, Main17Activity.class);
@@ -275,7 +267,7 @@ public class Main3Activity extends Activity {
                                     Log.d(Tag, msg.toString());
                                 }
                                 m3_tv_service.setText("服务器已连接");
-                                m3_tv_service.setTextColor(getColor(R.color.black));
+                                m3_tv_service.setTextColor(getColor(R.color.colorPrimary));
                             } catch (Exception e) {
                                 Log.e(Tag, "更新错误" + e.toString());
                             }
