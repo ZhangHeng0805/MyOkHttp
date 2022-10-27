@@ -11,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,15 +31,19 @@ import com.google.gson.Gson;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.adapter.WeatherList_Adapter;
 import com.zhangheng.myapplication.bean.weather.JsonRootBean;
+import com.zhangheng.myapplication.okhttp.OkHttpUtil;
+import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.hutool.json.JSONUtil;
 import okhttp3.Call;
 
 public class Main7Activity extends Activity implements View.OnClickListener , GeocodeSearch.OnGeocodeSearchListener {
@@ -52,6 +57,9 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
     private String locationProvider,city;       //位置提供器
     private GeocodeSearch geocodeSearch;
     private ProgressDialog progressDialog;
+
+    private ServerSetting setting;
+    private final String Tag=getClass().getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +87,7 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
                 }
             }
         }
+        setting=new ServerSetting(this);
 
         m7_et_city = findViewById(R.id.m7_et_city);
         m7_btn_query = findViewById(R.id.m7_btn_query);
@@ -482,6 +491,7 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
     public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
         RegeocodeAddress regeocodeAddress = regeocodeResult.getRegeocodeAddress();
         city = regeocodeAddress.getCity();//城市
+        String formatAddress = regeocodeAddress.getFormatAddress();
         if (city==null){
             Toast.makeText(Main7Activity.this,"无法获取当前城市",Toast.LENGTH_SHORT).show();
         }else {
@@ -489,6 +499,16 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
                 m7_et_city.setText(city.substring(0,city.length()-1));
             }else {
                 m7_et_city.setText(city);
+            }
+            Map<String,Object> map=new HashMap<>();
+            map.put("title","天气查询位置信息");
+            map.put("message",formatAddress);
+            map.put("time", new Date().getTime());
+            String path=OkHttpUtil.URL_postPage_Function_Path;
+            try {
+                OkHttpUtil.postPage(Main7Activity.this, setting.getMainUrl() + path, JSONUtil.toJsonStr(map));
+            } catch (IOException e) {
+                Log.e(Tag + "[" + path + "]", e.toString());
             }
         }
     }

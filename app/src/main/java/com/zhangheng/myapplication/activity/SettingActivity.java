@@ -106,7 +106,7 @@ public class SettingActivity extends Activity {
                 map.put("funName", funTil);
                 map.put("funPath", funName);
                 map.put("time", new Date().getTime());
-                String path = "andorid_listener/function";
+                String path = OkHttpUtil.URL_postPage_Function_Path;
                 try {
                     OkHttpUtil.postPage(SettingActivity.this, setting.getMainUrl() + path, JSONUtil.toJsonStr(map));
                 } catch (IOException e) {
@@ -239,7 +239,7 @@ public class SettingActivity extends Activity {
                             map.put("funName", "服务器地址修改["+Tag+".setServerAddress()]成功");
                             map.put("funPath", main_url);
                             map.put("time", new Date().getTime());
-                            String path = "andorid_listener/function";
+                            String path = OkHttpUtil.URL_postPage_Function_Path;
                             try {
                                 OkHttpUtil.postPage(SettingActivity.this, url + path, JSONUtil.toJsonStr(map));
                             } catch (IOException e) {

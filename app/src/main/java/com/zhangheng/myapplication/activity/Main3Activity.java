@@ -139,7 +139,7 @@ public class Main3Activity extends Activity {
                 map.put("pageName", "系统设置");
                 map.put("pagePath", SettingActivity.class.getName());
                 map.put("time", new Date().getTime());
-                String path = "andorid_listener/intent";
+                String path = OkHttpUtil.URL_postPage_Intent_Path;
                 try {
                     OkHttpUtil.postPage(Main3Activity.this, setting.getMainUrl() + path, JSONUtil.toJsonStr(map));
                 } catch (IOException e) {
@@ -179,7 +179,7 @@ public class Main3Activity extends Activity {
                     map.put("pageName", item);
                     map.put("pagePath", aClass.getName());
                     map.put("time", new Date().getTime());
-                    String path = "andorid_listener/intent";
+                    String path = OkHttpUtil.URL_postPage_Intent_Path;
                     try {
                         OkHttpUtil.postPage(Main3Activity.this, setting.getMainUrl() + path, JSONUtil.toJsonStr(map));
                     } catch (IOException e) {

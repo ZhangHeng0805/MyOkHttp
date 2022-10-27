@@ -13,6 +13,11 @@ import okhttp3.Call;
 
 public class OkHttpUtil {
 
+
+    public final static String URL_postPage_Intent_Path="android_listener/intent";
+    public final static String URL_postPage_Function_Path="android_listener/function";
+
+
     public static void postPage(Context context,String url, String json) throws IOException {
         OkHttpUtils
                 .post()
