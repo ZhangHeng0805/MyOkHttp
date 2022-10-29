@@ -28,7 +28,8 @@
 * 2、使用Okhttputils完成大文件的下载，上传文件和分类检索本地文件，请求单张图片并显示
 * 3、以及使用一些API数据接口完成天气的查询，生成二维码，新华字典查询，图书电商查询。。。
 * 4、加入地图组件，使用高德地图的地图组件
-* 本项目使用的的服务器是我的一个项目[File-Management-Server](https://github.com/ZhangHeng0805/File-Management-Server)
+* 5、使用Java爬虫获取第三数据
+* 本项目使用的的服务器暂时没有上传开源
 # 软件截图
 <p>
 <img height="400px" alt="主页菜单" src="https://user-images.githubusercontent.com/74289276/198841986-e994d978-148f-48ed-8d37-1d85fc0b8006.jpg"/>
