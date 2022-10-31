@@ -31,6 +31,7 @@
 * 5、使用Java爬虫获取第三数据
 * 本项目使用的的服务器暂时没有上传开源
 # 软件截图
+<div>
 <p>
 <img height="400px" alt="主页菜单" src="https://user-images.githubusercontent.com/74289276/198841986-e994d978-148f-48ed-8d37-1d85fc0b8006.jpg"/>
 <img height="400px" alt="音乐资源" src="https://user-images.githubusercontent.com/74289276/198842005-e62e493e-a10b-4ac7-bbc7-123a99d2949f.jpg"/>
@@ -38,6 +39,7 @@
 <img height="400px" alt="翻译" src="https://user-images.githubusercontent.com/74289276/198842061-c090252c-7da1-43e9-b688-7ace77e73376.jpg"/>
 <img height="400px" alt="疫情数据" src="https://user-images.githubusercontent.com/74289276/198842071-b91d7d28-d62e-4d4e-b991-f475676b0d07.jpg"/>
 </p>
+</div>
 # 错误异常         
 ## 1、Android studio 打包apk后发给别人，安装失败。失败原因显示：应用是非正式发布版本，当前设备不支持安装。
 在自己手机上也无法安装，之后连接USB进行调试时可以运行，打包成APK安装就会显示下图错误：
