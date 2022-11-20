@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.zhangheng.myapplication.R;
+import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -30,7 +31,7 @@ public class ServerSetting {
             main_url=context.getResources().getString(R.string.zhangheng_url);
         }
         SharedPreferences.Editor editor=preferences.edit();
-        editor.putString("main_url",main_url);
+        editor.putString(PhoneSystem.getVersionCode(context)+context.getString(R.string.server_setting_flag),main_url);
         boolean commit = editor.commit();
         return commit;
     }
@@ -41,8 +42,7 @@ public class ServerSetting {
      * @return
      */
     public String getMainUrl(){
-
-        String main_url = preferences.getString("main_url", null);
+        String main_url = preferences.getString(PhoneSystem.getVersionCode(context)+context.getString(R.string.server_setting_flag), null);
         if (main_url==null){
             main_url=context.getResources().getString(R.string.zhangheng_url);
         }

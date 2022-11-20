@@ -26,6 +26,7 @@ import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
 import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhangheng.myapplication.util.DialogUtil;
+import com.zhangheng.util.TimeUtil;
 
 import java.io.IOException;
 import java.util.Date;
@@ -199,9 +200,9 @@ public class SettingActivity extends Activity {
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String versionCode = PhoneSystem.getVersionCode(SettingActivity.this);
+                String code = PhoneSystem.getVersionCode(SettingActivity.this)+ TimeUtil.getTime(TimeUtil.Day);
                 String s = pwd.getText().toString();
-                if (versionCode.equals(s)) {
+                if (code.equals(s)) {
                     setServerAddress();
                 } else {
                     Toast.makeText(SettingActivity.this, "验证失败", Toast.LENGTH_SHORT).show();

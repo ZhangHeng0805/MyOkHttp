@@ -4,8 +4,13 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Environment;
 import android.provider.MediaStore;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +21,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class LocalFileTool {
+    public final static String BasePath= Environment.getExternalStorageDirectory().getAbsolutePath();
     public static final String[] imageType=new String[]{"image/bmp","image/jpeg","image/png"};
     public static final String[] videoType=new String[]{"video/3gpp","video/x-ms-asf",
             "video/x-msvideo", "video/vnd.mpegurl","video/x-m4v","video/quicktime",
@@ -94,5 +100,56 @@ public class LocalFileTool {
     {
         void callBack(List<String> localPath);
     }
-
+    public static String getFileSizeString(Long size) {
+        double length = Double.valueOf(String.valueOf(size));
+        //如果字节数少于1024，则直接以B为单位，否则先除于1024，后3位因太少意义
+        if (length < 1024) {
+            return length + "B";
+        } else {
+            length = length / 1024.0;
+        }
+        //如果原字节数除于1024之后，少于1024，则可以直接以KB作为单位
+        //因为还没有到达要使用另一个单位的时候
+        //接下去以此类推
+        if (length < 1024) {
+            return Math.round(length * 100) / 100.0 + "KB";
+        } else {
+            length = length / 1024.0;
+        }
+        if (length < 1024) {
+            //因为如果以 MB为单位的话，要保留最后1位小数，因此把此数乘以100之后再取余
+            return Math.round(length * 100) / 100.0 + "MB";
+        } else {
+            //否则如果要以为单位的，先除于1024再作同样的处理 GB
+            return Math.round(length / 1024 * 100) / 100.0 + "GB";
+        }
+    }
+    /**
+     * 文件转换byte数组
+     * @param file 文件
+     * @return byte[]
+     */
+    public static byte[] fileToBytes(File file){
+        FileInputStream is = null;
+        byte[] fileBytes=null;
+        try {
+            is = new FileInputStream(file);
+            long length = file.length();
+            fileBytes= new byte[(int) length];
+            is.read(fileBytes);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (is!=null) {
+                    is.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return fileBytes;
+    }
 }

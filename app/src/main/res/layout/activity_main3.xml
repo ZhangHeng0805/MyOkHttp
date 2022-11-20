@@ -30,6 +30,12 @@
             android:layout_marginLeft="10dp"
             android:layout_weight="9"
             >
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:gravity="center_vertical"
+                >
             <TextView
                 android:id="@+id/m3_tv_service"
                 android:layout_width="wrap_content"
@@ -38,7 +44,17 @@
                 android:textColor="@color/red"
                 android:text="服务器状态加载中..."
                 android:layout_weight="1"
-                android:paddingTop="5dp"/>
+                />
+                <ImageView
+                    android:id="@+id/m3_iv_service_refersh"
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="5dp"
+                    android:src="@drawable/service_refresh"
+                    android:textAlignment="center"
+                    android:tooltipText="服务刷新"
+                    />
+            </LinearLayout>
             <TextView
                 android:id="@+id/m3_tv_ipAddress"
                 android:layout_width="wrap_content"
@@ -55,6 +71,7 @@
             android:layout_height="50dp"
             android:src="@drawable/setting"
             android:padding="8dp"
+            android:tooltipText="设置"
             />
     </LinearLayout>
     <ListView

@@ -3,6 +3,8 @@ package com.zhangheng.myapplication.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import cn.hutool.core.date.DateUtil;
+
 public class TimeUtil {
     public static String getSystemTime(){
         SimpleDateFormat df = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");//设置日期格式
@@ -45,8 +47,22 @@ public class TimeUtil {
         return m;
     }
 
-    public static void main(String[] args) {
-        System.out.println(format(11930));
+    /**
+     * 将Date日期转换为Unix时间戳
+     * @param date 日期
+     * @return 转化的Unix时间戳
+     */
+    public static String dateToUnix(Date date){
+        return Long.toString(date.getTime() / 1000L);
     }
-
+    /**
+     * 将Unix时间戳转换为日期Date
+     * @param unix Unix时间戳
+     * @return 转换的日期
+     */
+    public static Date UnixToDate(String unix){
+        Long unixLong = Long.valueOf(unix)*1000;
+        Date UnixDate = DateUtil.date(unixLong);
+        return UnixDate;
+    }
 }

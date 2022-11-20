@@ -169,7 +169,7 @@
                         android:layout_height="30dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginRight="35dp"
-                        android:background="@color/zxing_custom_possible_result_points"
+                        android:background="@color/blue"
                         android:src="@drawable/previous" />
 
                     <ImageView
@@ -186,7 +186,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_marginTop="5dp"
-                        android:background="@color/zxing_custom_possible_result_points"
+                        android:background="@color/blue"
                         android:src="@drawable/next" />
                 </LinearLayout>
             </LinearLayout>
