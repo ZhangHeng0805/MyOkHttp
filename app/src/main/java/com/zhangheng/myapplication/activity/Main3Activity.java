@@ -84,7 +84,7 @@ public class Main3Activity extends Activity {
 //            "1.原生OkHttp的Get和Post请求文本数据",//MainActivity
 //            "2.使用OkHttpUtil的Post提交文本数据",//Main2Activity
             "3.使用OkHttpUtil下载文件",//Main4Activity
-            "4.上传文件和检索本地文件",//Main5Activity
+//            "4.上传文件和检索本地文件",//Main5Activity
             "5.请求单张图片并显示",//Main6Activity
             "6.查询天气列表（API）",//Main7Activity
             "7.生成二维码",//Main8Activity
