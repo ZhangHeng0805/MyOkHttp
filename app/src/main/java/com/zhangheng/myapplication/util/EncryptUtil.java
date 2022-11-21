@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import static com.zhangheng.util.EncryptUtil.deBase64;
 
 
 /**
@@ -212,24 +213,11 @@ public class EncryptUtil {
      */
     public static String getMyMd5(String encodestr)
     {
-        try
-        {
-            char[] hexDigits = { '9', '0', '1', '4', 'z', '2', 'h', '5', 'a', '6', 'h', 'g', 'x', '7', '8', '3' };
-            byte[] strTemp = encodestr.getBytes();
-            MessageDigest mdTemp = MessageDigest.getInstance("MD5");
-            mdTemp.update(strTemp);
-            byte[] md = mdTemp.digest();
-            int j = md.length;
-            char[] str = new char[j * 2];
-            int k = 0;
-            for (int i = 0; i < j; i++) {
-                byte byte0 = md[i];
-                str[(k++)] = hexDigits[(byte0 >>> 4 & 0xF)];
-                str[(k++)] = hexDigits[(byte0 & 0xF)];
-            }
-            return new String(str);
-        }
-        catch (NoSuchAlgorithmException e) {
+        String hexDigits = "OTAxNHoyaDVhNmhneDc4Mw==";
+        try {
+            String s = new String(deBase64(hexDigits));
+            return getMyMd5(encodestr, s);
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return null;

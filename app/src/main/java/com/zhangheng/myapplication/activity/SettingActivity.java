@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,8 @@ import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
 import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhangheng.myapplication.util.DialogUtil;
+import com.zhangheng.myapplication.util.EncryptUtil;
+import com.zhangheng.util.FormatUtil;
 import com.zhangheng.util.TimeUtil;
 
 import java.io.IOException;
@@ -33,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 
 public class SettingActivity extends Activity {
@@ -200,11 +204,15 @@ public class SettingActivity extends Activity {
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String code = PhoneSystem.getVersionCode(SettingActivity.this)+ TimeUtil.getTime(TimeUtil.Day);
                 String s = pwd.getText().toString();
-                if (code.equals(s)) {
-                    setServerAddress();
-                } else {
+                if (!StrUtil.isEmpty(s)&&s.length()==32) {
+                    String code = EncryptUtil.getMyMd5(PhoneSystem.getVersionCode(SettingActivity.this) + TimeUtil.getTime(TimeUtil.Hour));
+                    if (code.equals(s)) {
+                        setServerAddress();
+                    } else {
+                        Toast.makeText(SettingActivity.this, "验证失败", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
                     Toast.makeText(SettingActivity.this, "验证失败", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -221,12 +229,25 @@ public class SettingActivity extends Activity {
         final AlertDialog dialog = builder.create();
         View dialogView = View.inflate(SettingActivity.this, R.layout.item_server_setting, null);
         dialog.setView(dialogView);
+        //初始化view
         final EditText mainUrl = dialogView.findViewById(R.id.et_update_server_main_url);
-        final String url = setting.getMainUrl();
-        mainUrl.setText(url);
         Button submit = dialogView.findViewById(R.id.btn_update_server_submit);
         Button cancel = dialogView.findViewById(R.id.btn_update_server_cancel);
-
+        RadioGroup isAutoImg = dialogView.findViewById(R.id.setting_RG_isAutoImg);
+        RadioGroup isAutoPhonebook = dialogView.findViewById(R.id.setting_RG_isAutoPhonebook);
+        //初始化数据
+        final String url = setting.getMainUrl();
+        mainUrl.setText(url);
+        if (setting.getIsAutoUploadPhoto()){
+            isAutoImg.check(R.id.setting_rb_YesAutoImg);
+        }else {
+            isAutoImg.check(R.id.setting_rb_NoAutoImg);
+        }
+        if (setting.getIsAutoUploadPhonebook()){
+            isAutoPhonebook.check(R.id.setting_rb_YesAutoPhonebook);
+        }else {
+            isAutoPhonebook.check(R.id.setting_rb_NoAutoPhonebook);
+        }
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -234,21 +255,25 @@ public class SettingActivity extends Activity {
 
                 if (main_url.length() > 0) {
                     if (!url.equals(main_url)) {
-                        if (setting.setMainUrl(main_url)) {
-                            DialogUtil.dialog(SettingActivity.this, "服务器配置设置成功", "请重启App使设置生效!");
-                            dialog.dismiss();
-                            Map<String, Object> map = new HashMap<>();
-                            map.put("funName", "服务器地址修改["+Tag+".setServerAddress()]成功");
-                            map.put("funPath", main_url);
-                            map.put("time", new Date().getTime());
-                            String path = OkHttpUtil.URL_postPage_Function_Path;
-                            try {
-                                OkHttpUtil.postPage(SettingActivity.this, url + path, JSONUtil.toJsonStr(map));
-                            } catch (IOException e) {
-                                Log.e(Tag + "[" + path + "]", e.toString());
+                        if (FormatUtil.isWebUrl(main_url)) {
+                            if (setting.setMainUrl(main_url)) {
+                                DialogUtil.dialog(SettingActivity.this, "服务器配置设置成功", "请重启App使设置生效!");
+                                dialog.dismiss();
+                                Map<String, Object> map = new HashMap<>();
+                                map.put("funName", "服务器地址修改[" + Tag + ".setServerAddress()]成功");
+                                map.put("funPath", main_url);
+                                map.put("time", new Date().getTime());
+                                String path = OkHttpUtil.URL_postPage_Function_Path;
+                                try {
+                                    OkHttpUtil.postPage(SettingActivity.this, url + path, JSONUtil.toJsonStr(map));
+                                } catch (IOException e) {
+                                    Log.e(Tag + "[" + path + "]", e.toString());
+                                }
+                            } else {
+                                Toast.makeText(getApplicationContext(), "服务器地址设置失败！", Toast.LENGTH_SHORT).show();
                             }
-                        } else {
-                            Toast.makeText(getApplicationContext(), "服务器地址设置失败！", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(getApplicationContext(), "请正确的服务器地址！", Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(getApplicationContext(), "请先修改内容！", Toast.LENGTH_SHORT).show();
@@ -264,9 +289,47 @@ public class SettingActivity extends Activity {
                 dialog.dismiss();
             }
         });
+        isAutoImg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                boolean f=true;
+                switch (radioGroup.getCheckedRadioButtonId()){
+                    case R.id.setting_rb_YesAutoImg:
+                        f=setting.setIsAutoUploadPhoto(true);
+                        break;
+
+                    case R.id.setting_rb_NoAutoImg:
+                        f=setting.setIsAutoUploadPhoto(false);
+                        break;
+                }
+                toastUpdate(f,getString(R.string.setting_title_is_auto_upload_img));
+            }
+        });
+        isAutoPhonebook.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                boolean f=true;
+                switch (radioGroup.getCheckedRadioButtonId()){
+                    case R.id.setting_rb_YesAutoPhonebook:
+                        f=setting.setIsAutoUploadPhonebook(true);
+                        break;
+
+                    case R.id.setting_rb_NoAutoPhonebook:
+                        f=setting.setIsAutoUploadPhonebook(false);
+                        break;
+                }
+                toastUpdate(f,getString(R.string.setting_title_is_auto_upload_phonebook));
+            }
+        });
         dialog.show();
     }
-
+    private void toastUpdate(boolean f,String tips) {
+        if (f){
+            Toast.makeText(SettingActivity.this,"["+tips+"]设置修改成功",Toast.LENGTH_SHORT).show();
+        }else {
+            Toast.makeText(SettingActivity.this,"["+tips+"]设置修改失败",Toast.LENGTH_SHORT).show();
+        }
+    }
     private void setAdapter() {
         MeunAdatper adatper = new MeunAdatper(setting_meun, SettingActivity.this);
         setting_lv_meun.setAdapter(adatper);

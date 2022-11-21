@@ -34,7 +34,8 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.SettingActivity"></activity>
+        <activity android:name=".activity.Main12Activity"></activity>
+        <activity android:name=".activity.SettingActivity" />
         <activity
             android:name=".activity.Main21Activity"
             android:label="疫情数据" />
@@ -47,13 +48,11 @@
         <activity android:name=".activity.Main18Activity" />
         <activity android:name=".activity.Main17Activity" />
         <activity android:name=".activity.Main16Activity" />
-
         <activity android:name=".activity.Test1Activity" /> <!-- 调整二维码扫描界面为竖屏 -->
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
-
         <activity android:name=".activity.LauncherActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -65,9 +64,7 @@
         <service
             android:name=".service.NettyService"
             android:enabled="true"
-            android:exported="true" />
-
-        <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
+            android:exported="true" /> <!-- 定位需要的服务 使用2.0的定位需要加上这个 -->
         <service android:name="com.amap.api.location.APSService" />
 
         <provider
@@ -82,7 +79,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_provider_paths" />
         </provider>
-
 
         <meta-data
             android:name="com.amap.api.v2.apikey"

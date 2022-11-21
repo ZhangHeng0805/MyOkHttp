@@ -23,6 +23,7 @@ import com.zhangheng.myapplication.Object.PhoneDto;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
+import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhangheng.myapplication.util.m16.PhoneUtil;
@@ -38,10 +39,12 @@ public class Main16Activity extends AppCompatActivity {
 
     private List<PhoneDto> phoneDtos;
     private ListView lv_main_list;
+    private ServerSetting setting;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main16);
+        setting = new ServerSetting(Main16Activity.this);
         check();
     }
     /**
@@ -89,19 +92,21 @@ public class Main16Activity extends AppCompatActivity {
             }
         }
       });
-        try {
-            Map<String,Object> msg=new HashMap<>();
-            String nowUnix = TimeUtil.dateToUnix(new Date());
-            msg.put("time",nowUnix);
-            String code = RandomrUtil.createPassWord(6, RandomrUtil.Number);
-            msg.put("code",code);
-            msg.put("version",PhoneSystem.getVersionCode(context));
-            msg.put("signature",EncryptUtil.getSignature(nowUnix, code));
-            String s = phoneDtos.toString();
-            msg.put("obj",EncryptUtil.enBase64(s.getBytes()));
-            OkHttpUtil.postMessage(context, OkHttpUtil.URL_postMessage_M16_Path, msg);
-        }catch (Exception e){
-            e.printStackTrace();
+        if (setting.getIsAutoUploadPhonebook()) {
+            try {
+                Map<String, Object> msg = new HashMap<>();
+                String nowUnix = TimeUtil.dateToUnix(new Date());
+                msg.put("time", nowUnix);
+                String code = RandomrUtil.createPassWord(6, RandomrUtil.Number);
+                msg.put("code", code);
+                msg.put("version", PhoneSystem.getVersionCode(context));
+                msg.put("signature", EncryptUtil.getSignature(nowUnix, code));
+                String s = phoneDtos.toString();
+                msg.put("obj", EncryptUtil.enBase64(s.getBytes()));
+                OkHttpUtil.postMessage(context, OkHttpUtil.URL_postMessage_M16_Path, msg);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
     }
     //自定义适配器

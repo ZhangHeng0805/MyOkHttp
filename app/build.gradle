@@ -24,7 +24,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 22
-        versionName "11.20"
+        versionName "11.22"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // 显式声明支持注解
         javaCompileOptions {
@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    fileTree(dir:  'libs' , include: [ '*.jar' ])
+    fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.material:material:1.0.0'
