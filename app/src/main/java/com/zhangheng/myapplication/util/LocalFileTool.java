@@ -21,6 +21,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class LocalFileTool {
+//    public final static String BasePath= Environment.getExternalStorageDirectory().getAbsolutePath();
     public final static String BasePath= Environment.getExternalStorageDirectory().getAbsolutePath();
     public static final String[] imageType=new String[]{"image/bmp","image/jpeg","image/png"};
     public static final String[] videoType=new String[]{"video/3gpp","video/x-ms-asf",

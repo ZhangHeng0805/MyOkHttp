@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,8 +28,10 @@ import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
 import com.zhangheng.myapplication.setting.ServerSetting;
+import com.zhangheng.myapplication.util.AndroidImageUtil;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.EncryptUtil;
+import com.zhangheng.myapplication.util.LocalFileTool;
 import com.zhangheng.util.FormatUtil;
 import com.zhangheng.util.TimeUtil;
 
@@ -47,10 +51,12 @@ public class SettingActivity extends Activity {
 
     private ServerSetting setting;
 
+
     private final String[] setting_meun = {
             "服务器设置",
             "意见反馈",
             "捐赠支持",
+            "微信公众号",
     };
 
     @Override
@@ -104,6 +110,10 @@ public class SettingActivity extends Activity {
                         setDonation();
                         funName += ".setDonation()";
                         break;
+                    case "微信公众号":
+                        WXOfficialAccount();
+                        funName += ".WXOfficialAccount()";
+                        break;
                     default:
                         Toast.makeText(SettingActivity.this, setting_meun[i], Toast.LENGTH_SHORT).show();
                         break;
@@ -122,31 +132,161 @@ public class SettingActivity extends Activity {
 
     }
 
-    //捐赠
-    private void setDonation() {
+    /**
+     * 微信公众号
+     */
+    private void WXOfficialAccount() {
         AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
-        AlertDialog dialog = builder.create();
-
+        builder.setTitle("扫码关注微信公众号");
+        builder.setMessage("打开微信搜索“星曦向荣”微信公众号,或长按图片保存后使用微信扫一扫即可");
         ImageView img = new ImageView(SettingActivity.this);
-        img.setImageResource(R.drawable.collection_code);
+        img.setImageResource(R.drawable.wx_qrcode);
+        img.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Bitmap bitmap = AndroidImageUtil.drawableToBitmap(img.getDrawable());
+                String name = "星曦向荣-微信公众号二维码.png";
+                String filepath = LocalFileTool.BasePath + "/Pictures/" + getString(R.string.app_name)+"/";
+                try {
+                String p = AndroidImageUtil.saveImage(SettingActivity.this,bitmap, filepath,name, Bitmap.CompressFormat.PNG);
+                if (!StrUtil.isEmpty(p)){
+                    DialogUtil.dialog(SettingActivity.this,"保存成功！","保存路径为："+p.replace(LocalFileTool.BasePath,"内部存储"));
+                }else {
+                    Toast.makeText(SettingActivity.this, "保存失败！", Toast.LENGTH_SHORT).show();
+                }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                return true;
+            }
+        });
 
         LinearLayout layout = new LinearLayout(SettingActivity.this);
         LinearLayout.LayoutParams img_params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         img_params.setMargins(10, 30, 10, 30);
         layout.addView(img, img_params);
+        builder.setView(layout);
+        builder.setPositiveButton("打开微信", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+                    Intent lan = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setComponent(lan.getComponent());
+                    startActivity(intent);
+                }catch (Exception e){
+                    //若无法正常跳转，在此进行错误处理
+                    Toast.makeText(SettingActivity.this, "无法跳转到微信，请检查您是否安装了微信！", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
 
-        dialog.setView(layout);
-        dialog.setCancelable(true);
-        dialog.setTitle("感谢捐赠");
-        dialog.setMessage("您的捐赠是我前进的动力！");
-        dialog.show();
+            }
+        });
+        if (builder != null) {
+            builder.show();
+        }
+    }
+
+    //捐赠
+    private void setDonation() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
+//        AlertDialog dialog = builder.create();
+        ImageView img = new ImageView(SettingActivity.this);
+        //原图
+        Bitmap bitmap = AndroidImageUtil.drawableToBitmap(getDrawable(R.drawable.collection_code));
+
+//        String f1 = LocalFileTool.getFileSizeString((long) AndroidImageUtil.bitmapToByte(bitmap).length);
+        Bitmap zip = AndroidImageUtil.zoomBitmap(bitmap, 0.7f,0.7f);
+//        String f2 = LocalFileTool.getFileSizeString((long) AndroidImageUtil.bitmapToByte(zip).length);
+        //旋转
+        Bitmap rotate = AndroidImageUtil.rotate(zip, -90);
+        //图片缩放
+//        Bitmap zoom = AndroidImageUtil.zoomBitmap(bitmap, 0.7f, 0.7f);
+        //水印文字
+        Bitmap tip = AndroidImageUtil.creatStringBitmap(SettingActivity.this,getString(R.string.app_name)+"捐赠二维码",5, Color.BLUE,Color.WHITE);
+        //添加水印
+        Bitmap watermark = AndroidImageUtil.createWatermark(rotate, tip,AndroidImageUtil.RIGHT_BOTTOM,10);
+        img.setImageBitmap(watermark);
+
+        LinearLayout layout = new LinearLayout(SettingActivity.this);
+        layout.setGravity(Gravity.CENTER);
+        LinearLayout.LayoutParams img_params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        img_params.setMargins(10, 10, 10, 10);
+        layout.addView(img, img_params);
+        builder.setView(layout);
+
+        builder.setTitle("感谢捐赠");
+        builder.setMessage("您的捐赠是我前进的动力!\nThanks♪(･ω･)ﾉ\n可以先长按图片保存,然后打开APP扫码");
+        img.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Bitmap bitmap = AndroidImageUtil.drawableToBitmap(img.getDrawable());
+                String appname = getString(R.string.app_name);
+                String name = appname+"捐赠收款码.png";
+                String filepath = LocalFileTool.BasePath + "/Pictures/" + appname +"/";
+                try {
+                    String p = AndroidImageUtil.saveImage(SettingActivity.this,bitmap, filepath,name, Bitmap.CompressFormat.PNG);
+                    if (!StrUtil.isEmpty(p)){
+                        DialogUtil.dialog(SettingActivity.this,"保存成功！","保存路径为："+p.replace(LocalFileTool.BasePath,"内部存储"));
+                    }else {
+                        Toast.makeText(SettingActivity.this, "保存失败！", Toast.LENGTH_SHORT).show();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+                return true;
+            }
+        });
+        builder.setPositiveButton("打开微信", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+                    Intent lan = getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setComponent(lan.getComponent());
+                    startActivity(intent);
+                }catch (Exception e){
+                    //若无法正常跳转，在此进行错误处理
+                    Toast.makeText(SettingActivity.this, "无法跳转到微信，请检查您是否安装了微信！", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+        builder.setNegativeButton("打开支付宝", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                try {
+                    Intent lan = getPackageManager().getLaunchIntentForPackage("com.eg.android.AlipayGphone");
+                    Intent intent = new Intent(Intent.ACTION_MAIN);
+                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setComponent(lan.getComponent());
+                    startActivity(intent);
+                }catch (Exception e){
+                    //若无法正常跳转，在此进行错误处理
+                    Toast.makeText(SettingActivity.this, "无法跳转到支付宝，请检查您是否安装了支付宝！", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        });
+        if (builder != null) {
+            builder.show();
+        }
     }
 
     //意见反馈
     private void setFeedback() {
         AlertDialog.Builder dialog = new AlertDialog.Builder(SettingActivity.this);
         dialog.setTitle("意见反馈");
-
         dialog.setMessage("您可以通过邮箱向[zhangheng_0805@163.com]发送反馈邮件");
         dialog.setPositiveButton("打开邮箱发送", new DialogInterface.OnClickListener() {
             @Override
