@@ -72,10 +72,12 @@ public class Main10Activity extends AppCompatActivity {
                 .params(map)
                 .build()
                 .execute(new StringCallback() {
+                    private final Main10Activity context = Main10Activity.this;
+
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         dialogUtil.closeProgressDialog();
-                        Toast.makeText(Main10Activity.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -88,21 +90,23 @@ public class Main10Activity extends AppCompatActivity {
                             if (result.size() > 0) {
                                 setAdapter(result);
                             } else {
-                                Toast.makeText(Main10Activity.this, "没有请求到数据", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(context, "没有请求到数据", Toast.LENGTH_SHORT).show();
                             }
                         }else {
-                            switch (resultcode){
-                                case "112":
-                                    Toast.makeText(Main10Activity.this, "今天请求超过次数限制（100次）", Toast.LENGTH_SHORT).show();
-                                    break;
-                                case "120":
-                                    Toast.makeText(Main10Activity.this, "系统维护，暂时停用", Toast.LENGTH_SHORT).show();
-                                    break;
-                                default:
-                                    Toast.makeText(Main10Activity.this, "错误码："+resultcode, Toast.LENGTH_SHORT).show();
-                                    break;
+                            String msg = null;
+                            if (resultcode.equals("10011")||resultcode.equals("111")){
+                                msg="当前IP请求超过限制";
+                            }else if (resultcode.equals("10012")||resultcode.equals("112")){
+                                msg="请求超过次数限制,请明日再来";
+                            }else if (resultcode.equals("10020")||resultcode.equals("120")){
+                                msg="功能维护中...";
+                            }else if (resultcode.equals("10021")||resultcode.equals("121")){
+                                msg="对不起,该功能已停用";
                             }
-
+                            else {
+                                msg="错误码："+ resultcode;
+                            }
+                            Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
                         }
                         dialogUtil.closeProgressDialog();
                     }

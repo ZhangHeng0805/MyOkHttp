@@ -63,29 +63,44 @@ public class Main10Activity_1 extends AppCompatActivity  {
                 .params(map)
                 .build()
                 .execute(new StringCallback() {
+                    private final Main10Activity_1 context = Main10Activity_1.this;
+
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         dialogUtil.closeProgressDialog();
-                        Toast.makeText(Main10Activity_1.this, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
                         Gson gson = new Gson();
                         BookListBean bean = gson.fromJson(response, BookListBean.class);
-                        if (bean.getError_code()==0){
+                        int error_code = bean.getError_code();
+                        if (error_code ==0){
                             data = bean.getResult().getData();
-                            listView.setAdapter(new BookList_Adapter(Main10Activity_1.this,data));
+                            listView.setAdapter(new BookList_Adapter(context,data));
                             String rn = bean.getResult().getRn();
                             String totalNum = bean.getResult().getTotalNum();
                             if (Integer.valueOf(rn)>Integer.valueOf(totalNum)){
                                 rn=totalNum;
                             }
-                            Toast.makeText(Main10Activity_1.this,"加载："+rn+"/"+totalNum,Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context,"加载："+rn+"/"+totalNum,Toast.LENGTH_SHORT).show();
 
                         }else {
-                            Toast.makeText(Main10Activity_1.this, "错误码：" + bean.getError_code(), Toast.LENGTH_SHORT).show();
-
+                            String msg = null;
+                            if (error_code ==10011||error_code==111){
+                                msg="当前IP请求超过限制";
+                            }else if (error_code ==10012||error_code==112){
+                                msg="请求超过次数限制,请明日再来";
+                            }else if (error_code ==10020||error_code==120){
+                                msg="功能维护中...";
+                            }else if (error_code ==10021||error_code==121){
+                                msg="对不起,该功能已停用";
+                            }
+                            else {
+                                msg="错误码："+ error_code;
+                            }
+                            Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
                         }
                         dialogUtil.closeProgressDialog();
                     }

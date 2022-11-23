@@ -145,7 +145,9 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
                     public void onResponse(String response, int id) {
                         Gson gson = new Gson();
                         JsonRootBean jsonRootBean = gson.fromJson(response, JsonRootBean.class);
-                        if (jsonRootBean.getError_code() == 0) {
+                        int error_code = jsonRootBean.getError_code();
+                        Main7Activity context = Main7Activity.this;
+                        if (error_code == 0) {
                             //当前状态栏设置
                             String city = jsonRootBean.getResult().getCity();
                             m7_text_realtime_city.setText("《" + city + "》当前天气情况");
@@ -181,23 +183,36 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
                             String future_text = "《" + city + "》近" + size + "天的天气";
                             //近期天气情况
                             m7_text_future_city.setText(future_text);
-                            m7_list_future.setAdapter(new WeatherList_Adapter(Main7Activity.this, jsonRootBean));
+                            m7_list_future.setAdapter(new WeatherList_Adapter(context, jsonRootBean));
                         } else {
-                            switch (jsonRootBean.getError_code()) {
+                            switch (error_code) {
                                 case 207301:
-                                    Toast.makeText(Main7Activity.this, "错误的查询城市名", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "错误的查询城市名", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 207302:
-                                    Toast.makeText(Main7Activity.this, "查询不到该城市的相关信息", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "查询不到该城市的相关信息", Toast.LENGTH_SHORT).show();
                                     break;
                                 case 207303:
-                                    Toast.makeText(Main7Activity.this, "网络错误，请重试", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "网络错误，请重试", Toast.LENGTH_SHORT).show();
                                     break;
                                 default:
-                                    Toast.makeText(Main7Activity.this, "错误码：" + jsonRootBean.getError_code(), Toast.LENGTH_SHORT).show();
+                                    String msg = null;
+                                    if (error_code ==10011||error_code==111){
+                                        msg="当前IP请求超过限制";
+                                    }else if (error_code ==10012||error_code==112){
+                                        msg="请求超过次数限制,请明日再来";
+                                    }else if (error_code ==10020||error_code==120){
+                                        msg="功能维护中...";
+                                    }else if (error_code ==10021||error_code==121){
+                                        msg="对不起,该功能已停用";
+                                    }
+                                    else {
+                                        msg="错误码："+ error_code;
+                                    }
+                                    Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
                                     break;
                             }
-                            m7_text_realtime_city.setText("错误码：" + jsonRootBean.getError_code());
+                            m7_text_realtime_city.setText("错误码：" + error_code);
                         }
                         progressDialog.dismiss();
                     }

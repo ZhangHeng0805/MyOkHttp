@@ -3,7 +3,6 @@ package com.zhangheng.myapplication.activity;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -22,6 +21,7 @@ import com.zhangheng.file.FiletypeUtil;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.util.DialogUtil;
+import com.zhangheng.myapplication.util.LocalFileTool;
 import com.zhangheng.util.FormatUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
@@ -104,13 +104,12 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
         boolean b = ReadAndWrite.RequestPermissions(this, PERMISSIONS_STORAGE[1]);//写入权限
         if (b) {
             String fileType = FiletypeUtil.getFileType(filename);
-            String path = "/" + getResources().getString(R.string.app_name) + "/" + fileType +"/";
-            String destFileDir = Environment.getExternalStorageDirectory().getAbsolutePath() + path;
+            String path = LocalFileTool.BasePath+ "/" + getResources().getString(R.string.app_name) + "/download/" + fileType +"/";
             OkHttpUtils
                     .get()
                     .url(url)
                     .build()
-                    .execute(new FileCallBack(destFileDir, filename) {
+                    .execute(new FileCallBack(path, filename) {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             e.printStackTrace();
@@ -121,7 +120,7 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
                         public void onResponse(File response, int id) {
                             Log.e("路径", "response:" + response.getAbsolutePath());
 
-                            textView.setText("下载完成\n存储路径：" + path+response.getName());
+                            textView.setText("下载完成\n存储路径：" + response.getAbsolutePath().replace(LocalFileTool.BasePath,"内部存储"));
 
                         }
 
@@ -157,7 +156,11 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
 //                        filename = url.substring(url.indexOf("//") + 2).replace("/", "_");
                         filename = url.substring(url.lastIndexOf("/") + 1);
                     }
-                    downloadFile(url, filename);
+                    if (filename.split("\\.").length>1) {
+                        downloadFile(url, filename);
+                    }else {
+                        DialogUtil.dialog(this, "文件名错误", "文件名请带上文件后缀");
+                    }
                 } else {
                     DialogUtil.dialog(this, "下载地址错误", "请输入正确的下载地址");
                 }

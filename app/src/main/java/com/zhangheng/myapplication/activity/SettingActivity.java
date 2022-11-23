@@ -53,7 +53,7 @@ public class SettingActivity extends Activity {
 
 
     private final String[] setting_meun = {
-            "服务器设置",
+            "服务设置",
             "意见反馈",
             "捐赠支持",
             "微信公众号",
@@ -98,7 +98,7 @@ public class SettingActivity extends Activity {
                 String funTil = setting_meun[i];
                 String funName = Tag + "";
                 switch (setting_meun[i]) {
-                    case "服务器设置":
+                    case "服务设置":
                         setServer();
                         funName += ".setServer()";
                         break;
@@ -311,7 +311,7 @@ public class SettingActivity extends Activity {
         }
     }
 
-    //服务器设置管理员验证
+    //服务设置管理员验证
     private void setServer() {
         AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
         AlertDialog dialog = builder.create();
@@ -463,6 +463,7 @@ public class SettingActivity extends Activity {
         });
         dialog.show();
     }
+
     private void toastUpdate(boolean f,String tips) {
         if (f){
             Toast.makeText(SettingActivity.this,"["+tips+"]设置修改成功",Toast.LENGTH_SHORT).show();

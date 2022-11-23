@@ -1,5 +1,6 @@
 package com.zhangheng.myapplication.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +28,7 @@ public class Main9Activity extends AppCompatActivity {
             ,m9_result_jijie,m9_result_xiangjie;
     private Button m9_btn_query;
     private EditText m9_et_message;
-
+    private final Context context = Main9Activity.this;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,16 +67,19 @@ public class Main9Activity extends AppCompatActivity {
                 .params(map)
                 .build()
                 .execute(new StringCallback() {
+
+
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         dialogUtil.closeProgressDialog();
-                        Toast.makeText(Main9Activity.this,"错误"+e.getMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"错误"+e.getMessage(),Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public void onResponse(String response, int id) {
                         Gson gson=new Gson();
                         DictionaryRootBean bean = gson.fromJson(response, DictionaryRootBean.class);
-                        if (bean.getError_code()==0){
+                        int error_code = bean.getError_code();
+                        if (error_code ==0){
                             //查询的汉字
                             String zi = bean.getResult().getZi();
                             m9_result_zi.setText(zi);
@@ -107,7 +111,20 @@ public class Main9Activity extends AppCompatActivity {
                             }
                             m9_result_xiangjie.setText(xiangjie);
                         }else {
-                            Toast.makeText(Main9Activity.this,"错误码："+bean.getError_code(),Toast.LENGTH_SHORT).show();
+                            String msg = null;
+                            if (error_code ==10011||error_code==111){
+                                msg="当前IP请求超过限制";
+                            }else if (error_code ==10012||error_code==112){
+                                msg="请求超过次数限制,请明日再来";
+                            }else if (error_code ==10020||error_code==120){
+                                msg="功能维护中...";
+                            }else if (error_code ==10021||error_code==121){
+                                msg="对不起,该功能已停用";
+                            }
+                            else {
+                                msg="错误码："+ error_code;
+                            }
+                            Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
                         }
                         dialogUtil.closeProgressDialog();
                     }
