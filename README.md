@@ -23,7 +23,7 @@
 * 21.疫情数据(爬虫)
 > * 说明：本项目的功能列表主页界面为```Main3Activity```
 > * 注意：本项目中```res/value/string.xml```文件中因涉及秘钥，所以没有上传该文件
-## 本项目的Android的安装[APP下载](https://github.com/ZhangHeng0805/MyOkHttp/releases/download/V22.10.27/ZH.Tools_V22.10.27.apk)
+## 本项目的Android的安装[APP下载](https://github.com/ZhangHeng0805/MyOkHttp/releases/download/V22.11.23/ZH.Tools_V22.11.23.apk)
 * 1、使用原生的OkHttp完成请求和提交文本数据
 * 2、使用Okhttputils完成大文件的下载，上传文件和分类检索本地文件，请求单张图片并显示
 * 3、以及使用一些API数据接口完成天气的查询，生成二维码，新华字典查询，图书电商查询。。。
