@@ -34,7 +34,8 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.Main12Activity"></activity>
+        <activity android:name=".activity.Main13Activity"></activity>
+        <activity android:name=".activity.Main12Activity" />
         <activity android:name=".activity.SettingActivity" />
         <activity
             android:name=".activity.Main21Activity"
@@ -46,11 +47,11 @@
             android:name=".activity.Main19Activity"
             android:label="影视搜索" />
         <activity android:name=".activity.Main18Activity" />
-        <activity android:name=".activity.Main17Activity"
-            android:label="手机扫码"/>
+        <activity
+            android:name=".activity.Main17Activity"
+            android:label="手机扫码" />
         <activity android:name=".activity.Main16Activity" />
-        <activity android:name=".activity.Test1Activity" />
-        <!-- 调整二维码扫描界面为竖屏 -->
+        <activity android:name=".activity.Test1Activity" /> <!-- 调整二维码扫描界面为竖屏 -->
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
@@ -96,18 +97,19 @@
             android:configChanges="orientation|screenSize|keyboardHidden" />
         <activity
             android:name=".activity.Main9Activity"
-            android:label="新华字典"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:label="新华字典" />
         <activity
             android:name=".activity.Main8Activity"
-            android:label="二维码生成"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:label="二维码生成" />
         <activity
             android:name=".activity.Main7Activity"
-            android:label="天气查询"
-            android:configChanges="orientation|screenSize|keyboardHidden" />
-        <activity android:name=".activity.Main6Activity"
-            android:label="图片加载"/>
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:label="天气查询" />
+        <activity
+            android:name=".activity.Main6Activity"
+            android:label="图片加载" />
         <activity
             android:name=".activity.Main5Activity"
             android:configChanges="orientation|screenSize|keyboardHidden">
@@ -117,9 +119,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.Main4Activity"
-            android:label="文件下载"
-            />
+        <activity
+            android:name=".activity.Main4Activity"
+            android:label="文件下载" />
         <activity
             android:name=".activity.Main3Activity"
             android:configChanges="orientation|screenSize|keyboardHidden">

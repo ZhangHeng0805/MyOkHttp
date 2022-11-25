@@ -3,6 +3,7 @@ package com.zhangheng.myapplication.util;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.text.Html;
 
 public class DialogUtil {
     private final ProgressDialog progressDialog;
@@ -11,13 +12,20 @@ public class DialogUtil {
         this.progressDialog = new ProgressDialog(context);
     }
 
-    public static void dialog(Context context, String title, String message){
+    public static void dialog(Context context, String title, String message,boolean isHtml){
         AlertDialog.Builder d=new AlertDialog.Builder(context);
+
+        if (isHtml) {
+            d.setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT));
+        }else {
+            d.setMessage(message);
+        }
         d.setTitle(title);
-        d.setMessage(message);
         d.create().show();
     }
-
+    public static void dialog(Context context, String title, String message){
+        dialog(context,title,message,false);
+    }
     public void createProgressDialog(){
         createProgressDialog("加载中。。。");
     }

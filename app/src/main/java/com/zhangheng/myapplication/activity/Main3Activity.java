@@ -95,6 +95,7 @@ public class Main3Activity extends Activity {
             "9.图书电商查询工具",//Main10Activity（API）
 //            "10.查询文件列表并下载（自制服务器）",//Main11Activity
             "11.密码工具",//Main12Activity
+            "12.画板工具",//Main13Activity
 //            "15.自制下拉刷新的ListView（测试）",//Test1Activity
             "16.电话本工具",//Main16Activity
             "17.手机扫码工具",//Main17Activity
@@ -117,6 +118,7 @@ public class Main3Activity extends Activity {
         contextMap.put(9, Main10Activity.class);
         contextMap.put(10, Main11Activity.class);
         contextMap.put(11, Main12Activity.class);
+        contextMap.put(12, Main13Activity.class);
         contextMap.put(15, Test1Activity.class);
         contextMap.put(16, Main16Activity.class);
         contextMap.put(17, Main17Activity.class);

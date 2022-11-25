@@ -73,6 +73,22 @@ public class AndroidImageUtil {
     }
 
     /**
+     * 将view装换为Bitmap
+     * @param view
+     * @return
+     */
+    public static Bitmap createViewBitmap(View view){
+        if (view == null) {
+            return null;
+        }
+        Bitmap screenshot;
+        screenshot = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.RGB_565);
+        Canvas c = new Canvas(screenshot);
+        c.translate(-view.getScrollX(), -view.getScrollY());
+        view.draw(c);
+        return screenshot;
+    }
+    /**
      * 根据文字创建一个 bitmap，
      *
      * @param contents
