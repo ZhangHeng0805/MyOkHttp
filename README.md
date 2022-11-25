@@ -30,7 +30,7 @@
 # 软件截图
 <div>
 <p>
-<img height="400px" alt="主页菜单" src="https://user-images.githubusercontent.com/74289276/198841986-e994d978-148f-48ed-8d37-1d85fc0b8006.jpg"/>
+<img height="400px" alt="主页菜单" src="https://user-images.githubusercontent.com/74289276/203560802-f1ef4e5c-9d9e-4b9f-9571-58e9b9416f8e.jpg"/>
 <img height="400px" alt="音乐资源" src="https://user-images.githubusercontent.com/74289276/198842005-e62e493e-a10b-4ac7-bbc7-123a99d2949f.jpg"/>
 <img height="400px" alt="影视资源" src="https://user-images.githubusercontent.com/74289276/198842033-e9031dc3-8bf5-495a-912f-ea0aecd5d90d.jpg"/>
 <img height="400px" alt="翻译" src="https://user-images.githubusercontent.com/74289276/198842061-c090252c-7da1-43e9-b688-7ace77e73376.jpg"/>
