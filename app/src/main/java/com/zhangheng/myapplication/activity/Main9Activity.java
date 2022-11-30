@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.bean.dictionary.DictionaryRootBean;
 import com.zhangheng.myapplication.util.DialogUtil;
+import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -72,7 +73,7 @@ public class Main9Activity extends AppCompatActivity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         dialogUtil.closeProgressDialog();
-                        Toast.makeText(context,"错误"+e.getMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,"错误"+ OkHttpMessageUtil.error(e),Toast.LENGTH_SHORT).show();
                     }
                     @Override
                     public void onResponse(String response, int id) {

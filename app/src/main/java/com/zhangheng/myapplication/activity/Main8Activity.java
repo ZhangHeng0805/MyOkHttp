@@ -31,6 +31,7 @@ import com.zhangheng.myapplication.util.AndroidImageUtil;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.DisplyUtil;
 import com.zhangheng.myapplication.util.LocalFileTool;
+import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.QRCode.AndroidQRCodeUtil;
 import com.zhangheng.util.TimeUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -119,7 +120,10 @@ public class Main8Activity extends AppCompatActivity {
                     if (drawable != null) {
                         String appname = getString(R.string.app_name);
                         Bitmap bitmap = AndroidImageUtil.drawableToBitmap(drawable);
-                        Bitmap stringBitmap = AndroidImageUtil.creatStringBitmap(context, appname + "_" + PhoneSystem.getVersionCode(context), 4, Color.BLACK, Color.WHITE);
+                        String contents = "@"+appname + "_" + PhoneSystem.getVersionCode(context);
+                        Bitmap stringBitmap = AndroidImageUtil.creatStringBitmap(context,
+                                contents,
+                                4, Color.BLACK, Color.WHITE);
                         Bitmap watermark = AndroidImageUtil.createWatermark(bitmap, stringBitmap, AndroidImageUtil.RIGHT_BOTTOM, 2);
                         String path = LocalFileTool.BasePath + "/Pictures/" + appname + "/"+appname+"二维码生成/";
                         String timetips = TimeUtil.toTime(new Date(), "yyyyMMdd-HHmmssSSS");
@@ -221,7 +225,7 @@ public class Main8Activity extends AppCompatActivity {
                         public void onError(Call call, Exception e, int id) {
                             e.printStackTrace();
 
-                            Toast.makeText(Main8Activity.this, "错误" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(Main8Activity.this, "错误" + OkHttpMessageUtil.error(e), Toast.LENGTH_SHORT).show();
                         }
 
                         @Override

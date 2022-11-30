@@ -33,6 +33,7 @@ import com.zhangheng.myapplication.adapter.WeatherList_Adapter;
 import com.zhangheng.myapplication.bean.weather.JsonRootBean;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
 import com.zhangheng.myapplication.setting.ServerSetting;
+import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -137,7 +138,7 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        m7_text_realtime_city.setText("错误：" + e.getMessage());
+                        m7_text_realtime_city.setText("错误：" + OkHttpMessageUtil.error(e));
                         progressDialog.dismiss();
                     }
 

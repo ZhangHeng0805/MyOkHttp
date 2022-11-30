@@ -27,7 +27,10 @@ import com.zhangheng.myapplication.util.LocalFileTool;
 import com.zhangheng.myapplication.view.MyPaintView;
 import com.zhangheng.util.TimeUtil;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 public class Main13Activity extends Activity {
 
@@ -38,11 +41,14 @@ public class Main13Activity extends Activity {
     private HorizontalScrollView colors;
     private SeekBar seekBar;
     private TextView tit_progress;
-    private ImageView m13_iv_help, m13_iv_close, m13_iv_save;
+    private ImageView m13_iv_help, m13_iv_close, m13_iv_save,m13_iv_recall;
     private int i;
     private boolean flag_close = false;
     private boolean flag_start = false;
+    private boolean flag_save = true;
     private final Context context = Main13Activity.this;
+    private List<Map<String,Object>> historys=new ArrayList<>();
+    private Integer historyIndex=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +78,7 @@ public class Main13Activity extends Activity {
         m13_iv_help = findViewById(R.id.m13_iv_help);
         m13_iv_close = findViewById(R.id.m13_iv_close);
         m13_iv_save = findViewById(R.id.m13_iv_save);
+        m13_iv_recall = findViewById(R.id.m13_iv_recall);
 
         setOClickListener();
         DeFault();
@@ -93,6 +100,23 @@ public class Main13Activity extends Activity {
                     case MotionEvent.ACTION_UP:
                         //DeFault();
                         flag_start=true;
+                        flag_save=false;
+
+//                        Path myPath = paintView.getMyPath();
+//                        Paint myPaint = paintView.getMyPaint();
+//                        Bitmap bitmap = AndroidImageUtil.createViewBitmap(paintView);
+//                        if (myPath!=null&&myPaint!=null){
+//                            Map<String,Object> map=new HashMap<>();
+//                            map.put("path",myPath);
+//                            map.put("paint",myPaint);
+//                            map.put("bitmap",bitmap);
+//                            historys.add(map);
+//                            int size = historys.size();
+////                            System.out.println("szie********"+size);
+//                            historyIndex= size -1;
+                            m13_iv_recall.setVisibility(View.VISIBLE);
+//                        }
+                        break;
                 }
                 return false;
             }
@@ -138,6 +162,7 @@ public class Main13Activity extends Activity {
         m13_iv_help.setOnClickListener(onClick);
         m13_iv_close.setOnClickListener(onClick);
         m13_iv_save.setOnClickListener(onClick);
+        m13_iv_recall.setOnClickListener(onClick);
     }
 
     private class OnClick implements View.OnClickListener {
@@ -164,9 +189,15 @@ public class Main13Activity extends Activity {
                 case R.id.m13_iv_save:
                     saveImg();
                     break;
+                case R.id.m13_iv_recall:
+                    recellImg();
+                    break;
                 case R.id.btn_clear:
                     paintView.clear();
                     flag_start=false;
+                    historys.clear();
+                    historyIndex=0;
+                    m13_iv_recall.setVisibility(View.GONE);
                     break;
                 case R.id.btn_paintcolor:
                     btn_paintcolor.setVisibility(View.GONE);
@@ -259,6 +290,30 @@ public class Main13Activity extends Activity {
         }
     }
 
+    /**
+     * 撤回
+     */
+    private void recellImg() {
+//        if (!historys.isEmpty()){
+//            historys.remove(historys.get(historyIndex));
+//            historyIndex--;
+//            Map<String, Object> map = historys.get(historyIndex);
+//            paintView.setMyDraw((Path) map.get("path"),(Paint) map.get("paint"),(Bitmap) map.get("bitmap"));
+//            if (historyIndex==0){
+//                m13_iv_recall.setVisibility(View.GONE);
+//            }
+//        }else {
+//            m13_iv_recall.setVisibility(View.GONE);
+//        }
+        if (!paintView.recall()){
+            m13_iv_recall.setVisibility(View.GONE);
+        }
+
+    }
+
+    /**
+     * 保存
+     */
     private void saveImg() {
         if (flag_start) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -276,6 +331,7 @@ public class Main13Activity extends Activity {
                         Bitmap bitmap = AndroidImageUtil.createViewBitmap(paintView);
                         String s = AndroidImageUtil.saveImage(context, bitmap, path, name, Bitmap.CompressFormat.PNG);
                         if (s!=null) {
+                            flag_save=true;
                             DialogUtil.dialog(context, "保存成功！", "保存路径：" + s.replace(LocalFileTool.BasePath, "内部存储"));
                         }else {
                             Toast.makeText(context, "保存失败！", Toast.LENGTH_SHORT).show();
@@ -304,9 +360,11 @@ public class Main13Activity extends Activity {
         btn_paintsize.setVisibility(View.VISIBLE);
         clearBtn.setVisibility(View.VISIBLE);
         setting.setVisibility(View.VISIBLE);
+
         colors.setVisibility(View.GONE);
         layout_seebar.setVisibility(View.GONE);
         i = 1;
+
     }
 
     private void fullscreen() {//全屏
@@ -314,6 +372,7 @@ public class Main13Activity extends Activity {
         m13_iv_help.setVisibility(View.GONE);
         m13_iv_save.setVisibility(View.GONE);
         setting.setVisibility(View.GONE);
+        m13_iv_recall.setVisibility(View.GONE);
         i = 0;
     }
     private long mExitTime;
@@ -329,7 +388,7 @@ public class Main13Activity extends Activity {
                     fullscreen();
                 }
             } else {
-                if (flag_start){
+                if (flag_start&&!flag_save){
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle("确定退出");
                     builder.setMessage("您的画板作品还未保存，确定退出");

@@ -26,6 +26,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.ColorInt;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -98,7 +100,7 @@ public class AndroidImageUtil {
      * @param backgroundColor
      * @return
      */
-    public static Bitmap creatStringBitmap(Context context,String contents,int textSize,int textColor,int backgroundColor) {
+    public static Bitmap creatStringBitmap(Context context, String contents, int textSize, @ColorInt int textColor,@ColorInt int backgroundColor) {
         float scale=context.getResources().getDisplayMetrics().scaledDensity;
         TextView tv = new TextView(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -116,12 +118,7 @@ public class AndroidImageUtil {
         if (tv == null) {
             return null;
         }
-        Bitmap screenshot;
-        screenshot = Bitmap.createBitmap(tv.getWidth(), tv.getHeight(), Bitmap.Config.RGB_565);
-        Canvas c = new Canvas(screenshot);
-        c.translate(-tv.getScrollX(), -tv.getScrollY());
-        tv.draw(c);
-        return screenshot;
+        return createViewBitmap(tv);
     }
     /**
      * 将Drawable转为Bitmap对象

@@ -14,6 +14,7 @@ import com.zhangheng.myapplication.adapter.BookList_Adapter;
 import com.zhangheng.myapplication.bean.books.bookslist.BookListBean;
 import com.zhangheng.myapplication.bean.books.bookslist.Data;
 import com.zhangheng.myapplication.util.DialogUtil;
+import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -68,7 +69,7 @@ public class Main10Activity_1 extends AppCompatActivity  {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         dialogUtil.closeProgressDialog();
-                        Toast.makeText(context, "错误：" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "错误：" + OkHttpMessageUtil.error(e), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

@@ -18,6 +18,7 @@ import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.util.AndroidImageUtil;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.LocalFileTool;
+import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.util.FormatUtil;
 import com.zhangheng.util.TimeUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
@@ -97,7 +98,7 @@ public class  Main6Activity extends AppCompatActivity implements View.OnClickLis
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         e.printStackTrace();
-                        textView.setText("错误："+e.getMessage());
+                        textView.setText("错误："+ OkHttpMessageUtil.error(e));
                     }
                     @Override
                     public void onResponse(Bitmap response, int id) {

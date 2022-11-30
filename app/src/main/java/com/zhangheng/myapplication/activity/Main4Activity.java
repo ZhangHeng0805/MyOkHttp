@@ -22,6 +22,7 @@ import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.LocalFileTool;
+import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.util.FormatUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.FileCallBack;
@@ -113,7 +114,7 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             e.printStackTrace();
-                            textView.setText("错误：" + e.getMessage());
+                            textView.setText("错误：" + OkHttpMessageUtil.error(e));
                         }
 
                         @Override
