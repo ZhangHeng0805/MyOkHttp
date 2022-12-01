@@ -31,7 +31,7 @@
 # 软件截图
 <div>
 <p>
-<img height="400px" alt="主页菜单" src="https://user-images.githubusercontent.com/74289276/203560802-f1ef4e5c-9d9e-4b9f-9571-58e9b9416f8e.jpg"/>
+<img height="400px" alt="主页菜单" src="https://user-images.githubusercontent.com/74289276/205024794-cbe43786-b62c-41b5-a777-0f94c589cb47.jpg"/>
 <img height="400px" alt="音乐资源" src="https://user-images.githubusercontent.com/74289276/198842005-e62e493e-a10b-4ac7-bbc7-123a99d2949f.jpg"/>
 <img height="400px" alt="影视资源" src="https://user-images.githubusercontent.com/74289276/198842033-e9031dc3-8bf5-495a-912f-ea0aecd5d90d.jpg"/>
 <img height="400px" alt="翻译" src="https://user-images.githubusercontent.com/74289276/198842061-c090252c-7da1-43e9-b688-7ace77e73376.jpg"/>
