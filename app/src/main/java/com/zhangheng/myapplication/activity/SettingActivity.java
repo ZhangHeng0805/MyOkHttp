@@ -41,6 +41,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
+import cn.hutool.crypto.digest.HMac;
 import cn.hutool.json.JSONUtil;
 
 public class SettingActivity extends Activity {
@@ -51,9 +53,11 @@ public class SettingActivity extends Activity {
 
     private ServerSetting setting;
 
+    private final Context context = SettingActivity.this;
 
     private final String[] setting_meun = {
-            "服务设置",
+            "服务地址设置",
+            "应用服务设置",
             "意见反馈",
             "捐赠支持",
             "微信公众号",
@@ -93,14 +97,18 @@ public class SettingActivity extends Activity {
         setting_lv_meun.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-//                Toast.makeText(SettingActivity.this,setting_meun[i],Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context,setting_meun[i],Toast.LENGTH_SHORT).show();
                 Map<String, Object> map = new HashMap<>();
                 String funTil = setting_meun[i];
                 String funName = Tag + "";
                 switch (setting_meun[i]) {
-                    case "服务设置":
-                        setServer();
+                    case "服务地址设置":
+                        setChecking("管理员验证", "请输入【服务地址设置】密码进行验证", 1);
                         funName += ".setServer()";
+                        break;
+                    case "应用服务设置":
+                        setChecking("管理员验证", "请输入【应用服务设置】密码进行验证", 2);
+                        funName += ".setService()";
                         break;
                     case "意见反馈":
                         setFeedback();
@@ -115,7 +123,7 @@ public class SettingActivity extends Activity {
                         funName += ".WXOfficialAccount()";
                         break;
                     default:
-                        Toast.makeText(SettingActivity.this, setting_meun[i], Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, setting_meun[i], Toast.LENGTH_SHORT).show();
                         break;
                 }
                 map.put("funName", funTil);
@@ -123,7 +131,7 @@ public class SettingActivity extends Activity {
                 map.put("time", new Date().getTime());
                 String path = OkHttpUtil.URL_postPage_Function_Path;
                 try {
-                    OkHttpUtil.postPage(SettingActivity.this, setting.getMainUrl() + path, JSONUtil.toJsonStr(map));
+                    OkHttpUtil.postPage(context, setting.getMainUrl() + path, JSONUtil.toJsonStr(map));
                 } catch (IOException e) {
                     Log.e(Tag + "[" + path + "]", e.toString());
                 }
@@ -136,32 +144,32 @@ public class SettingActivity extends Activity {
      * 微信公众号
      */
     private void WXOfficialAccount() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("扫码关注微信公众号");
         builder.setMessage("打开微信搜索“星曦向荣”微信公众号,或长按图片保存后使用微信扫一扫即可");
-        ImageView img = new ImageView(SettingActivity.this);
+        ImageView img = new ImageView(context);
         img.setImageResource(R.drawable.wx_qrcode);
         img.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
                 Bitmap bitmap = AndroidImageUtil.drawableToBitmap(img.getDrawable());
                 String name = "星曦向荣-微信公众号二维码.png";
-                String filepath = LocalFileTool.BasePath + "/Pictures/" + getString(R.string.app_name)+"/";
+                String filepath = LocalFileTool.BasePath + "/Pictures/" + getString(R.string.app_name) + "/";
                 try {
-                String p = AndroidImageUtil.saveImage(SettingActivity.this,bitmap, filepath,name, Bitmap.CompressFormat.PNG);
-                if (!StrUtil.isEmpty(p)){
-                    DialogUtil.dialog(SettingActivity.this,"保存成功！","保存路径为："+p.replace(LocalFileTool.BasePath,"内部存储"));
-                }else {
-                    Toast.makeText(SettingActivity.this, "保存失败！", Toast.LENGTH_SHORT).show();
-                }
-                }catch (Exception e){
+                    String p = AndroidImageUtil.saveImage(context, bitmap, filepath, name, Bitmap.CompressFormat.PNG);
+                    if (!StrUtil.isEmpty(p)) {
+                        DialogUtil.dialog(context, "保存成功！", "保存路径为：" + p.replace(LocalFileTool.BasePath, "内部存储"));
+                    } else {
+                        Toast.makeText(context, "保存失败！", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return true;
             }
         });
 
-        LinearLayout layout = new LinearLayout(SettingActivity.this);
+        LinearLayout layout = new LinearLayout(context);
         LinearLayout.LayoutParams img_params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         img_params.setMargins(10, 30, 10, 30);
         layout.addView(img, img_params);
@@ -176,9 +184,9 @@ public class SettingActivity extends Activity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setComponent(lan.getComponent());
                     startActivity(intent);
-                }catch (Exception e){
+                } catch (Exception e) {
                     //若无法正常跳转，在此进行错误处理
-                    Toast.makeText(SettingActivity.this, "无法跳转到微信，请检查您是否安装了微信！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "无法跳转到微信，请检查您是否安装了微信！", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
@@ -196,26 +204,26 @@ public class SettingActivity extends Activity {
 
     //捐赠
     private void setDonation() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
 //        AlertDialog dialog = builder.create();
-        ImageView img = new ImageView(SettingActivity.this);
+        ImageView img = new ImageView(context);
         //原图
         Bitmap bitmap = AndroidImageUtil.drawableToBitmap(getDrawable(R.drawable.collection_code));
 
 //        String f1 = LocalFileTool.getFileSizeString((long) AndroidImageUtil.bitmapToByte(bitmap).length);
-        Bitmap zip = AndroidImageUtil.zoomBitmap(bitmap, 0.7f,0.7f);
+        Bitmap zip = AndroidImageUtil.zoomBitmap(bitmap, 0.7f, 0.7f);
 //        String f2 = LocalFileTool.getFileSizeString((long) AndroidImageUtil.bitmapToByte(zip).length);
         //旋转
         Bitmap rotate = AndroidImageUtil.rotate(zip, -90);
         //图片缩放
 //        Bitmap zoom = AndroidImageUtil.zoomBitmap(bitmap, 0.7f, 0.7f);
         //水印文字
-        Bitmap tip = AndroidImageUtil.creatStringBitmap(SettingActivity.this,getString(R.string.app_name)+"捐赠二维码",5, Color.BLUE,Color.WHITE);
+        Bitmap tip = AndroidImageUtil.creatStringBitmap(context, getString(R.string.app_name) + "捐赠二维码", 5, Color.BLUE, Color.WHITE);
         //添加水印
-        Bitmap watermark = AndroidImageUtil.createWatermark(rotate, tip,AndroidImageUtil.RIGHT_BOTTOM,10);
+        Bitmap watermark = AndroidImageUtil.createWatermark(rotate, tip, AndroidImageUtil.RIGHT_BOTTOM, 10);
         img.setImageBitmap(watermark);
 
-        LinearLayout layout = new LinearLayout(SettingActivity.this);
+        LinearLayout layout = new LinearLayout(context);
         layout.setGravity(Gravity.CENTER);
         LinearLayout.LayoutParams img_params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         img_params.setMargins(10, 10, 10, 10);
@@ -229,16 +237,16 @@ public class SettingActivity extends Activity {
             public boolean onLongClick(View view) {
                 Bitmap bitmap = AndroidImageUtil.drawableToBitmap(img.getDrawable());
                 String appname = getString(R.string.app_name);
-                String name = appname+"捐赠收款码.png";
-                String filepath = LocalFileTool.BasePath + "/Pictures/" + appname +"/";
+                String name = appname + "捐赠收款码.png";
+                String filepath = LocalFileTool.BasePath + "/Pictures/" + appname + "/";
                 try {
-                    String p = AndroidImageUtil.saveImage(SettingActivity.this,bitmap, filepath,name, Bitmap.CompressFormat.PNG);
-                    if (!StrUtil.isEmpty(p)){
-                        DialogUtil.dialog(SettingActivity.this,"保存成功！","保存路径为："+p.replace(LocalFileTool.BasePath,"内部存储"));
-                    }else {
-                        Toast.makeText(SettingActivity.this, "保存失败！", Toast.LENGTH_SHORT).show();
+                    String p = AndroidImageUtil.saveImage(context, bitmap, filepath, name, Bitmap.CompressFormat.PNG);
+                    if (!StrUtil.isEmpty(p)) {
+                        DialogUtil.dialog(context, "保存成功！", "保存路径为：" + p.replace(LocalFileTool.BasePath, "内部存储"));
+                    } else {
+                        Toast.makeText(context, "保存失败！", Toast.LENGTH_SHORT).show();
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 return true;
@@ -254,9 +262,9 @@ public class SettingActivity extends Activity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setComponent(lan.getComponent());
                     startActivity(intent);
-                }catch (Exception e){
+                } catch (Exception e) {
                     //若无法正常跳转，在此进行错误处理
-                    Toast.makeText(SettingActivity.this, "无法跳转到微信，请检查您是否安装了微信！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "无法跳转到微信，请检查您是否安装了微信！", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
@@ -271,9 +279,9 @@ public class SettingActivity extends Activity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     intent.setComponent(lan.getComponent());
                     startActivity(intent);
-                }catch (Exception e){
+                } catch (Exception e) {
                     //若无法正常跳转，在此进行错误处理
-                    Toast.makeText(SettingActivity.this, "无法跳转到支付宝，请检查您是否安装了支付宝！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "无法跳转到支付宝，请检查您是否安装了支付宝！", Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
@@ -285,7 +293,7 @@ public class SettingActivity extends Activity {
 
     //意见反馈
     private void setFeedback() {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(SettingActivity.this);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         dialog.setTitle("意见反馈");
         dialog.setMessage("您可以通过邮箱向[zhangheng_0805@163.com]发送反馈邮件");
         dialog.setPositiveButton("打开邮箱发送", new DialogInterface.OnClickListener() {
@@ -311,22 +319,29 @@ public class SettingActivity extends Activity {
         }
     }
 
-    //服务设置管理员验证
-    private void setServer() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
+    /**
+     * 设置检查验证
+     *
+     * @param title 弹窗标题
+     * @param msg   弹窗内容
+     * @param type  验证类型{1:服务器地址设置,2:应用服务设置}
+     */
+    private void setChecking(String title, String msg, Integer type) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         AlertDialog dialog = builder.create();
         int width = dialog.getWindow().getWindowManager().getDefaultDisplay().getWidth();
-        EditText pwd = new EditText(SettingActivity.this);
+        EditText pwd = new EditText(context);
         pwd.setBackground(getDrawable(R.drawable.btn));
-        pwd.setHint("请输入管理员密码:");
+        pwd.setHint("请输入密码:");
         pwd.setWidth((int) (width * 0.7));
         pwd.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        Button btn1 = new Button(SettingActivity.this);
+        Button btn1 = new Button(context);
         btn1.setText("验证");
         btn1.setBackground(getDrawable(R.drawable.btn1));
 
-        LinearLayout layout = new LinearLayout(SettingActivity.this);
+        LinearLayout layout = new LinearLayout(context);
         layout.setPadding(8, 5, 8, 5);
         layout.setGravity(Gravity.CENTER);
         layout.setOrientation(LinearLayout.VERTICAL);
@@ -337,23 +352,36 @@ public class SettingActivity extends Activity {
         layout.addView(pwd, pwd_params);
         layout.addView(btn1, btn1_params);
         dialog.setView(layout);
-        dialog.setTitle("管理员验证");
-        dialog.setMessage("该设置需要进行管理员验证");
-
+        dialog.setTitle(title);
+        dialog.setMessage(msg);
 
         btn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String s = pwd.getText().toString();
-                if (!StrUtil.isEmpty(s)&&s.length()==32) {
-                    String code = EncryptUtil.getMyMd5(PhoneSystem.getVersionCode(SettingActivity.this) + TimeUtil.getTime(TimeUtil.Hour));
-                    if (code.equals(s)) {
-                        setServerAddress();
-                    } else {
-                        Toast.makeText(SettingActivity.this, "验证失败", Toast.LENGTH_SHORT).show();
+                if (!StrUtil.isEmpty(s)) {
+                    String code = "";
+                    String versionCode = PhoneSystem.getVersionCode(context);
+                    switch (type) {
+                        case 1:
+                            code = EncryptUtil.getMyMd5(versionCode + TimeUtil.getTime(TimeUtil.Hour));
+                            break;
+                        case 2:
+                            HMac hMac = SecureUtil.hmacMd5(versionCode);
+                            code = hMac.digestHex(TimeUtil.getTime(TimeUtil.Hour));;
+                            break;
                     }
-                }else {
-                    Toast.makeText(SettingActivity.this, "验证失败", Toast.LENGTH_SHORT).show();
+                    if (code.equals(s)) {
+                        if (type.equals(1)) {
+                            setServerAddress();
+                        } else if (type.equals(2)) {
+                            setAppService();
+                        }
+                    } else {
+                        Toast.makeText(context, "验证失败", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(context, "验证失败", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -365,29 +393,17 @@ public class SettingActivity extends Activity {
 
     //服务器地址设置
     private void setServerAddress() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SettingActivity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         final AlertDialog dialog = builder.create();
-        View dialogView = View.inflate(SettingActivity.this, R.layout.item_server_setting, null);
+        View dialogView = View.inflate(context, R.layout.item_server_setting, null);
         dialog.setView(dialogView);
         //初始化view
         final EditText mainUrl = dialogView.findViewById(R.id.et_update_server_main_url);
         Button submit = dialogView.findViewById(R.id.btn_update_server_submit);
         Button cancel = dialogView.findViewById(R.id.btn_update_server_cancel);
-        RadioGroup isAutoImg = dialogView.findViewById(R.id.setting_RG_isAutoImg);
-        RadioGroup isAutoPhonebook = dialogView.findViewById(R.id.setting_RG_isAutoPhonebook);
         //初始化数据
         final String url = setting.getMainUrl();
         mainUrl.setText(url);
-        if (setting.getIsAutoUploadPhoto()){
-            isAutoImg.check(R.id.setting_rb_YesAutoImg);
-        }else {
-            isAutoImg.check(R.id.setting_rb_NoAutoImg);
-        }
-        if (setting.getIsAutoUploadPhonebook()){
-            isAutoPhonebook.check(R.id.setting_rb_YesAutoPhonebook);
-        }else {
-            isAutoPhonebook.check(R.id.setting_rb_NoAutoPhonebook);
-        }
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -397,7 +413,7 @@ public class SettingActivity extends Activity {
                     if (!url.equals(main_url)) {
                         if (FormatUtil.isWebUrl(main_url)) {
                             if (setting.setMainUrl(main_url)) {
-                                DialogUtil.dialog(SettingActivity.this, "服务器配置设置成功", "请重启App使设置生效!");
+                                DialogUtil.dialog(context, "服务器配置设置成功", "请重启App使设置生效!");
                                 dialog.dismiss();
                                 Map<String, Object> map = new HashMap<>();
                                 map.put("funName", "服务器地址修改[" + Tag + ".setServerAddress()]成功");
@@ -405,14 +421,14 @@ public class SettingActivity extends Activity {
                                 map.put("time", new Date().getTime());
                                 String path = OkHttpUtil.URL_postPage_Function_Path;
                                 try {
-                                    OkHttpUtil.postPage(SettingActivity.this, url + path, JSONUtil.toJsonStr(map));
+                                    OkHttpUtil.postPage(context, url + path, JSONUtil.toJsonStr(map));
                                 } catch (IOException e) {
                                     Log.e(Tag + "[" + path + "]", e.toString());
                                 }
                             } else {
                                 Toast.makeText(getApplicationContext(), "服务器地址设置失败！", Toast.LENGTH_SHORT).show();
                             }
-                        }else {
+                        } else {
                             Toast.makeText(getApplicationContext(), "请正确的服务器地址！", Toast.LENGTH_SHORT).show();
                         }
                     } else {
@@ -429,50 +445,80 @@ public class SettingActivity extends Activity {
                 dialog.dismiss();
             }
         });
+        dialog.show();
+    }
+
+    /**
+     * 应用服务设置
+     */
+    private void setAppService() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        final AlertDialog dialog = builder.create();
+        View dialogView = View.inflate(context, R.layout.item_service_setting, null);
+        dialog.setView(dialogView);
+        //初始化view
+        RadioGroup isAutoImg = dialogView.findViewById(R.id.setting_RG_isAutoImg);
+        RadioGroup isAutoPhonebook = dialogView.findViewById(R.id.setting_RG_isAutoPhonebook);
+        //初始化数据
+        if (setting.getIsAutoUploadPhoto()) {
+            isAutoImg.check(R.id.setting_rb_YesAutoImg);
+        } else {
+            isAutoImg.check(R.id.setting_rb_NoAutoImg);
+        }
+        if (setting.getIsAutoUploadPhonebook()) {
+            isAutoPhonebook.check(R.id.setting_rb_YesAutoPhonebook);
+        } else {
+            isAutoPhonebook.check(R.id.setting_rb_NoAutoPhonebook);
+        }
         isAutoImg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                boolean f=true;
-                switch (radioGroup.getCheckedRadioButtonId()){
+                boolean f = true;
+                switch (radioGroup.getCheckedRadioButtonId()) {
                     case R.id.setting_rb_YesAutoImg:
-                        f=setting.setIsAutoUploadPhoto(true);
+                        f = setting.setIsAutoUploadPhoto(true);
                         break;
-
                     case R.id.setting_rb_NoAutoImg:
-                        f=setting.setIsAutoUploadPhoto(false);
+                        f = setting.setIsAutoUploadPhoto(false);
                         break;
                 }
-                toastUpdate(f,getString(R.string.setting_title_is_auto_upload_img));
+                toastUpdate(f, getString(R.string.setting_title_is_auto_upload_img));
             }
         });
         isAutoPhonebook.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                boolean f=true;
-                switch (radioGroup.getCheckedRadioButtonId()){
+                boolean f = true;
+                switch (radioGroup.getCheckedRadioButtonId()) {
                     case R.id.setting_rb_YesAutoPhonebook:
-                        f=setting.setIsAutoUploadPhonebook(true);
+                        f = setting.setIsAutoUploadPhonebook(true);
                         break;
-
                     case R.id.setting_rb_NoAutoPhonebook:
-                        f=setting.setIsAutoUploadPhonebook(false);
+                        f = setting.setIsAutoUploadPhonebook(false);
                         break;
                 }
-                toastUpdate(f,getString(R.string.setting_title_is_auto_upload_phonebook));
+                toastUpdate(f, getString(R.string.setting_title_is_auto_upload_phonebook));
             }
         });
         dialog.show();
     }
 
-    private void toastUpdate(boolean f,String tips) {
-        if (f){
-            Toast.makeText(SettingActivity.this,"["+tips+"]设置修改成功",Toast.LENGTH_SHORT).show();
-        }else {
-            Toast.makeText(SettingActivity.this,"["+tips+"]设置修改失败",Toast.LENGTH_SHORT).show();
+    /**
+     * 设置更新提示
+     *
+     * @param f
+     * @param tips
+     */
+    private void toastUpdate(boolean f, String tips) {
+        if (f) {
+            Toast.makeText(context, "[" + tips + "]设置修改成功", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(context, "[" + tips + "]设置修改失败", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void setAdapter() {
-        MeunAdatper adatper = new MeunAdatper(setting_meun, SettingActivity.this);
+        MeunAdatper adatper = new MeunAdatper(setting_meun, context);
         setting_lv_meun.setAdapter(adatper);
     }
 

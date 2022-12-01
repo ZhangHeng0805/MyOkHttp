@@ -13,8 +13,9 @@
         android:background="#169ee5"
         android:gravity="center"
         android:padding="10dp"
-        android:text="服务设置"
-        android:textColor="@android:color/white"
+        android:text="服务器设置"
+        android:textColor="@color/white"
+        android:textStyle="bold"
         android:textSize="20sp" />
     <!--服务器地址设置-->
     <LinearLayout
@@ -76,72 +77,5 @@
             android:textColor="@android:color/white"
             android:textSize="16sp" />
     </LinearLayout>
-    <!--IMG自动-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/setting_title_is_auto_upload_img"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            android:textStyle="bold"/>
-        <RadioGroup
-            android:id="@+id/setting_RG_isAutoImg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-            <RadioButton
-                android:id="@+id/setting_rb_YesAutoImg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="是"/>
-            <RadioButton
-                android:id="@+id/setting_rb_NoAutoImg"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="否"/>
-        </RadioGroup>
-    </LinearLayout>
-    <!--通讯录自动-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:padding="8dp"
-        android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/setting_title_is_auto_upload_phonebook"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            android:textStyle="bold"/>
-        <RadioGroup
-            android:id="@+id/setting_RG_isAutoPhonebook"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            >
-            <RadioButton
-                android:id="@+id/setting_rb_YesAutoPhonebook"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="是"/>
-            <RadioButton
-                android:id="@+id/setting_rb_NoAutoPhonebook"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="否"/>
-        </RadioGroup>
-    </LinearLayout>
-
 
 </LinearLayout>
