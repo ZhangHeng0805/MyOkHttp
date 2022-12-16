@@ -21,7 +21,7 @@
 * 21.全国疫情实时大数据
 > * 说明：本项目的功能列表主页界面为```Main3Activity```
 > * 注意：本项目中```res/value/string.xml```文件中因涉及秘钥，所以没有上传该文件
-## 本项目的Android的安装[APP下载](https://github.com/ZhangHeng0805/MyOkHttp/releases/download/V22.11.23/ZH.Tools_V22.11.23.apk)
+## 本项目的Android的安装[APP下载](https://github.com/ZhangHeng0805/MyOkHttp/releases/download/V22.11.30/ZH.Tools_V22.11.30.apk)
 * 1、使用原生的OkHttp完成请求和提交文本数据
 * 2、使用Okhttputils完成大文件的下载，上传文件和分类检索本地文件，请求单张图片并显示
 * 3、以及使用一些API数据接口完成天气的查询，生成二维码，新华字典查询，图书电商查询。。。
@@ -31,7 +31,7 @@
 # 软件截图
 <div>
 <p>
-<img height="400px" alt="主页菜单" src="https://user-images.githubusercontent.com/74289276/203560802-f1ef4e5c-9d9e-4b9f-9571-58e9b9416f8e.jpg"/>
+<img height="400px" alt="主页菜单" src="https://user-images.githubusercontent.com/74289276/205024794-cbe43786-b62c-41b5-a777-0f94c589cb47.jpg"/>
 <img height="400px" alt="音乐资源" src="https://user-images.githubusercontent.com/74289276/198842005-e62e493e-a10b-4ac7-bbc7-123a99d2949f.jpg"/>
 <img height="400px" alt="影视资源" src="https://user-images.githubusercontent.com/74289276/198842033-e9031dc3-8bf5-495a-912f-ea0aecd5d90d.jpg"/>
 <img height="400px" alt="翻译" src="https://user-images.githubusercontent.com/74289276/198842061-c090252c-7da1-43e9-b688-7ace77e73376.jpg"/>
