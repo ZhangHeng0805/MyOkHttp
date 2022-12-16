@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
+import com.zhangheng.myapplication.setting.AppSetting;
 import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhangheng.myapplication.util.AndroidImageUtil;
 import com.zhangheng.myapplication.util.DialogUtil;
@@ -56,6 +57,7 @@ public class SettingActivity extends Activity {
     private final Context context = SettingActivity.this;
 
     private final String[] setting_meun = {
+            "功能列表设置",
             "服务地址设置",
             "应用服务设置",
             "意见反馈",
@@ -102,6 +104,10 @@ public class SettingActivity extends Activity {
                 String funTil = setting_meun[i];
                 String funName = Tag + "";
                 switch (setting_meun[i]) {
+                    case "功能列表设置":
+                        FunctionList();
+                        funName += ".FunctionList()";
+                        break;
                     case "服务地址设置":
                         setChecking("管理员验证", "请输入【服务地址设置】密码进行验证", 1);
                         funName += ".setServer()";
@@ -138,6 +144,49 @@ public class SettingActivity extends Activity {
             }
         });
 
+    }
+
+    /**
+     * 功能列表设置
+     */
+    private void FunctionList(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("主页功能列表显示设置");
+        String[] items = AppSetting.M3_Titles;
+        Map<String, Boolean> map = setting.getDisplayM3Titles();
+        boolean[] checkedItems=new boolean[items.length];
+        for (int i = 0; i < items.length; i++) {
+            checkedItems[i]=map.get(items[i]);
+        }
+        builder.setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                checkedItems[i]=b;
+                Log.d(Tag+items[i],b+"");
+            }
+        });
+        builder.setPositiveButton("保存", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Map<String,Boolean> map=new HashMap<>();
+                for (int n = 0; n < items.length; n++) {
+                    map.put(items[n],checkedItems[n]);
+                }
+                boolean b = setting.setDisplayM3Titles(map);
+                if (b){
+                    DialogUtil.dialog(context,"保存成功","重启APP即可生效");
+                }else {
+                    DialogUtil.dialog(context,"保存失败","设置保存失败！");
+                }
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     /**

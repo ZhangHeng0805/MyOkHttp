@@ -34,6 +34,7 @@ import com.zhangheng.myapplication.getphoneMessage.GetPhoto;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
+import com.zhangheng.myapplication.setting.AppSetting;
 import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhangheng.myapplication.util.AndroidImageUtil;
 import com.zhangheng.myapplication.util.LocalFileTool;
@@ -83,27 +84,7 @@ public class Main3Activity extends Activity {
 
     private AlertDialog.Builder builder;
     private SharedPreferences sharedPreferences;
-    private final String[] strTitle = new String[]{
-//            "1.原生OkHttp的Get和Post请求文本数据",//MainActivity
-//            "2.使用OkHttpUtil的Post提交文本数据",//Main2Activity
-            "3.文件下载工具",//Main4Activity
-//            "4.上传文件和检索本地文件",//Main5Activity
-            "5.图片显示工具",//Main6Activity
-            "6.天气查询工具",//Main7Activity（API）
-            "7.二维码生成工具",//Main8Activity
-            "8.新华字典查询工具",//Main9Activity（API）
-            "9.图书电商查询工具",//Main10Activity（API）
-//            "10.查询文件列表并下载（自制服务器）",//Main11Activity
-            "11.密码工具",//Main12Activity
-            "12.画板工具",//Main13Activity
-//            "15.自制下拉刷新的ListView（测试）",//Test1Activity
-            "16.电话本工具",//Main16Activity
-            "17.手机扫码工具",//Main17Activity
-            "18.音乐工具(不同平台的免费音乐)",//Main18Activity(爬虫)
-            "19.影视资源(全网影视资源搜索播放)",//Main19Activity(爬虫)
-            "20.翻译工具",//Main20Activity(爬虫)
-            "21.全国疫情实时大数据",//Main21Activity(爬虫)
-    };
+
     private final static Map<Integer, Class<?>> contextMap = new HashMap<>();
 
     static {
@@ -119,6 +100,7 @@ public class Main3Activity extends Activity {
         contextMap.put(10, Main11Activity.class);
         contextMap.put(11, Main12Activity.class);
         contextMap.put(12, Main13Activity.class);
+        contextMap.put(13, Main14Activity.class);
         contextMap.put(15, Test1Activity.class);
         contextMap.put(16, Main16Activity.class);
         contextMap.put(17, Main17Activity.class);
@@ -165,11 +147,11 @@ public class Main3Activity extends Activity {
                 getupdatelist();
             }
         });
+        setting = new ServerSetting(Main3Activity.this);
 
         setAdapter();
         versionCode = PhoneSystem.getVersionCode(this);
         m3_tv_ipAddress.setText("应用版本号：" + versionCode);
-        setting = new ServerSetting(Main3Activity.this);
         getupdatelist();
 
 //        new Thread(new Runnable() {
@@ -200,8 +182,16 @@ public class Main3Activity extends Activity {
     }
 
     private void setAdapter() {
+        String[] m3_titles = AppSetting.M3_Titles;
+        List<String> list=new ArrayList<>();
+        Map<String, Boolean> map = setting.getDisplayM3Titles();
+        for (String title : m3_titles) {
+            if (map.get(title)){
+                list.add(title);
+            }
+        }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                Main3Activity.this, R.layout.item_list_text, strTitle);
+                Main3Activity.this, R.layout.item_list_text, list);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

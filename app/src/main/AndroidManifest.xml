@@ -34,7 +34,10 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.Main13Activity"></activity>
+        <activity android:name=".activity.Main14Activity"
+            android:label="精选文案"
+            />
+        <activity android:name=".activity.Main13Activity" />
         <activity android:name=".activity.Main12Activity" />
         <activity android:name=".activity.SettingActivity" />
         <activity
