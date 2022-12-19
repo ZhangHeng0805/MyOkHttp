@@ -105,7 +105,7 @@ public class Main3Activity extends Activity {
         contextMap.put(16, Main16Activity.class);
         contextMap.put(17, Main17Activity.class);
         contextMap.put(18, Main18Activity.class);
-        contextMap.put(19, Main19Activity.class);
+        contextMap.put(19, Main19_1Activity.class);
         contextMap.put(20, Main20Activity.class);
         contextMap.put(21, Main21Activity.class);
     }

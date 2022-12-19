@@ -62,6 +62,13 @@ public class Main19Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main19);
 
         initView();
+
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        if (!StrUtil.isEmpty(name)){
+            m19_et_search_name.setText(name);
+            getVideo(name);
+        }
     }
 
     @Override
