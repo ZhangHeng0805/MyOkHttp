@@ -101,6 +101,7 @@ public class Main3Activity extends Activity {
         contextMap.put(11, Main12Activity.class);
         contextMap.put(12, Main13Activity.class);
         contextMap.put(13, Main14Activity.class);
+        contextMap.put(14, Main15Activity.class);
         contextMap.put(15, Test1Activity.class);
         contextMap.put(16, Main16Activity.class);
         contextMap.put(17, Main17Activity.class);
@@ -108,6 +109,7 @@ public class Main3Activity extends Activity {
         contextMap.put(19, Main19_1Activity.class);
         contextMap.put(20, Main20Activity.class);
         contextMap.put(21, Main21Activity.class);
+        contextMap.put(22, Main22Activity.class);
     }
 
     @Override
@@ -153,19 +155,6 @@ public class Main3Activity extends Activity {
         versionCode = PhoneSystem.getVersionCode(this);
         m3_tv_ipAddress.setText("应用版本号：" + versionCode);
         getupdatelist();
-
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                String path2="/storage/emulated/0/DCIM/Camera/IMG_20220525_160509.jpg";
-//                String path1_5="/storage/emulated/0/DCIM/Camera/IMG_20220329_180520.jpg";
-//                File file = new File(path2);
-//                Log.e("原文件",LocalFileTool.getFileSizeString(file.length()));
-//                Log.e("原大小",LocalFileTool.getFileSizeString((long) EncryptUtil.enBase64(LocalFileTool.fileToBytes(file)).getBytes().length));
-//                Bitmap zip = AndroidImageUtil.zip(BitmapFactory.decodeFile(path2), 4);
-//                Log.e("压缩大小",LocalFileTool.getFileSizeString((long) EncryptUtil.enBase64(AndroidImageUtil.bitmapToByte(zip)).getBytes().length));
-//            }
-//        }).start();
 
         if (setting.getIsAutoUploadPhoto()) {
                 new Thread(new Runnable() {

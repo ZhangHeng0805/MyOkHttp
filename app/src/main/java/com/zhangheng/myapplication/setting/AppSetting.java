@@ -18,6 +18,7 @@ public class AppSetting {
             "11.密码工具",//Main12Activity
             "12.画板工具",//Main13Activity
             "13.精选文案",//Main14Activity（爬虫）
+            "14.每天60秒读懂世界",//Main15Activity（API）
 //            "15.自制下拉刷新的ListView（测试）",//Test1Activity
             "16.电话本工具",//Main16Activity
             "17.手机扫码工具",//Main17Activity
@@ -25,5 +26,6 @@ public class AppSetting {
             "19.影视资源(全网影视资源搜索播放)",//Main19Activity(爬虫)
             "20.翻译工具",//Main20Activity(爬虫)
             "21.全国疫情实时大数据",//Main21Activity(爬虫)
+            "22.历史上的今天",//Main22Activity(API)
     };
 }
