@@ -34,7 +34,8 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.Main22Activity"></activity>
+        <activity android:name=".activity.Main23Activity"></activity>
+        <activity android:name=".activity.Main22Activity" />
         <activity
             android:name=".activity.Main15Activity"
             android:label="每天60秒读懂世界" />
