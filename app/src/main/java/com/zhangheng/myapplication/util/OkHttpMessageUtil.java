@@ -1,25 +1,31 @@
 package com.zhangheng.myapplication.util;
 
+import cn.hutool.core.util.StrUtil;
+
 public class OkHttpMessageUtil {
 
     public static String error(Exception e) {
         String msg = null;
         String message = e.getMessage();
-        if (message.indexOf("404") > 1 || message.indexOf("not found") > 1) {
-            msg = "服务器未连接";
-        } else if (message.startsWith("Unable to resolve host")) {
-            msg = "网络异常";
-        } else if (message.indexOf("timeout") >= 0) {
-            msg = "连接超时";
-        } else if (message.startsWith("failed to connect to") || message.startsWith("Failed to connect to")) {
-            msg = "连接失败";
-        } else if (message.startsWith("unexpected end of stream on")) {
-            msg = "找不到服务器";
-        } else if (message.startsWith("request failed , reponse's code is")) {
-            Integer code = Integer.valueOf(message.substring(message.indexOf(" : ") + 3));
-            msg = getCode(code);
-        } else {
-            msg = message;
+        if (!StrUtil.isEmpty(message)) {
+            if (message.indexOf("404") > 1 || message.indexOf("not found") > 1) {
+                msg = "服务器未连接";
+            } else if (message.startsWith("Unable to resolve host")) {
+                msg = "网络异常";
+            } else if (message.indexOf("timeout") >= 0) {
+                msg = "连接超时";
+            } else if (message.startsWith("failed to connect to") || message.startsWith("Failed to connect to")) {
+                msg = "连接失败";
+            } else if (message.startsWith("unexpected end of stream on")) {
+                msg = "找不到服务器";
+            } else if (message.startsWith("request failed , reponse's code is")) {
+                Integer code = Integer.valueOf(message.substring(message.indexOf(" : ") + 3));
+                msg = getCode(code);
+            } else {
+                msg = message;
+            }
+        }else {
+            msg=e.toString();
         }
         return msg;
     }

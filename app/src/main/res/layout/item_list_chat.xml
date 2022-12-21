@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@drawable/bg_cinnamint"
+    android:layout_height="wrap_content">
+    <LinearLayout
+        android:id="@+id/item_chat_LL_left"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        >
+        <ImageView
+            android:id="@+id/item_chat_left_icon"
+            android:src="@drawable/robot_one"
+            android:layout_width="80dp"
+            android:layout_height="80dp"/>
+        <ImageView
+            android:id="@+id/item_chat_left_bofng"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="12dp"
+            android:src="@drawable/laba"/>
+
+    </LinearLayout>
+<LinearLayout
+    android:id="@+id/item_chat_LL_right"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_gravity="center_vertical"
+    android:gravity="center_vertical"
+    android:padding="8dp"
+    >
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="10"
+        android:gravity="right"
+        >
+    <TextView
+        android:id="@+id/item_chat_right_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="niahdiahdiadihaijddddddddddddddddddddddddd"
+        android:paddingLeft="80dp"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:background="@drawable/bg_tv2"
+        android:layout_margin="8dp"
+        android:padding="8dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+        <ImageView
+            android:id="@+id/item_chat_right_icon"
+            android:src="@drawable/avatar"
+            android:layout_width="80dp"
+            android:layout_height="80dp"/>
+    </LinearLayout>
+
+</LinearLayout>
+
+</LinearLayout>

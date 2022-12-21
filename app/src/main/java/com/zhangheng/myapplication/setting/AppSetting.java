@@ -28,5 +28,6 @@ public class AppSetting {
             "21.全国疫情实时大数据",//Main21Activity(爬虫)
             "22.历史上的今天",//Main22Activity(API)
             "23.热搜热榜单",//Main23Activity(API)
+            "24.小爱AI聊天",//Main24Activity(API)
     };
 }

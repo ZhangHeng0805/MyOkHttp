@@ -113,6 +113,7 @@ public class Main3Activity extends Activity {
         contextMap.put(21, Main21Activity.class);
         contextMap.put(22, Main22Activity.class);
         contextMap.put(23, Main23Activity.class);
+        contextMap.put(24, Main24Activity.class);
     }
 
     @Override

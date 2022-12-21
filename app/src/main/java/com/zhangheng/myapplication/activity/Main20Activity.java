@@ -1,5 +1,6 @@
 package com.zhangheng.myapplication.activity;
 
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -173,6 +174,11 @@ public class Main20Activity extends AppCompatActivity {
         try {
             String url="https://tts.youdao.com/fanyivoice?word="+text+"&le="+type+"&keyfrom=speaker-target";
             MediaPlayer mediaPlayer = new MediaPlayer();
+            // 设置类型
+            mediaPlayer.setAudioAttributes(new AudioAttributes
+                    .Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build());
             mediaPlayer.reset();
             Uri uri = Uri.parse(url);
             mediaPlayer.setDataSource(this, uri);// 设置文件源

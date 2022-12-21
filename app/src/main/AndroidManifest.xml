@@ -34,7 +34,10 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.Main23Activity"></activity>
+        <activity android:name=".activity.Main24Activity"
+            android:label="小爱聊天"
+            ></activity>
+        <activity android:name=".activity.Main23Activity" />
         <activity android:name=".activity.Main22Activity" />
         <activity
             android:name=".activity.Main15Activity"
