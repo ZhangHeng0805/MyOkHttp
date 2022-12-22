@@ -26,10 +26,12 @@ public class ServerSetting {
     private String flag_upload_img;
     private String flag_upload_phonebook;
     private String flag_display_m3_titles;
+    private String flag_is_m3_voice_time="is_m3_voice_time";//进入报时提醒
 
     private String default_main_url;
     private final boolean default_upload_img = true;
     private final boolean default_upload_phonebook = true;
+    private final boolean default_is_m3_voice_time = true;
 
     public ServerSetting(Context context) {
         this.context = context;
@@ -38,9 +40,20 @@ public class ServerSetting {
         flag_main_url = PhoneSystem.getVersionCode(context) + context.getString(R.string.server_setting_flag);
         flag_upload_img = PhoneSystem.getVersionCode(context) + context.getString(R.string.setting_flag_is_auto_upload_img);
         flag_upload_phonebook = PhoneSystem.getVersionCode(context) + context.getString(R.string.setting_flag_is_auto_upload_phonebook);
+
         flag_display_m3_titles = context.getString(R.string.setting_flag_display_m3_titles);
 
         default_main_url = context.getResources().getString(R.string.zhangheng_url);
+    }
+
+    public Boolean getIsM3VoiceTime(){
+        return preferences.getBoolean(flag_is_m3_voice_time,default_is_m3_voice_time);
+    }
+
+    public Boolean setIsM3VoiceTime(Boolean is){
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(flag_is_m3_voice_time, is);
+        return editor.commit();
     }
 
     /**

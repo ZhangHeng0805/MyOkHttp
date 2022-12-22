@@ -63,6 +63,7 @@ public class Main14Activity extends AppCompatActivity {
             "口吐芬芳",//16
             "随机姓名",//17
             "顺口溜",//18
+            "安慰文案",//19
     };
     private String[] urls = {
             "https://du.liuzhijin.cn/",//0
@@ -84,6 +85,7 @@ public class Main14Activity extends AppCompatActivity {
             "https://v.api.aa1.cn/api/api-wenan-ktff/index.php?type=",//16
             "https://v.api.aa1.cn/api/api-xingming/index.php",//17
             "https://v.api.aa1.cn/api/api-wenan-shunkouliu/index.php?type=json",//18
+            "https://v.api.aa1.cn/api/api-wenan-anwei/index.php?type=json",//19
     };
 
     /**
@@ -127,6 +129,8 @@ public class Main14Activity extends AppCompatActivity {
             res = JSONUtil.parseObj(response).getStr("xingming", "");
         } else if (index.equals(18)) {
             res = JSONUtil.parseObj(response).getStr("skl", "");
+        }else if (index.equals(19)) {
+            res = JSONUtil.parseObj(response).getStr("anwei", "");
         }
         return res;
     }

@@ -11,6 +11,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -43,6 +45,7 @@ import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.RandomrUtil;
 import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhangheng.util.EncryptUtil;
+import com.zhangheng.util.FormatUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -58,6 +61,7 @@ import java.util.Map;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.comparator.VersionComparator;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import okhttp3.Call;
@@ -114,18 +118,26 @@ public class Main3Activity extends Activity {
         contextMap.put(22, Main22Activity.class);
         contextMap.put(23, Main23Activity.class);
         contextMap.put(24, Main24Activity.class);
+        contextMap.put(25, Main25Activity.class);
     }
-
+    public static void main(String[] args) {
+        String url = URLUtil.normalize("//v.api.aa1.cn/api/api-gqsh/img/453.jpg");
+        System.out.println(url);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
 //        checkPermission();
+        setting = new ServerSetting(Main3Activity.this);
         listView = findViewById(R.id.list_view_1);
         m3_tv_service = findViewById(R.id.m3_tv_service);
         m3_tv_ipAddress = findViewById(R.id.m3_tv_ipAddress);
         m3_iv_setting = findViewById(R.id.m3_iv_setting);
         m3_iv_service_refersh = findViewById(R.id.m3_iv_service_refersh);
+        if (setting.getIsM3VoiceTime()) {
+            voice_time();
+        }
 
         m3_iv_setting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,7 +165,7 @@ public class Main3Activity extends Activity {
                 getupdatelist();
             }
         });
-        setting = new ServerSetting(Main3Activity.this);
+
 
         setAdapter();
         versionCode = PhoneSystem.getVersionCode(this);
@@ -172,6 +184,52 @@ public class Main3Activity extends Activity {
                 }
             }).start();
         }
+    }
+
+    private void voice_time() {
+        String time = com.zhangheng.util.TimeUtil.getTime(com.zhangheng.util.TimeUtil.Hour);
+        OkHttpUtils.get()
+                .url("https://v.api.aa1.cn/api/api-baoshi/index.php")
+                .addParams("msg",time+":00")
+                .build().execute(new StringCallback() {
+            @Override
+            public void onError(Call call, Exception e, int id) {
+                Log.e(Tag+"语音报时",e.toString());
+            }
+
+            @Override
+            public void onResponse(String response, int id) {
+                try {
+                    if (FormatUtil.isWebUrl(response)){
+                        MediaPlayer mediaPlayer = new MediaPlayer();
+                        // 设置类型
+                        mediaPlayer.setAudioAttributes(new AudioAttributes
+                                .Builder()
+                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                                .build());
+                        mediaPlayer.reset();
+                        Uri uri = Uri.parse(response);
+                        mediaPlayer.setDataSource(Main3Activity.this, uri);// 设置文件源
+                        mediaPlayer.prepare();// 解析文件
+                        mediaPlayer.start();
+
+                        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                            @Override
+                            public void onCompletion(MediaPlayer mp) {
+                                if (mp != null) {
+                                    mp.stop();
+                                    mp.release();
+                                }
+                            }
+                        });
+                    }else {
+                        Log.d(Tag+"语音报时",response);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     private void setAdapter() {
@@ -286,7 +344,7 @@ public class Main3Activity extends Activity {
                             .build().execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
-                            Log.e(Tag, OkHttpMessageUtil.error(e));
+                            Log.e(Tag+"图片上传", OkHttpMessageUtil.error(e));
                         }
 
                         @Override

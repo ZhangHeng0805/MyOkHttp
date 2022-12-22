@@ -24,7 +24,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 22
-        versionName "12.21"
+        versionName "12.22"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // 显式声明支持注解
         javaCompileOptions {

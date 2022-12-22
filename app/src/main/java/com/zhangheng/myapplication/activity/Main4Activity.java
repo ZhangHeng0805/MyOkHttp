@@ -1,7 +1,9 @@
 package com.zhangheng.myapplication.activity;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -31,6 +33,8 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
+import cn.hutool.core.lang.Validator;
+import cn.hutool.core.util.StrUtil;
 import okhttp3.Call;
 
 public class Main4Activity extends AppCompatActivity implements View.OnClickListener {
@@ -54,6 +58,7 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
         textView = findViewById(R.id.text_downfile);
         textView_pro = findViewById(R.id.text_progress_downfile);
         button.setOnClickListener(this);
+
 
 
         editText.addTextChangedListener(new TextWatcher() {
@@ -94,6 +99,14 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
 
             }
         });
+
+        Intent intent = getIntent();
+        String name = intent.getStringExtra("name");
+        String url = intent.getStringExtra("url");
+        if (!StrUtil.isEmpty(url)){
+            editText.setText(url);
+            editText_name.setText(name);
+        }
     }
 
     /*
@@ -120,9 +133,8 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
                         @Override
                         public void onResponse(File response, int id) {
                             Log.e("路径", "response:" + response.getAbsolutePath());
-
                             textView.setText("下载完成\n存储路径：" + response.getAbsolutePath().replace(LocalFileTool.BasePath,"内部存储"));
-
+                            Main4Activity.this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + response.getAbsolutePath())));
                         }
 
                         @Override
@@ -151,7 +163,7 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
 //                    Toast.makeText(Main4Activity.this,"输入内容过短",Toast.LENGTH_SHORT).show();
 //
 //                }
-                if (FormatUtil.isWebUrl(url)) {
+                if (Validator.isUrl(url)) {
                     String filename = editText_name.getText().toString();
                     if (filename.length() < 3) {
 //                        filename = url.substring(url.indexOf("//") + 2).replace("/", "_");

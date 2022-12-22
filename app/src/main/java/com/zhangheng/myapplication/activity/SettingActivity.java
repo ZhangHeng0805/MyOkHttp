@@ -58,8 +58,9 @@ public class SettingActivity extends Activity {
 
     private final String[] setting_meun = {
             "功能列表设置",
-            "服务地址设置",
-            "应用服务设置",
+            "服务功能设置",
+            "服务地址设置(密码)",
+            "应用服务设置(密码)",
             "意见反馈",
             "捐赠支持",
             "微信公众号",
@@ -108,11 +109,15 @@ public class SettingActivity extends Activity {
                         FunctionList();
                         funName += ".FunctionList()";
                         break;
-                    case "服务地址设置":
+                    case "服务功能设置":
+                        FunctionService();
+                        funName += ".FunctionService()";
+                        break;
+                    case "服务地址设置(密码)":
                         setChecking("管理员验证", "请输入【服务地址设置】密码进行验证", 1);
                         funName += ".setServer()";
                         break;
-                    case "应用服务设置":
+                    case "应用服务设置(密码)":
                         setChecking("管理员验证", "请输入【应用服务设置】密码进行验证", 2);
                         funName += ".setService()";
                         break;
@@ -144,6 +149,46 @@ public class SettingActivity extends Activity {
             }
         });
 
+    }
+
+    /**
+     * 服务功能设置
+     */
+    private void FunctionService() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("主页功能列表显示设置");
+        String[] items = {
+                "进入主页时的报时提示语音功能",
+        };
+        boolean[] checkedItems={
+                setting.getIsM3VoiceTime(),
+        };
+
+        builder.setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                checkedItems[i]=b;
+                boolean flag=false;
+                switch (i){
+                    case 0:
+                        flag=setting.setIsM3VoiceTime(b);
+                        break;
+                }
+                if (flag){
+                    Toast.makeText(context,"["+items[i]+"]修改成功",Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(context,"["+items[i]+"]修改失败",Toast.LENGTH_SHORT).show();
+                }
+                Log.d(Tag+items[i],b+"");
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     /**

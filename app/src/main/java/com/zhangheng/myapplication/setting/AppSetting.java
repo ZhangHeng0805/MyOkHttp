@@ -29,5 +29,6 @@ public class AppSetting {
             "22.历史上的今天",//Main22Activity(API)
             "23.热搜热榜单",//Main23Activity(API)
             "24.小爱AI聊天",//Main24Activity(API)
+            "25.视频解析下载(抖音/快手/微视...)",//Main25Activity(API)
     };
 }

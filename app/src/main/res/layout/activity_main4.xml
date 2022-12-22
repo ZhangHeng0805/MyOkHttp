@@ -16,6 +16,7 @@
         android:id="@+id/et_downfile_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLines="3"
         android:text="@string/image_url"
         android:textSize="20sp"/>
 
@@ -29,6 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
+        android:maxLines="2"
         android:text="baidu图标.png"
         android:hint="注意：需要加上文件后缀名(.xxx)"
         />

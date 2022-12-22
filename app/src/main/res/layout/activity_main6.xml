@@ -6,16 +6,35 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".activity.Main6Activity">
-    <TextView
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="图片地址："
-        android:textSize="25sp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="图片地址："
+            android:textSize="25sp" />
+        <ImageView
+            android:id="@+id/m6_iv_refresh"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:src="@drawable/service_refresh"/>
+        <ImageView
+            android:id="@+id/m6_iv_refresh_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:src="@drawable/setting"/>
+    </LinearLayout>
     <EditText
         android:id="@+id/et_img_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
+        android:maxLines="3"
         android:text="@string/image_url"
         android:hint="注意：需要加上文件后缀名(.xxx)"
         />
@@ -25,6 +44,7 @@
         android:layout_height="wrap_content"
         android:textSize="25sp"
         android:textStyle="bold"
+        android:background="@drawable/btn1"
         android:text="请求显示"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -59,7 +79,7 @@
         <ImageView
             android:id="@+id/iv_img"
             android:layout_width="match_parent"
-            android:layout_gravity="center"
+            android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
             android:layout_height="wrap_content"/>
         <TextView
