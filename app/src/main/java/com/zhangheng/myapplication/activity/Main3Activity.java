@@ -11,8 +11,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.AudioAttributes;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -52,7 +50,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -60,7 +57,6 @@ import java.util.Map;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.comparator.VersionComparator;
-import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONObject;
@@ -111,11 +107,7 @@ public class Main3Activity extends Activity {
         m3_tv_ipAddress = findViewById(R.id.m3_tv_ipAddress);
         m3_iv_setting = findViewById(R.id.m3_iv_setting);
         m3_iv_service_refersh = findViewById(R.id.m3_iv_service_refersh);
-        if (setting.getIsM3VoiceTime()) {
-            Calendar instance = Calendar.getInstance();
-            int time = instance.get(Calendar.HOUR_OF_DAY);
-            voice_time(time);
-        }
+
         m3_iv_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,66 +151,6 @@ public class Main3Activity extends Activity {
                 }
             }).start();
         }
-    }
-
-    private void voice_time(int time) {
-        String path = LocalFileTool.BasePath + "/" + getString(R.string.app_name) + "/data/baoshi/";
-        String name = time + ".mp3";
-        if (new File(path + name).exists()) {
-            try {
-                playAudio(path + name);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else {
-            String url = "https://v.api.aa1.cn/api/api-baoshi/index.php?msg=" + time + ":00";
-            OkHttpUtils.get()
-                    .url(url)
-                    .build().execute(new StringCallback() {
-                @Override
-                public void onError(Call call, Exception e, int id) {
-                    Log.e(Tag + "语音报时"+time, e.toString());
-                }
-
-                @Override
-                public void onResponse(String response, int id) {
-                    try {
-                        if (Validator.isUrl(response)) {
-                            playAudio(response);
-                            OkHttpUtil.downLoad(context, response, path, name);
-                        } else {
-                            Log.d(Tag + "语音报时"+time, response);
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-        }
-    }
-
-    public void playAudio(String audio) throws IOException {
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        // 设置类型
-        mediaPlayer.setAudioAttributes(new AudioAttributes
-                .Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                .build());
-        mediaPlayer.reset();
-//        Uri uri = Uri.parse(audio);
-        mediaPlayer.setDataSource(audio);// 设置文件源
-        mediaPlayer.prepare();// 解析文件
-        mediaPlayer.start();
-
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-                if (mp != null) {
-                    mp.stop();
-                    mp.release();
-                }
-            }
-        });
     }
 
     private void setAdapter() {

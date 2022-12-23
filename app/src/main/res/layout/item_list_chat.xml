@@ -14,13 +14,32 @@
         <ImageView
             android:id="@+id/item_chat_left_icon"
             android:src="@drawable/robot_one"
-            android:layout_width="80dp"
+            android:layout_width="50dp"
             android:layout_height="80dp"/>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:gravity="left"
+            >
+            <TextView
+                android:id="@+id/item_chat_left_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:paddingLeft="80dp"
+                android:textSize="20sp"
+                android:textIsSelectable="true"
+                android:textColor="@color/black"
+                android:background="@drawable/bg_tv2"
+                android:layout_margin="8dp"
+                android:padding="8dp"/>
+        </LinearLayout>
         <ImageView
             android:id="@+id/item_chat_left_bofng"
-            android:layout_width="50dp"
+            android:layout_width="40dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="12dp"
+            android:layout_marginLeft="8dp"
             android:background="@drawable/btn2"
             android:src="@drawable/laba"/>
 
@@ -40,17 +59,18 @@
         android:layout_weight="10"
         android:gravity="right"
         >
-    <TextView
-        android:id="@+id/item_chat_right_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="niahdiahdiadihaijddddddddddddddddddddddddd"
-        android:paddingLeft="80dp"
-        android:textSize="20sp"
-        android:textColor="@color/black"
-        android:background="@drawable/bg_tv2"
-        android:layout_margin="8dp"
-        android:padding="8dp"/>
+        <TextView
+            android:id="@+id/item_chat_right_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:paddingLeft="80dp"
+            android:textSize="20sp"
+            android:textIsSelectable="true"
+            android:textColor="@color/black"
+            android:background="@drawable/bg_tv2"
+            android:layout_margin="8dp"
+            android:padding="8dp"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -59,7 +79,7 @@
         <ImageView
             android:id="@+id/item_chat_right_icon"
             android:src="@drawable/avatar"
-            android:layout_width="80dp"
+            android:layout_width="50dp"
             android:layout_height="80dp"/>
     </LinearLayout>
 

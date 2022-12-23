@@ -12,6 +12,7 @@
     android:layout_height="wrap_content"
     android:layout_alignParentRight="true"
     android:padding="5dp"
+    android:textColor="@color/white_80"
     android:text="点击跳过"
     android:background="@drawable/bg_tv3"/>
     <LinearLayout
@@ -20,8 +21,21 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:orientation="vertical">
+        <TextView
+            android:id="@+id/launcher_tv_greet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:padding="15dp"
+            android:layout_marginBottom="35dp"
+            android:lineHeight="25sp"
+            android:text=""
+            android:textColor="@color/yellow"
+            />
     <ImageView
-        android:background="@drawable/bg_jshine"
+        android:background="@drawable/bg_brady_brady_fun_fun"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginBottom="15dp"
@@ -31,8 +45,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_marginTop="15dp"
         android:textSize="25dp"
         android:textStyle="bold"
+        android:lineHeight="35dp"
         android:text="@string/hello"
         android:textColor="@color/white_50"
         />
@@ -44,7 +60,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:orientation="vertical"
-        android:layout_marginBottom="10dp"
+        android:padding="10dp"
+        android:background="@color/white_10"
         >
         <TextView
             android:id="@+id/launcher_tv_url1"
@@ -61,7 +78,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/zhangheng_url"
-            android:textStyle="italic"
+            android:textStyle="normal"
             android:textIsSelectable="true"
             android:padding="5dp"
             />

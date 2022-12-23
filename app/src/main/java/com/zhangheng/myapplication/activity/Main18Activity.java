@@ -12,7 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.AudioManager;
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,13 +20,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,34 +66,48 @@ import okhttp3.Call;
 public class Main18Activity extends Activity {
 
     private final String Log_Tag = this.getClass().getSimpleName();
+    private final Context context = Main18Activity.this;
 
     private EditText m18_et_search_name;
     private Button m18_btn_search, m18_btn_continue;
-    private RadioGroup m18_RG_type;
+    //    private RadioGroup m18_RG_type;
     private TextView m18_tv_result, m18_tv_music_title, m18_tv_real_time, m18_tv_total_time;
     private ImageView m18_iv_music_btn, m18_iv_music_pic, m18_iv_music_last, m18_iv_music_next;
     private RefreshListView m18_lv_music_list;
     private LinearLayout m18_LL_console;
     private SeekBar m18_pro_progress;
+    private Spinner m18_sp_type;
 
 
     private final MediaPlayer mediaPlayer = new MediaPlayer();
     private progressThread progressThread;
 
-    private List<Map<String, Object>> music_list = new ArrayList<>();//歌曲列表
+    private List<Map<String, String>> music_list = new ArrayList<>();//歌曲列表
     private int page = 1;//结果页码
     private Integer index = 0;//播放歌曲索引
-    private Integer checked_id;//单选框id
-    private String music_name = "", music_type = "", music_url = null;
-    private Map<String, Object> music = new HashMap<>();
-    private Map<Integer, String> map_type = new HashMap<Integer, String>();//歌曲类型
+//    private Integer checked_id;//单选框id
+    private String music_name = "",//搜索音乐名
+            music_type = "";//搜索音乐类型
+    private Map<String, String> music = new HashMap<>();//当前播放音乐
+//    private Map<Integer, String> map_type = new HashMap<Integer, String>();//歌曲类型
+    private String[] flag_type1 = {"netease", "qq", "baidu", "kuwo"};
+
+    private String[] types = {
+            "网易云(普通)",
+            "QQ音乐(普通)",
+            "百度音乐(普通)",
+            "酷我音乐(普通)",
+            "高品质音乐(会员)",
+    };
+
+    private Integer type_index = 0;//音乐类型下拉选择索引
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main18);
         init();
-        listener();
+
     }
 
     @Override
@@ -143,13 +158,17 @@ public class Main18Activity extends Activity {
 //        }
     }
 
+
     private void init() {
-
-        initTypeMap();
-
+//        initTypeMap();
+// 设置类型
+        mediaPlayer.setAudioAttributes(new AudioAttributes
+                .Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build());
         m18_et_search_name = findViewById(R.id.m18_et_search_name);
         m18_btn_search = findViewById(R.id.m18_btn_search);
-        m18_RG_type = findViewById(R.id.m18_RG_type);
+//        m18_RG_type = findViewById(R.id.m18_RG_type);
         m18_tv_result = findViewById(R.id.m18_tv_result);
         m18_lv_music_list = findViewById(R.id.m18_lv_music_list);
         m18_btn_continue = findViewById(R.id.m18_btn_continue);
@@ -164,44 +183,56 @@ public class Main18Activity extends Activity {
         m18_tv_total_time = findViewById(R.id.m18_tv_total_time);
         m18_pro_progress = findViewById(R.id.m18_pro_progress);
         m18_pro_progress.setProgress(0);
-
+        m18_sp_type = findViewById(R.id.m18_sp_type);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(
+                context, R.layout.item_list_text, types);
+        m18_sp_type.setAdapter(adapter);
+        listener();
     }
 
-    private void initTypeMap() {
+/*    private void initTypeMap() {
         map_type.put(R.id.m18_rb_wangyi, "netease");
         map_type.put(R.id.m18_rb_qq, "qq");
         map_type.put(R.id.m18_rb_qianqian, "baidu");
         map_type.put(R.id.m18_rb_kuwo, "kuwo");
-    }
+    }*/
 
     private void listener() {
         //搜索按钮点击事件
         m18_btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DialogUtil dialogUtil = new DialogUtil(Main18Activity.this);
-                dialogUtil.createProgressDialog();
+
                 SystemUtil.closeInput(Main18Activity.this);
                 String search_name = m18_et_search_name.getText().toString();
                 if (!StrUtil.isEmptyIfStr(search_name)) {
-                    checked_id = m18_RG_type.getCheckedRadioButtonId();
-                    music_type = map_type.get(checked_id);
-                    boolean b = ReadAndWrite.RequestPermissions(Main18Activity.this, Manifest.permission.INTERNET);
+                    boolean b = ReadAndWrite.RequestPermissions(context, Manifest.permission.INTERNET);
                     if (b) {
+//                    checked_id = m18_RG_type.getCheckedRadioButtonId();
+//                    music_type = map_type.get(checked_id);
+
+                        type_index = m18_sp_type.getSelectedItemPosition();
+                        Log.e(Log_Tag,"选择："+type_index);
                         try {
                             music_list.clear();
                             page = 1;
-                            getMusics(search_name, music_type, page);
+                            if (type_index==0||type_index==1||type_index==2||type_index==3) {
+                                music_type = flag_type1[type_index];
+                                getMusics1(search_name, music_type, page);
+                            }else if (type_index==4){
+                                getMusics2(search_name,page);
+                            }
                             page++;
                             Toast.makeText(Main18Activity.this, "长按可以下载哦，下拉可以继续加载", Toast.LENGTH_SHORT).show();
                         } catch (Exception e) {
                             DialogUtil.dialog(Main18Activity.this, "搜索错误", e.toString());
                         }
+                    } else {
+                        DialogUtil.dialog(context, "权限不足", "请检查APP权限");
                     }
                 } else {
-                    DialogUtil.dialog(Main18Activity.this, "输入错误", "请先输入音乐名称");
+                    DialogUtil.dialog(context, "输入错误", "请先输入音乐名称");
                 }
-                dialogUtil.closeProgressDialog();
 
             }
         });
@@ -295,12 +326,17 @@ public class Main18Activity extends Activity {
 
     private void onLoadMoreMusic() {
         String search_name = m18_et_search_name.getText().toString();
-        if (!StrUtil.isEmptyIfStr(search_name)) {
-            Integer checkedId = m18_RG_type.getCheckedRadioButtonId();
-            if (search_name.equals(music_name) && checkedId.equals(checked_id)) {
-                music_type = map_type.get(checkedId);
+        if (!StrUtil.isBlank(search_name)) {
+            Integer checkedId = m18_sp_type.getSelectedItemPosition();
+            if (search_name.equals(music_name) && checkedId.equals(type_index)) {
+                type_index=checkedId;
                 try {
-                    getMusics(search_name, music_type, page);
+                    if (type_index==0||type_index==1||type_index==2||type_index==3) {
+                        music_type = flag_type1[checkedId];
+                        getMusics1(search_name, music_type, page);
+                    }else if (type_index==4){
+                        getMusics2(search_name,page);
+                    }
                     page++;
                     if (!m18_btn_continue.isCursorVisible()) {
                         m18_btn_continue.setVisibility(View.VISIBLE);
@@ -310,7 +346,7 @@ public class Main18Activity extends Activity {
                 }
             } else {
                 m18_btn_continue.setVisibility(View.GONE);
-                DialogUtil.dialog(Main18Activity.this, "加载异常", "请重新搜索");
+                DialogUtil.dialog(Main18Activity.this, "加载异常", "搜索内容或类型改变,请重新搜索");
             }
         } else {
             DialogUtil.dialog(Main18Activity.this, "输入错误", "请先输入音乐名称");
@@ -318,8 +354,12 @@ public class Main18Activity extends Activity {
 
     }
 
-    private void setAdapter(List<Map<String, Object>> maps) {
-        MusicAdapter adapter = new MusicAdapter(maps, Main18Activity.this);
+    /**
+     *
+     * @param maps [{pic,title,author,url}]
+     */
+    private void setAdapter(List<Map<String, String>> maps) {
+        MusicAdapter adapter = new MusicAdapter(maps, context);
         m18_lv_music_list.setAdapter(adapter);
         Toast.makeText(this, "已加载 " + maps.size() + " 条数据", Toast.LENGTH_SHORT).show();
         //list每行点击事件
@@ -335,7 +375,7 @@ public class Main18Activity extends Activity {
         m18_lv_music_list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Map<String, Object> map = music_list.get(i - 1);
+                Map<String, String> map = music_list.get(i - 1);
                 String title = map.get("title").toString();
                 new AlertDialog.Builder(Main18Activity.this)
                         .setMessage("是否打开浏览器下载歌曲《" + title + "》？")
@@ -345,9 +385,9 @@ public class Main18Activity extends Activity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 String url = map.get("url").toString();
                                 String author = map.get("author").toString();
-                                boolean b = SystemUtil.copyStr(Main18Activity.this, title + " - " + author);
+                                boolean b = SystemUtil.copyStr(context, author + " - " + title);
                                 if (b) {
-                                    Toast.makeText(Main18Activity.this, "音乐信息已复制到剪切板中", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "音乐信息已复制到剪切板中", Toast.LENGTH_SHORT).show();
                                 }
                                 Uri parse = Uri.parse(url);
                                 Intent intent = new Intent(Intent.ACTION_VIEW, parse);
@@ -362,11 +402,11 @@ public class Main18Activity extends Activity {
     }
 
     class MusicAdapter extends BaseAdapter {
-        private List<Map<String, Object>> musics;
+        private List<Map<String, String>> musics;
         private Context context;
 
 
-        public MusicAdapter(List<Map<String, Object>> musics, Context context) {
+        public MusicAdapter(List<Map<String, String>> musics, Context context) {
             this.musics = musics;
             this.context = context;
         }
@@ -402,37 +442,14 @@ public class Main18Activity extends Activity {
             } else {
                 holder = (Holder) view.getTag();
             }
-            Map<String, Object> music = this.musics.get(i);
-            String pic = music.get("pic").toString();
+            Map<String, String> music = this.musics.get(i);
+            String pic = music.get("pic");
             Glide.with(context).load(pic).into(holder.item_music_pic);
-            String name = music.get("title").toString();
+            String name = music.get("title");
             holder.item_music_name.setText(name);
-            String author = music.get("author").toString();
+            String author = music.get("author");
             holder.item_music_author.setText(author);
-            String url = music.get("url").toString();
-//            holder.item_music_layout.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    int i1 = viewGroup.indexOfChild(view);
-//                    index = i1 - 1;
-//                    Log.d("index", String.valueOf(i1));
-//                    Map<String, String> head = new HashMap<>();
-//                    head.put("name", name);
-//                    head.put("author", author);
-//                    head.put("pic", pic);
-//                    head.put("url", url);
-//                    setPlayPath(url);
-////                    sendSimpleNotify(name, author);
-//                    n = view;
-//                }
-//            });
-//            holder.item_music_layout.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View view) {
-//
-//                    return true;
-//                }
-//            });
+            String url = music.get("url");
 
             return view;
         }
@@ -453,20 +470,18 @@ public class Main18Activity extends Activity {
         if (music_list.isEmpty()) {
             return;
         }
-        Map<String, Object> map = music_list.get(index);
-        music = map;
-        String name = map.get("title").toString();
-        String author = map.get("author").toString();
+        music = music_list.get(index);
+        String name = music.get("title");
+        String author = music.get("author");
         String text = "《" + name + "》- " + author;
         try {
 
             // 设置类型
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
             // 这里要reset一下啊 (当已经设置过音乐后，再调用此方法时，没有reset就会异常)
             mediaPlayer.reset();
 
-            String url = music_list.get(index).get("url").toString();
+            String url = music_list.get(index).get("url");
             Uri uri = Uri.parse(url);
 
             mediaPlayer.setDataSource(this, uri);// 设置文件源
@@ -498,7 +513,7 @@ public class Main18Activity extends Activity {
             m18_pro_progress.setMax(duration);
             m18_tv_total_time.setText(TimeUtil.format(duration));
 
-            String pic = map.get("pic").toString();
+            String pic = music.get("pic");
             RequestOptions options = new RequestOptions().error(R.drawable.icon).bitmapTransform(new RoundedCorners(50));//图片圆角
             Glide.with(this).load(pic) //图片地址
                     .apply(options)
@@ -506,19 +521,19 @@ public class Main18Activity extends Activity {
 
             m18_tv_music_title.setText(text);
 
-            String lrc1 = music.get("lrc").toString();
+            String lrc = music.get("lrc");
             StringBuilder sb = new StringBuilder();
-            if (!StrUtil.isEmptyIfStr(lrc1)) {
-                String[] lrcs = lrc1.split("\\n");
-                for (String lrc : lrcs) {
-                    sb.append(lrc.substring(lrc.indexOf("]") + 1) + "\n");
+            if (!StrUtil.isBlank(lrc)) {
+                String[] lrcs = lrc.split("\\n");
+                for (String l : lrcs) {
+                    sb.append(l.substring(l.indexOf("]") + 1) + "\n");
                 }
             } else {
                 sb.append("暂无歌词，请欣赏！");
             }
             m18_tv_result.setText(sb.toString());
 
-            music_url = url;
+//            music_url = url;
             m18_LL_console.setVisibility(View.VISIBLE);
 
             if (mediaPlayer.isPlaying()) {
@@ -534,7 +549,7 @@ public class Main18Activity extends Activity {
     }
 
     private void stopMusic(MediaPlayer mp) {
-        if (mp != null&&mp.isPlaying()) {
+        if (mp != null && mp.isPlaying()) {
             mp.stop();
             mp.release();
         }
@@ -550,7 +565,7 @@ public class Main18Activity extends Activity {
             if (mediaPlayer != null) {
                 if (mediaPlayer.isPlaying()) {
                     final int[] n = {0};
-                    String lrc = music.get("lrc").toString();
+                    String lrc = music.get("lrc");
                     String[] lrcs = lrc.split("\\n");
                     final String[] format = new String[1];
 //                    int total = mediaPlayer.getDuration();
@@ -624,10 +639,16 @@ public class Main18Activity extends Activity {
         m18_iv_music_last.setClickable(true);
     }
 
-    public boolean getMusics(String name, String type, Integer page) throws Exception {
-        final boolean[] flag = {false};
+    /**
+     * 普通音乐列表（爬虫）
+     * @param name 搜索内容
+     * @param type 类型
+     * @param page 页码
+     * @throws Exception
+     */
+    public void getMusics1(String name, String type, Integer page) throws Exception {
 //        List<Map<String, Object>> list = music_list;
-        DialogUtil dialogUtil = new DialogUtil(this);
+        DialogUtil dialogUtil = new DialogUtil(context);
         dialogUtil.createProgressDialog();
         String Url = "https://music.liuzhijin.cn/";
         Map<String, String> body = new HashMap<>();
@@ -652,67 +673,138 @@ public class Main18Activity extends Activity {
             public void onError(Call call, Exception e, int id) {
                 dialogUtil.closeProgressDialog();
                 Log.e(Log_Tag, "音乐爬虫错误:" + e.toString());
-                DialogUtil.dialog(Main18Activity.this, "搜索错误", OkHttpMessageUtil.error(e));
+                DialogUtil.dialog(context, "搜索错误", OkHttpMessageUtil.error(e));
             }
 
             @Override
             public void onResponse(String response, int id) {
-                String json = UnicodeUtil.toString(response);
+                try {
+                    String json = UnicodeUtil.toString(response);
 //                System.out.println(JSONUtil.formatJsonStr(json));
-                JSONObject jsonObject = JSONUtil.parseObj(json);
-                Integer code = jsonObject.getInt("code");
-                if (code.equals(200)) {
-                    JSONArray data = jsonObject.getJSONArray("data");
-                    for (Object d : data) {
-                        String s = JSONUtil.toJsonStr(d);
-                        JSONObject obj = JSONUtil.parseObj(s);
-                        Map<String, Object> music = new HashMap<>();
-                        //歌名
-                        String title = obj.getStr("title");
-                        music.put("title", StrUtil.isEmptyIfStr(title) ? "" : title);
-                        //歌手
-                        String author = obj.getStr("author");
-                        music.put("author", StrUtil.isEmptyIfStr(author) ? "" : author);
-                        //平台
-                        String type = obj.getStr("type");
-                        music.put("type", type != null ? type : "");
-                        //封面
-                        String pic = obj.getStr("pic");
-                        music.put("pic", pic != null ? pic.replace("\\", "") : "");
-                        //文件地址
-                        String url = obj.getStr("url");
-                        music.put("url", url != null ? url.replace("\\", "") : "");
-                        //来源地址
-                        String link = obj.getStr("link");
-                        music.put("link", link != null ? link.replace("\\", "") : "");
-                        //歌词
-                        String lrc = obj.getStr("lrc");
-                        music.put("lrc", lrc != null ? lrc.replace("\\", "") : "");
-                        music_list.add(music);
-                    }
-                    if (music_list.size() > 0) {
-                        setAdapter(music_list);
-                        music_name = name;
-                        m18_btn_continue.setVisibility(View.VISIBLE);
-                        //自动播放
-                        if (index == 0 && new Main18Activity().page <= 1) {
-                            playMusci(0);
+                    JSONObject jsonObject = JSONUtil.parseObj(json);
+                    Integer code = jsonObject.getInt("code");
+                    if (code.equals(200)) {
+                        JSONArray data = jsonObject.getJSONArray("data");
+                        for (Object d : data) {
+                            String s = JSONUtil.toJsonStr(d);
+                            JSONObject obj = JSONUtil.parseObj(s);
+                            Map<String, String> music = new HashMap<>();
+                            //歌名
+                            String title = obj.getStr("title");
+                            music.put("title", StrUtil.isEmptyIfStr(title) ? "" : title);
+                            //歌手
+                            String author = obj.getStr("author");
+                            music.put("author", StrUtil.isEmptyIfStr(author) ? "" : author);
+                            //平台
+                            String type = obj.getStr("type");
+                            music.put("type", type != null ? type : "");
+                            //封面
+                            String pic = obj.getStr("pic");
+                            music.put("pic", pic != null ? pic.replace("\\", "") : "");
+                            //文件地址
+                            String url = obj.getStr("url");
+                            music.put("url", url != null ? url.replace("\\", "") : "");
+                            //来源地址
+                            String link = obj.getStr("link");
+                            music.put("link", link != null ? link.replace("\\", "") : "");
+                            //歌词
+                            String lrc = obj.getStr("lrc");
+                            music.put("lrc", lrc != null ? lrc.replace("\\", "") : "");
+                            music_list.add(music);
                         }
-                        flag[0] = true;
+                        if (music_list.size() > 0) {
+                            setAdapter(music_list);
+                            music_name = name;
+                            m18_btn_continue.setVisibility(View.VISIBLE);
+                            //自动播放
+                            if (index == 0 && new Main18Activity().page <= 1) {
+                                if (mediaPlayer!=null&&!mediaPlayer.isPlaying()) {
+                                    playMusci(index);
+                                }
+                            }
+                        } else {
+                            DialogUtil.dialog(Main18Activity.this, "搜索失败", "暂无搜索结果");
+                        }
                     } else {
-                        DialogUtil.dialog(Main18Activity.this, "搜索失败", "暂无搜索结果");
+                        Log.e(Log_Tag, "音乐爬虫错误:" + "第三方音乐[" + Url + "]API错误：" + jsonObject.getStr("error"));
+                        DialogUtil.dialog(Main18Activity.this, "搜索失败", jsonObject.getStr("error"));
                     }
-                } else {
-                    Log.e(Log_Tag, "音乐爬虫错误:" + "第三方音乐[" + Url + "]API错误：" + jsonObject.getStr("error"));
-                    DialogUtil.dialog(Main18Activity.this, "搜索失败", jsonObject.getStr("error"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+                    dialogUtil.closeProgressDialog();
                 }
-                dialogUtil.closeProgressDialog();
-
             }
         });
-        return flag[0];
     }
 
+    /**
+     * 音乐高品质
+     * @param name 搜索内容
+     * @param n 序号
+     */
+    private void getMusics2(String name,Integer n){
+        DialogUtil dialogUtil = new DialogUtil(context);
+        dialogUtil.createProgressDialog();
+        OkHttpUtils.get()
+                .url("https://xiaoapi.cn/API/yy_sq.php")
+                .addParams("msg",name)
+                .addParams("type","json")
+                .addParams("n",""+n)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        dialogUtil.closeProgressDialog();
+                        Log.e(Log_Tag, "音乐高品质错误:" + e.toString());
+                        DialogUtil.dialog(context, "搜索错误", OkHttpMessageUtil.error(e));
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            if(JSONUtil.isTypeJSON(response)){
+                                JSONObject obj = JSONUtil.parseObj(response);
+                                if (obj.getInt("code").equals(200)) {
+                                    String pic = obj.getStr("cover");
+                                    String title = obj.getStr("name");
+                                    String author = obj.getStr("singer");
+                                    String url = obj.getStr("url");
+                                    Map<String, String> map = new HashMap<>();
+                                    map.put("pic", pic);
+                                    map.put("title", title);
+                                    map.put("author", author);
+                                    map.put("url", url);
+                                    map.put("lrc", "暂无歌词，请欣赏！");
+                                    music_list.add(map);
+                                    if (music_list.size() > 0) {
+                                        setAdapter(music_list);
+                                        music_name = name;
+                                        m18_btn_continue.setVisibility(View.VISIBLE);
+                                        //自动播放
+                                        if (index == 0 && new Main18Activity().page <= 1) {
+                                            if (mediaPlayer!=null&&!mediaPlayer.isPlaying()) {
+                                                playMusci(index);
+                                            }
+                                        }
+                                    } else {
+                                        DialogUtil.dialog(Main18Activity.this, "搜索失败", "暂无搜索结果");
+                                    }
+                                }else {
+                                    DialogUtil.dialog(context,"搜索失败",obj.getStr("msg"));
+                                }
+                            }else {
+                                DialogUtil.dialog(context,"搜索错误",response);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }finally {
+                            dialogUtil.closeProgressDialog();
+                        }
+                    }
+                });
+
+    }
 
     private void sendSimpleNotify(String title, String message) {
         int count = 0;

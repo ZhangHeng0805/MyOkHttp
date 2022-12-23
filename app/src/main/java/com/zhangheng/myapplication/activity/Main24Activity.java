@@ -20,18 +20,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
+import com.zhangheng.myapplication.util.SystemUtil;
 import com.zhangheng.util.FormatUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
-
-import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import okhttp3.Call;
 
@@ -64,6 +65,8 @@ public class Main24Activity extends AppCompatActivity {
             public void onClick(View view) {
                 String s = m24_et_content.getText().toString();
                 if (!StrUtil.isBlank(s)){
+                    m24_et_content.setText("");
+                    SystemUtil.closeInput(Main24Activity.this);
                     getData(s);
                 }else {
                     DialogUtil.dialog(context,"输入错误","输入内容不能为空！");
@@ -77,7 +80,7 @@ public class Main24Activity extends AppCompatActivity {
         DialogUtil dialogUtil = new DialogUtil(context);
         dialogUtil.createProgressDialog();
         OkHttpUtils.get()
-                .url("https://v.api.aa1.cn/api/api-xiaoai/talk.php")
+                .url("https://xiaoapi.cn/API/lt_xiaoai.php")
                 .addParams("msg",s)
                 .addParams("type","json")
                 .build()
@@ -92,19 +95,23 @@ public class Main24Activity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response, int id) {
                         try {
-                            response=Jsoup.parse(response).text();
-                            String url = JSONUtil.parseObj(response).getJSONObject("meta").getJSONObject("music").getStr("musicUrl");
-                            if (FormatUtil.isWebUrl(url)){
+                            JSONObject data = JSONUtil.parseObj(response).getJSONObject("data");
+                            String url = data.getStr("tts");
+                            String txt = data.getStr("txt");
+                            if (Validator.isUrl(url)){
                                 Map<String,String> map1=new HashMap<>();
                                 map1.put("flag","right");
-                                map1.put("content",s);
+                                map1.put("r_content",s);
                                 Map<String,String> map2=new HashMap<>();
                                 map2.put("flag","left");
                                 map2.put("url",url);
-                                data.add(map1);
-                                data.add(map2);
-                                ChatAdapter adapter = new ChatAdapter(context, data);
+                                map2.put("l_content",txt);
+                                Main24Activity.this.data.add(map1);
+                                Main24Activity.this.data.add(map2);
+                                ChatAdapter adapter = new ChatAdapter(context, Main24Activity.this.data);
                                 m24_LV_list.setAdapter(adapter);
+                                getPlay(url);
+                                m24_LV_list.setSelection(m24_LV_list.getBottom());
                             }else {
                                 DialogUtil.dialog(context,"小爱不懂","请换一种说法，或者小爱暂不支持此功能！");
                             }
@@ -185,7 +192,8 @@ public class Main24Activity extends AppCompatActivity {
                 holder = new Holder();
                 view = View.inflate(context, R.layout.item_list_chat, null);
                 holder.bofang = view.findViewById(R.id.item_chat_left_bofng);
-                holder.content = view.findViewById(R.id.item_chat_right_content);
+                holder.r_content = view.findViewById(R.id.item_chat_right_content);
+                holder.l_content = view.findViewById(R.id.item_chat_left_content);
                 holder.LL_right = view.findViewById(R.id.item_chat_LL_right);
                 holder.LL_left = view.findViewById(R.id.item_chat_LL_left);
                 view.setTag(holder);
@@ -196,6 +204,7 @@ public class Main24Activity extends AppCompatActivity {
             String flag = map.get("flag");
             if (flag.equals("left")) {
                 holder.LL_right.setVisibility(View.GONE);
+                holder.l_content.setText(map.get("l_content"));
                 holder.bofang.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -215,7 +224,7 @@ public class Main24Activity extends AppCompatActivity {
                 });
             } else {
                 holder.LL_left.setVisibility(View.GONE);
-                holder.content.setText(map.get("content"));
+                holder.r_content.setText(map.get("r_content"));
             }
 
 
@@ -224,7 +233,7 @@ public class Main24Activity extends AppCompatActivity {
 
         class Holder {
             private ImageView bofang;
-            private TextView content;
+            private TextView r_content,l_content;
             private LinearLayout LL_right, LL_left;
         }
     }

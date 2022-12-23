@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@drawable/bg_shore"
+    android:orientation="vertical"
     tools:context=".activity.Main18Activity">
 
     <!--搜索栏-->
@@ -36,7 +36,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <RadioGroup
+        <Spinner
+            android:id="@+id/m18_sp_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            />
+        <!--<RadioGroup
             android:id="@+id/m18_RG_type"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -70,7 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="酷我音乐" />
-        </RadioGroup>
+        </RadioGroup>-->
     </LinearLayout>
     <!--播放器控制台-->
     <LinearLayout
@@ -196,9 +205,9 @@
             android:id="@+id/m18_tv_result"
             android:layout_width="match_parent"
             android:layout_height="60dp"
+            android:layout_gravity="center"
             android:background="@color/black_50"
             android:gravity="center"
-            android:layout_gravity="center"
             android:padding="8dp"
             android:scrollbars="vertical"
             android:text="歌词"
@@ -207,16 +216,20 @@
             android:textStyle="bold" />
 
     </LinearLayout>
+
     <com.zhangheng.myapplication.view.RefreshListView
         android:id="@+id/m18_lv_music_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
     <Button
         android:id="@+id/m18_btn_continue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="点击加载/下拉加载"
-        android:visibility="gone" />
+        android:layout_marginTop="8dp"
+        android:background="@drawable/btn2"
+        android:visibility="visible" />
 
 
 </LinearLayout>

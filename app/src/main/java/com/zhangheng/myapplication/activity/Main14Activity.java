@@ -30,7 +30,6 @@ import org.jsoup.Jsoup;
 import java.io.IOException;
 
 import cn.hutool.core.lang.Validator;
-import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -204,15 +203,15 @@ public class Main14Activity extends AppCompatActivity {
             public void onClick(View view) {
                 String text = m14_tv_content.getText().toString();
                 if (!StrUtil.isBlank(text)) {
-//                    getPlay(text);
-                    String url="https://api.vvhan.com/api/song?txt="+text;
-                    try {
-                        plagAudio(url);
-                    } catch (IOException e) {
-                        DialogUtil.dialog(context,"播放失败","对不起，此语音暂时无法播放");
-                        e.printStackTrace();
-                        m14_iv_bofang.setVisibility(View.GONE);
+                    boolean chinese = Validator.hasChinese(text);
+                    String id;
+                    if (chinese) {
+                         id= RandomrUtil.createRandom(1, 19) + "";
+                    }else {
+                        id="20";
                     }
+                    getPlay(text,id);
+//                    String url="https://api.vvhan.com/api/song?txt="+text;
                 } else {
                     m14_iv_bofang.setVisibility(View.GONE);
                 }
@@ -220,21 +219,19 @@ public class Main14Activity extends AppCompatActivity {
         });
     }
 
-    private void getPlay(String text) {
+    private void getPlay(String text,String id) {
         DialogUtil dialogUtil = new DialogUtil(context);
         dialogUtil.createProgressDialog();
-        //文档https://api.aa1.cn/doc/api-baidu-01.html
         GetBuilder builder = OkHttpUtils.get()
-                .url("https://zj.v.api.aa1.cn/api/baidu-01/")
-                .addParams("msg", text)
-                .addParams("choose", "2")
-                .addParams("su", "100")
-                .addParams("yd", "5");
+                .url("https://xiaoapi.cn/API/zs_tts.php")
+                .addParams("type", "xunfei")//可为baidu、youdao、xunfei（即为百度、有道、讯飞）
+                .addParams("id", id)//语音类型1-20(20为英文专用语音)
+                .addParams("msg", text);
         builder.build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
-                        Log.e(Tag, e.getMessage());
+                        Log.e(Tag, e.toString());
                         DialogUtil.dialog(context, "播放错误", OkHttpMessageUtil.error(e));
                         dialogUtil.closeProgressDialog();
                     }
@@ -244,16 +241,17 @@ public class Main14Activity extends AppCompatActivity {
                         try {
                             Log.d(Tag + "音频", "response:" + response);
                             if (JSONUtil.isTypeJSON(response)) {
-                                String url = JSONUtil.parseObj(response).getStr("download");
-                                url = URLEncodeUtil.encode(url);
+                                String url = JSONUtil.parseObj(response).getStr("tts");
+//                                url = URLEncodeUtil.encode(url);
                                 Log.d(Tag + "音频地址：", url);
                                 plagAudio(url);
                             }else {
                                 DialogUtil.dialog(context, "播放失败", response);
                             }
                         } catch (Exception e) {
+                            DialogUtil.dialog(context,"播放失败","对不起，此语音暂时无法播放");
                             e.printStackTrace();
-                            DialogUtil.dialog(context, "播放失败", OkHttpMessageUtil.error(e));
+                            m14_iv_bofang.setVisibility(View.GONE);
                         } finally {
                             dialogUtil.closeProgressDialog();
                         }
@@ -313,7 +311,6 @@ public class Main14Activity extends AppCompatActivity {
                             if (!StrUtil.isEmpty(text)) {
                                 m14_tv_content.setText(text);
                                 m14_btn_copy.setVisibility(View.VISIBLE);
-//                                boolean chinese = Validator.hasChinese(text);
                                 if (true) {
                                     m14_iv_bofang.setVisibility(View.VISIBLE);
                                 }

@@ -13,6 +13,7 @@
         android:divider="@color/transparent"
         android:dividerHeight="8dp"
         android:layout_above="@id/m24_LL_edit"
+        android:layout_marginBottom="10dp"
         />
 <LinearLayout
     android:id="@+id/m24_LL_edit"
