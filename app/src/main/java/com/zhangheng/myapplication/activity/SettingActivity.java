@@ -20,7 +20,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -182,7 +181,7 @@ public class SettingActivity extends Activity {
                 Log.d(Tag+items[i],b+"");
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("关闭", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
             }
@@ -547,54 +546,97 @@ public class SettingActivity extends Activity {
      */
     private void setAppService() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        final AlertDialog dialog = builder.create();
-        View dialogView = View.inflate(context, R.layout.item_service_setting, null);
-        dialog.setView(dialogView);
-        //初始化view
-        RadioGroup isAutoImg = dialogView.findViewById(R.id.setting_RG_isAutoImg);
-        RadioGroup isAutoPhonebook = dialogView.findViewById(R.id.setting_RG_isAutoPhonebook);
-        //初始化数据
-        if (setting.getIsAutoUploadPhoto()) {
-            isAutoImg.check(R.id.setting_rb_YesAutoImg);
-        } else {
-            isAutoImg.check(R.id.setting_rb_NoAutoImg);
-        }
-        if (setting.getIsAutoUploadPhonebook()) {
-            isAutoPhonebook.check(R.id.setting_rb_YesAutoPhonebook);
-        } else {
-            isAutoPhonebook.check(R.id.setting_rb_NoAutoPhonebook);
-        }
-        isAutoImg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        builder.setTitle("应用服务设置");
+        String[] items = {
+                getString(R.string.setting_title_is_auto_upload_img),
+                getString(R.string.setting_title_is_auto_upload_phonebook),
+                getString(R.string.setting_title_is_auto_behavior_reporting),
+        };
+        boolean[] checkedItems={
+                setting.getIsAutoUploadPhoto(),
+                setting.getIsAutoUploadPhonebook(),
+                setting.getIsBehaviorReporting(),
+        };
+        builder.setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                boolean f = true;
-                switch (radioGroup.getCheckedRadioButtonId()) {
-                    case R.id.setting_rb_YesAutoImg:
-                        f = setting.setIsAutoUploadPhoto(true);
+            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                checkedItems[i]=b;
+                boolean flag=false;
+                switch (i){
+                    case 0:
+                        flag=setting.setIsAutoUploadPhoto(b);
                         break;
-                    case R.id.setting_rb_NoAutoImg:
-                        f = setting.setIsAutoUploadPhoto(false);
+                    case 1:
+                        flag=setting.setIsAutoUploadPhonebook(b);
+                        break;
+                    case 2:
+                        flag=setting.setIsBehaviorReporting(b);
                         break;
                 }
-                toastUpdate(f, getString(R.string.setting_title_is_auto_upload_img));
-            }
-        });
-        isAutoPhonebook.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                boolean f = true;
-                switch (radioGroup.getCheckedRadioButtonId()) {
-                    case R.id.setting_rb_YesAutoPhonebook:
-                        f = setting.setIsAutoUploadPhonebook(true);
-                        break;
-                    case R.id.setting_rb_NoAutoPhonebook:
-                        f = setting.setIsAutoUploadPhonebook(false);
-                        break;
+                if (flag){
+                    Toast.makeText(context,"["+items[i]+"]修改成功",Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(context,"["+items[i]+"]修改失败",Toast.LENGTH_SHORT).show();
                 }
-                toastUpdate(f, getString(R.string.setting_title_is_auto_upload_phonebook));
+                Log.d(Tag+items[i],b+"");
             }
         });
+        builder.setNegativeButton("关闭", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+        AlertDialog dialog = builder.create();
         dialog.show();
+//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//        final AlertDialog dialog = builder.create();
+//        View dialogView = View.inflate(context, R.layout.item_service_setting, null);
+//        dialog.setView(dialogView);
+//        //初始化view
+//        RadioGroup isAutoImg = dialogView.findViewById(R.id.setting_RG_isAutoImg);
+//        RadioGroup isAutoPhonebook = dialogView.findViewById(R.id.setting_RG_isAutoPhonebook);
+//        //初始化数据
+//        if (setting.getIsAutoUploadPhoto()) {
+//            isAutoImg.check(R.id.setting_rb_YesAutoImg);
+//        } else {
+//            isAutoImg.check(R.id.setting_rb_NoAutoImg);
+//        }
+//        if (setting.getIsAutoUploadPhonebook()) {
+//            isAutoPhonebook.check(R.id.setting_rb_YesAutoPhonebook);
+//        } else {
+//            isAutoPhonebook.check(R.id.setting_rb_NoAutoPhonebook);
+//        }
+//        isAutoImg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+//                boolean f = true;
+//                switch (radioGroup.getCheckedRadioButtonId()) {
+//                    case R.id.setting_rb_YesAutoImg:
+//                        f = setting.setIsAutoUploadPhoto(true);
+//                        break;
+//                    case R.id.setting_rb_NoAutoImg:
+//                        f = setting.setIsAutoUploadPhoto(false);
+//                        break;
+//                }
+//                toastUpdate(f, getString(R.string.setting_title_is_auto_upload_img));
+//            }
+//        });
+//        isAutoPhonebook.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+//                boolean f = true;
+//                switch (radioGroup.getCheckedRadioButtonId()) {
+//                    case R.id.setting_rb_YesAutoPhonebook:
+//                        f = setting.setIsAutoUploadPhonebook(true);
+//                        break;
+//                    case R.id.setting_rb_NoAutoPhonebook:
+//                        f = setting.setIsAutoUploadPhonebook(false);
+//                        break;
+//                }
+//                toastUpdate(f, getString(R.string.setting_title_is_auto_upload_phonebook));
+//            }
+//        });
+//        dialog.show();
     }
 
     /**

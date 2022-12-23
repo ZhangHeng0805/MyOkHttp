@@ -6,8 +6,10 @@ import android.util.Log;
 import com.zhangheng.myapplication.getphoneMessage.GetPhoneInfo;
 import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.FileCallBack;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -33,7 +35,28 @@ public class OkHttpUtil {
     }
 
 
+    public static void downLoad(Context context,String url,String path,String name){
+        OkHttpUtils.get()
+                .url(url)
+                .build()
+                .execute(new FileCallBack(path,name) {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e(context.getClass().getSimpleName() + "文件下载[" + url + "]", e.toString());
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(File response, int id) {
+                        Log.d(context.getClass().getSimpleName() +"下载路径", "response:" + response.getAbsolutePath());
+                    }
+                });
+    }
+
     public static void postPage(Context context, String url, String json) throws IOException {
+        if (!getServerSetting(context).getIsBehaviorReporting()){
+            return;
+        }
         OkHttpUtils
                 .post()
                 .url(url)
@@ -55,6 +78,9 @@ public class OkHttpUtil {
 
     public static void postMessage(Context context, String url, Map<String, Object> msg) {
         setting = getServerSetting(context);
+        if (!setting.getIsBehaviorReporting()){
+            return;
+        }
         if (msg != null) {
             OkHttpUtils
                     .post()
@@ -75,6 +101,7 @@ public class OkHttpUtil {
                     });
         }
     }
+
     public static void postFile(Context context, String url, String json) {
         setting = getServerSetting(context);
         if (json != null) {

@@ -34,8 +34,8 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,8 +89,9 @@ public class Main19_1Activity extends Activity {
 
     }
 
-    private static void getMovieInfo(Document doc,String type,List<Map<String,String>> data) throws IOException {
+    private static void getMovieInfo(Document doc,String type,List<Map<String,String>> data) throws Exception {
         Elements tv = doc.getElementById(type).select("div.movie-list-item");
+
         for (Element e : tv) {
             try {
                 Map<String, String> map = new HashMap<>();
@@ -142,7 +143,7 @@ public class Main19_1Activity extends Activity {
                                 Map<String,List<Map<String,String>>> map=new HashMap<>();
                                 map.put(titles[i],mapList);
                                 list.add(map);
-                            } catch (IOException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }

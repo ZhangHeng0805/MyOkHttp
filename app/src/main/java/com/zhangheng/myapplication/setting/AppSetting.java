@@ -1,5 +1,34 @@
 package com.zhangheng.myapplication.setting;
 
+import com.zhangheng.myapplication.activity.Main10Activity;
+import com.zhangheng.myapplication.activity.Main11Activity;
+import com.zhangheng.myapplication.activity.Main12Activity;
+import com.zhangheng.myapplication.activity.Main13Activity;
+import com.zhangheng.myapplication.activity.Main14Activity;
+import com.zhangheng.myapplication.activity.Main15Activity;
+import com.zhangheng.myapplication.activity.Main16Activity;
+import com.zhangheng.myapplication.activity.Main17Activity;
+import com.zhangheng.myapplication.activity.Main18Activity;
+import com.zhangheng.myapplication.activity.Main19_1Activity;
+import com.zhangheng.myapplication.activity.Main20Activity;
+import com.zhangheng.myapplication.activity.Main21Activity;
+import com.zhangheng.myapplication.activity.Main22Activity;
+import com.zhangheng.myapplication.activity.Main23Activity;
+import com.zhangheng.myapplication.activity.Main24Activity;
+import com.zhangheng.myapplication.activity.Main25Activity;
+import com.zhangheng.myapplication.activity.Main2Activity;
+import com.zhangheng.myapplication.activity.Main4Activity;
+import com.zhangheng.myapplication.activity.Main5Activity;
+import com.zhangheng.myapplication.activity.Main6Activity;
+import com.zhangheng.myapplication.activity.Main7Activity;
+import com.zhangheng.myapplication.activity.Main8Activity;
+import com.zhangheng.myapplication.activity.Main9Activity;
+import com.zhangheng.myapplication.activity.MainActivity;
+import com.zhangheng.myapplication.activity.Test1Activity;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class AppSetting {
     /**
      * 主页功能列表
@@ -31,4 +60,31 @@ public class AppSetting {
             "24.小爱AI聊天",//Main24Activity(API)
             "25.视频解析下载(抖音/快手/微视...)",//Main25Activity(API)
     };
+    public final static Map<Integer, Class<?>> M3_contextMap = new HashMap<Integer, Class<?>>() {{
+        put(1, MainActivity.class);
+        put(2, Main2Activity.class);
+        put(3, Main4Activity.class);
+        put(4, Main5Activity.class);
+        put(5, Main6Activity.class);
+        put(6, Main7Activity.class);
+        put(7, Main8Activity.class);
+        put(8, Main9Activity.class);
+        put(9, Main10Activity.class);
+        put(10, Main11Activity.class);
+        put(11, Main12Activity.class);
+        put(12, Main13Activity.class);
+        put(13, Main14Activity.class);
+        put(14, Main15Activity.class);
+        put(15, Test1Activity.class);
+        put(16, Main16Activity.class);
+        put(17, Main17Activity.class);
+        put(18, Main18Activity.class);
+        put(19, Main19_1Activity.class);
+        put(20, Main20Activity.class);
+        put(21, Main21Activity.class);
+        put(22, Main22Activity.class);
+        put(23, Main23Activity.class);
+        put(24, Main24Activity.class);
+        put(25, Main25Activity.class);
+    }};
 }

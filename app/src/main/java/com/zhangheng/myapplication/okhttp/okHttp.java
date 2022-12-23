@@ -13,6 +13,7 @@ public class okHttp {
     private static OkHttpClient client = new OkHttpClient();
     public static final MediaType JSON
             = MediaType.get("application/json; charset=utf-8");
+    public final static String User_Agent="Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36 Edg/108.0.0.0";
 
     public static String get(String url) throws IOException {
         Request request = new Request.Builder()

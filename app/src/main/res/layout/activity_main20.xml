@@ -53,6 +53,7 @@
                 android:layout_height="40dp"
                 android:src="@drawable/laba"
                 android:drawableTint="@color/skyblue"
+                android:background="@drawable/btn2"
                 android:padding="5dp"
                 android:autofillHints="播放"
                 />

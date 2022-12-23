@@ -21,6 +21,7 @@ import android.widget.VideoView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.zhangheng.myapplication.R;
+import com.zhangheng.myapplication.okhttp.okHttp;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.util.FormatUtil;
@@ -209,6 +210,7 @@ public class Main25Activity extends AppCompatActivity {
         dialogUtil.createProgressDialog();
         OkHttpUtils.get()
                 .url(urls[index] + url)
+                .addHeader("user-agent", okHttp.User_Agent)
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -242,6 +244,7 @@ public class Main25Activity extends AppCompatActivity {
                                 m25_video.requestFocus();
                                 m25_video.start();
                             } else {
+                                Log.d(TAG + types[index], response);
                                 String msg = obj.getStr("msg");
                                 if (msg.equals("获取视频地址失败"))
                                     DialogUtil.dialog(context, "解析失败","该地址视频暂时无法解析");

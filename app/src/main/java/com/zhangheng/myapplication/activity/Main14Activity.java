@@ -21,11 +21,13 @@ import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.RandomrUtil;
 import com.zhangheng.myapplication.util.SystemUtil;
-import com.zhangheng.util.FormatUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.builder.GetBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.jsoup.Jsoup;
+
+import java.io.IOException;
 
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.net.URLEncodeUtil;
@@ -129,7 +131,7 @@ public class Main14Activity extends AppCompatActivity {
             res = JSONUtil.parseObj(response).getStr("xingming", "");
         } else if (index.equals(18)) {
             res = JSONUtil.parseObj(response).getStr("skl", "");
-        }else if (index.equals(19)) {
+        } else if (index.equals(19)) {
             res = JSONUtil.parseObj(response).getStr("anwei", "");
         }
         return res;
@@ -202,7 +204,15 @@ public class Main14Activity extends AppCompatActivity {
             public void onClick(View view) {
                 String text = m14_tv_content.getText().toString();
                 if (!StrUtil.isBlank(text)) {
-                    getPlay(text);
+//                    getPlay(text);
+                    String url="https://api.vvhan.com/api/song?txt="+text;
+                    try {
+                        plagAudio(url);
+                    } catch (IOException e) {
+                        DialogUtil.dialog(context,"播放失败","对不起，此语音暂时无法播放");
+                        e.printStackTrace();
+                        m14_iv_bofang.setVisibility(View.GONE);
+                    }
                 } else {
                     m14_iv_bofang.setVisibility(View.GONE);
                 }
@@ -213,13 +223,14 @@ public class Main14Activity extends AppCompatActivity {
     private void getPlay(String text) {
         DialogUtil dialogUtil = new DialogUtil(context);
         dialogUtil.createProgressDialog();
-        OkHttpUtils.get()
+        //文档https://api.aa1.cn/doc/api-baidu-01.html
+        GetBuilder builder = OkHttpUtils.get()
                 .url("https://zj.v.api.aa1.cn/api/baidu-01/")
                 .addParams("msg", text)
                 .addParams("choose", "2")
                 .addParams("su", "100")
-                .addParams("yd", "5")
-                .build()
+                .addParams("yd", "5");
+        builder.build()
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
@@ -231,29 +242,14 @@ public class Main14Activity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response, int id) {
                         try {
-
-                            String url = JSONUtil.parseObj(response).getStr("download");
-                            url=URLEncodeUtil.encode(url);
-                            Log.d(Tag+"音频地址：",url);
-                            if (FormatUtil.isWebUrl(url)) {
-                                mediaPlayer = new MediaPlayer();
-
-                                mediaPlayer.reset();
-                                Uri uri = Uri.parse(url);
-                                mediaPlayer.setDataSource(context, uri);// 设置文件源
-                                mediaPlayer.prepare();// 解析文件
-                                mediaPlayer.start();
-                                mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                                    @Override
-                                    public void onCompletion(MediaPlayer mp) {
-                                        if (mp != null) {
-                                            mp.stop();
-                                            mp.release();
-                                        }
-                                    }
-                                });
+                            Log.d(Tag + "音频", "response:" + response);
+                            if (JSONUtil.isTypeJSON(response)) {
+                                String url = JSONUtil.parseObj(response).getStr("download");
+                                url = URLEncodeUtil.encode(url);
+                                Log.d(Tag + "音频地址：", url);
+                                plagAudio(url);
                             }else {
-
+                                DialogUtil.dialog(context, "播放失败", response);
                             }
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -266,6 +262,28 @@ public class Main14Activity extends AppCompatActivity {
 
     }
 
+    private void plagAudio(String url) throws IOException {
+        if (Validator.isUrl(url)) {
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.reset();
+            Uri uri = Uri.parse(url);
+            mediaPlayer.setDataSource(context, uri);// 设置文件源
+            mediaPlayer.prepare();// 解析文件
+            mediaPlayer.start();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mp) {
+                    if (mp != null) {
+                        mp.stop();
+                        mp.release();
+                    }
+                }
+            });
+        }else {
+            throw new IOException("音频地址错误！");
+        }
+    }
+
     private void getData(Integer index) {
         DialogUtil dialogUtil = new DialogUtil(context);
         dialogUtil.createProgressDialog();
@@ -276,7 +294,7 @@ public class Main14Activity extends AppCompatActivity {
         m14_tv_content.setText("");
         m14_btn_copy.setVisibility(View.GONE);
         m14_iv_bofang.setVisibility(View.GONE);
-        Log.e(Tag, url);
+        Log.d(Tag + "文案地址", url);
         OkHttpUtils.get()
                 .url(url)
                 .build()
@@ -295,8 +313,8 @@ public class Main14Activity extends AppCompatActivity {
                             if (!StrUtil.isEmpty(text)) {
                                 m14_tv_content.setText(text);
                                 m14_btn_copy.setVisibility(View.VISIBLE);
-                                boolean chinese = Validator.hasChinese(text);
-                                if (chinese) {
+//                                boolean chinese = Validator.hasChinese(text);
+                                if (true) {
                                     m14_iv_bofang.setVisibility(View.VISIBLE);
                                 }
                             }

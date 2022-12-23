@@ -41,11 +41,11 @@ import okhttp3.Call;
 
 public class Main6Activity extends AppCompatActivity implements View.OnClickListener {
 
-    private Button button;
+    private Button button,m6_iv_refresh;
     private EditText editText;
     private ProgressBar progressBar;
     private TextView tv_pro, textView;
-    private ImageView imageView, m6_iv_refresh,m6_iv_refresh_setting;
+    private ImageView imageView,m6_iv_refresh_setting;
     private final Context context = Main6Activity.this;
     private final String Tag = getClass().getSimpleName();
     String[] urls = {
@@ -157,7 +157,7 @@ public class Main6Activity extends AppCompatActivity implements View.OnClickList
                 Log.d(Tag+url_names[i],b+"");
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("关闭", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
             }
