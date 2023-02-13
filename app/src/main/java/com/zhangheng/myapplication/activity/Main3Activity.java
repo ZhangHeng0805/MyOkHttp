@@ -806,6 +806,8 @@ public class Main3Activity extends Activity {
                         LoactionJson.clear();
                         getupdatelist(null);
                     }
+                }else {
+                    dialogUtil.closeProgressDialog();
                 }
             }
         });
