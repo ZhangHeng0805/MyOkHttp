@@ -15,6 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="9"
+            android:maxLines="3"
             android:hint="请输入要翻译的内容"/>
         <Button
             android:id="@+id/m20_btn_search"

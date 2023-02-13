@@ -26,6 +26,7 @@
             android:id="@+id/m12_et_md5_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="3"
             android:hint="请输入加密内容"/>
         <RadioGroup
             android:id="@+id/m12_RG_md5"
@@ -104,6 +105,7 @@
             android:id="@+id/m12_et_sha_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="3"
             android:hint="请输入加密内容"/>
         <RadioGroup
             android:id="@+id/m12_RG_sha"

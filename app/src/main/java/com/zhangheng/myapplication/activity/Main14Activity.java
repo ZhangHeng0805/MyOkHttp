@@ -241,9 +241,15 @@ public class Main14Activity extends AppCompatActivity {
                         try {
                             Log.d(Tag + "音频", "response:" + response);
                             if (JSONUtil.isTypeJSON(response)) {
-                                String url = JSONUtil.parseObj(response).getStr("tts");
-//                                url = URLEncodeUtil.encode(url);
-                                Log.d(Tag + "音频地址：", url);
+                                JSONObject obj = JSONUtil.parseObj(response);
+                                String url;
+                                if (obj.getInt("code").equals(200)) {
+                                    url = obj.getStr("tts");
+                                }else {
+                                    DialogUtil.dialog(context, "播放失败", obj.getStr("msg"));
+                                    return;
+                                }
+                                Log.d(Tag + "音频地址["+obj.getStr("name")+"]：", url);
                                 plagAudio(url);
                             }else {
                                 DialogUtil.dialog(context, "播放失败", response);

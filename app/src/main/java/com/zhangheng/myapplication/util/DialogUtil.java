@@ -31,10 +31,12 @@ public class DialogUtil {
     }
     public void createProgressDialog(String title){
 //        ProgressDialog progressDialog= new ProgressDialog(context);
-        progressDialog.setMessage(title);
-        progressDialog.setIndeterminate(true);// 是否形成一个加载动画  true表示不明确加载进度形成转圈动画  false 表示明确加载进度
-        progressDialog.setCancelable(false);//点击返回键或者dialog四周是否关闭dialog  true表示可以关闭 false表示不可关闭
-        progressDialog.show();
+        if (!progressDialog.isShowing()) {
+            progressDialog.setMessage(title);
+            progressDialog.setIndeterminate(true);// 是否形成一个加载动画  true表示不明确加载进度形成转圈动画  false 表示明确加载进度
+            progressDialog.setCancelable(false);//点击返回键或者dialog四周是否关闭dialog  true表示可以关闭 false表示不可关闭
+            progressDialog.show();
+        }
     }
     public void closeProgressDialog(){
         if (progressDialog.isShowing()){

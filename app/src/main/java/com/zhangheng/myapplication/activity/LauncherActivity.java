@@ -71,7 +71,7 @@ public class LauncherActivity extends Activity {
         launcher_tv_url2 = findViewById(R.id.launcher_tv_url2);
         launcher_tv_greet = findViewById(R.id.launcher_tv_greet);
         setting = new ServerSetting(context);
-        if (setting.getIsM3VoiceTime()) {
+        if (setting.getSetting("is_m3_voice_time",true)) {
             Calendar instance = Calendar.getInstance();
             int time = instance.get(Calendar.HOUR_OF_DAY);
             launcher_tv_greet.setText(greetings[time]);
@@ -115,8 +115,8 @@ public class LauncherActivity extends Activity {
         String path = LocalFileTool.BasePath + "/" + getString(R.string.app_name) + "/data/baoshi/";
         String name = time + ".mp3";
         if (!new File(path + name).exists()) {
-            OkHttpUtil.downLoad(context, url, path, name);
             audio = url;
+            OkHttpUtil.downLoad(context, url, path, name);
         } else {
             audio = path + name;
         }

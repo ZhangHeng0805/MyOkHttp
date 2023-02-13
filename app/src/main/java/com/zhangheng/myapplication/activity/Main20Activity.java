@@ -111,7 +111,11 @@ public class Main20Activity extends AppCompatActivity {
                 if (!StrUtil.isEmptyIfStr(text)) {
                     m20_tv_translateResult.setText("");
                     m20_tv_smartResult.setText("");
-                    getTranslate(text, type_code);
+                    try {
+                        getTranslate(text, type_code);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     DialogUtil.dialog(Main20Activity.this, "输入错误", "搜索内容不能为空");
                 }
@@ -200,7 +204,7 @@ public class Main20Activity extends AppCompatActivity {
         }
     }
 
-    private void getTranslate(String text, String type) {
+    private void getTranslate(String text, String type) throws Exception {
         DialogUtil dialogUtil = new DialogUtil(Main20Activity.this);
 
         Log.d(Tag + "-type", type + ":" + text);

@@ -14,6 +14,7 @@
         android:id="@+id/m7_et_city"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxLines="1"
         android:hint="请输入查询的城市"
         android:layout_weight="12"/>
     <Button

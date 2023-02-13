@@ -19,6 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="9"
+            android:maxLines="1"
             android:hint="请输入音乐/歌手名称:"
             android:textSize="16sp" />
 
@@ -210,7 +211,7 @@
             android:gravity="center"
             android:padding="8dp"
             android:scrollbars="vertical"
-            android:text="歌词"
+            android:text="暂无播放"
             android:textColor="@color/white"
             android:textIsSelectable="true"
             android:textStyle="bold" />
@@ -229,7 +230,7 @@
         android:text="点击加载/下拉加载"
         android:layout_marginTop="8dp"
         android:background="@drawable/btn2"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
 
 </LinearLayout>

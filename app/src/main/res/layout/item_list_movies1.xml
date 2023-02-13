@@ -2,16 +2,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/item_tv_movies_title"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="热播新剧"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
+        android:background="@drawable/bg_tv3"
+        android:layout_marginTop="8dp"
+        android:paddingLeft="10dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        >
+        <ImageView
+            android:id="@+id/item_iv_movies_close"
+            android:layout_width="35dp"
+            android:layout_height="45dp"
+            android:src="@drawable/down"/>
+        <TextView
+            android:id="@+id/item_tv_movies_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:text="热播新剧"
+            android:textColor="@color/orange"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </LinearLayout>
     <com.zhangheng.myapplication.view.FixedGridView
         android:id="@+id/item_GL_movies"
         android:layout_width="match_parent"
@@ -20,6 +34,7 @@
         android:horizontalSpacing="10dp"
         android:numColumns="2"
         android:scrollbars="none"
+        android:background="@drawable/btn2"
         android:stretchMode="columnWidth"
         android:verticalSpacing="20dp" />
 </LinearLayout>

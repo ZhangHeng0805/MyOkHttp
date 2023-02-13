@@ -35,7 +35,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,8 +46,8 @@ public class Main19_1Activity extends Activity {
 
     private String TAG = this.getClass().getSimpleName();
     private Context context = Main19_1Activity.this;
-    private String[] types={"tv","movie","anime","show","documentary","high","filter"};
-    private String[] titles={"热播新剧","热门电影","热播动漫","热播综艺","热播记录片","豆瓣Top250","好片推荐"};
+    private String[] types = {"tv", "movie", "anime", "show", "documentary", "high", "filter"};
+    private String[] titles = {"热播新剧", "热门电影", "热播动漫", "热播综艺", "热播记录片", "豆瓣Top250", "好片推荐"};
 
     private Button m19_1_btn_search;
     private Banner m19_1_banner;
@@ -57,13 +56,13 @@ public class Main19_1Activity extends Activity {
     private List<String> list_banner_path = new ArrayList<>(),//放图片地址的集合
             list_banner_title = new ArrayList<>();//放标题的集合
 
-    private List<Map<String,String>> list_map_tv=new ArrayList<>(),//热播新剧
-            list_map_movie=new ArrayList<>(),//热门电影
-            list_map_anime=new ArrayList<>(),//热播动漫
-            list_map_show=new ArrayList<>(),//热播综艺
-            list_map_documentary=new ArrayList<>(),//热播纪录片
-            list_map_high=new ArrayList<>(),//豆瓣Top250
-            list_map_filter=new ArrayList<>();//更多好片
+    private List<Map<String, String>> list_map_tv = new ArrayList<>(),//热播新剧
+            list_map_movie = new ArrayList<>(),//热门电影
+            list_map_anime = new ArrayList<>(),//热播动漫
+            list_map_show = new ArrayList<>(),//热播综艺
+            list_map_documentary = new ArrayList<>(),//热播纪录片
+            list_map_high = new ArrayList<>(),//豆瓣Top250
+            list_map_filter = new ArrayList<>();//更多好片
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,13 +82,13 @@ public class Main19_1Activity extends Activity {
             }
         });
         m19_1_banner = findViewById(R.id.m19_1_banner);
-        m19_1_LV_movies=findViewById(R.id.m19_1_LV_movies);
+        m19_1_LV_movies = findViewById(R.id.m19_1_LV_movies);
 
         getData();
 
     }
 
-    private static void getMovieInfo(Document doc,String type,List<Map<String,String>> data) throws Exception {
+    private static void getMovieInfo(Document doc, String type, List<Map<String, String>> data) throws Exception {
         Elements tv = doc.getElementById(type).select("div.movie-list-item");
 
         for (Element e : tv) {
@@ -102,14 +101,15 @@ public class Main19_1Activity extends Activity {
                 map.put("rating", rating);
                 map.put("name", title);
                 data.add(map);
-            }catch (Exception e1){
-                Log.e("解析错误",e1.getMessage());            }
+            } catch (Exception e1) {
+                Log.e("解析错误", e1.getMessage());
+            }
         }
     }
 
-    private void intentSearch(String name){
+    private void intentSearch(String name) {
         Intent intent = new Intent(context, Main19Activity.class);
-        intent.putExtra("name",name);
+        intent.putExtra("name", name);
         startActivity(intent);
     }
 
@@ -134,14 +134,14 @@ public class Main19_1Activity extends Activity {
                         getBanner(doc);
 
 
-                        List<Map<String,List<Map<String,String>>>> list=new ArrayList<>();
+                        List<Map<String, List<Map<String, String>>>> list = new ArrayList<>();
 
                         for (int i = 0; i < types.length; i++) {
-                            List<Map<String,String>> mapList=new ArrayList<>();
+                            List<Map<String, String>> mapList = new ArrayList<>();
                             try {
-                                getMovieInfo(doc,types[i],mapList);
-                                Map<String,List<Map<String,String>>> map=new HashMap<>();
-                                map.put(titles[i],mapList);
+                                getMovieInfo(doc, types[i], mapList);
+                                Map<String, List<Map<String, String>>> map = new HashMap<>();
+                                map.put(titles[i], mapList);
                                 list.add(map);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -165,11 +165,11 @@ public class Main19_1Activity extends Activity {
         for (Element e : select) {
             try {
                 String src = e.selectFirst("img").attr("src");
-                list_banner_path.add(src);
                 String title = e.selectFirst("div.cupfox-title").text();
+                list_banner_path.add(src);
                 list_banner_title.add(title);
-            }catch (Exception e1){
-                Log.e("解析错误",e1.getMessage());
+            } catch (Exception e1) {
+                Log.e("解析错误", e1.getMessage());
             }
         }
         //设置内置样式，共有六种可以点入方法内逐一体验使用。
@@ -194,7 +194,7 @@ public class Main19_1Activity extends Activity {
         m19_1_banner.setOnBannerListener(new OnBannerListener() {
             @Override
             public void OnBannerClick(int position) {
-                Log.i(TAG, "你点了第"+position+"张轮播图"+list_banner_title.get(position));
+                Log.i(TAG, "你点了第" + position + "张轮播图" + list_banner_title.get(position));
                 intentSearch(list_banner_title.get(position));
             }
         });
@@ -222,9 +222,9 @@ public class Main19_1Activity extends Activity {
         }
     }
 
-    private class MoviesAdatper extends BaseAdapter{
+    private class MoviesAdatper extends BaseAdapter {
 
-        private List<Map<String,List<Map<String,String>>>> data;
+        private List<Map<String, List<Map<String, String>>>> data;
 
         private Context context;
 
@@ -251,14 +251,15 @@ public class Main19_1Activity extends Activity {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             Holder holder;
-            if (view==null){
-                holder=new Holder();
-                view=View.inflate(context,R.layout.item_list_movies1,null);
-                holder.title= view.findViewById(R.id.item_tv_movies_title);
-                holder.gridView= view.findViewById(R.id.item_GL_movies);
+            if (view == null) {
+                holder = new Holder();
+                view = View.inflate(context, R.layout.item_list_movies1, null);
+                holder.title = view.findViewById(R.id.item_tv_movies_title);
+                holder.gridView = view.findViewById(R.id.item_GL_movies);
+                holder.imageView = view.findViewById(R.id.item_iv_movies_close);
                 view.setTag(holder);
-            }else {
-                holder= (Holder) view.getTag();
+            } else {
+                holder = (Holder) view.getTag();
             }
             Map<String, List<Map<String, String>>> d = data.get(i);
             for (Map.Entry<String, List<Map<String, String>>> entry : d.entrySet()) {
@@ -273,14 +274,28 @@ public class Main19_1Activity extends Activity {
                         intentSearch(value.get(i).get("name"));
                     }
                 });
+                holder.imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        int visibility = holder.gridView.getVisibility();
+                        if (visibility == View.GONE) {
+                            holder.gridView.setVisibility(View.VISIBLE);
+                            holder.imageView.setImageDrawable(getDrawable(R.drawable.down));
+                        } else {
+                            holder.gridView.setVisibility(View.GONE);
+                            holder.imageView.setImageDrawable(getDrawable(R.drawable.up_r));
+                        }
+                    }
+                });
             }
 
             return view;
         }
 
-        class Holder{
+        class Holder {
             private TextView title;
             private FixedGridView gridView;
+            private ImageView imageView;
         }
     }
 }

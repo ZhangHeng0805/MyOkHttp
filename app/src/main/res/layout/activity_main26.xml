@@ -1,9 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
     tools:context=".activity.Main26Activity">
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:id="@+id/m26_et_context"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="9"
+            android:maxLines="15"
+            android:hint="请输入转语言的内容"/>
+        <Button
+            android:id="@+id/m26_btn_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn1"
+            android:text="转    换"/>
+    </LinearLayout>
+    <Spinner
+        android:id="@+id/m26_sp_type"
+        android:layout_marginTop="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <LinearLayout
+        android:id="@+id/m26_LL_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:gravity="center">
+        <ImageView
+            android:id="@+id/m26_iv_play"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:src="@drawable/laba"
+            android:layout_marginRight="15dp"
+            android:background="@drawable/btn2"/>
+        <Button
+            android:id="@+id/m26_btn_copyUrl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="复制语音链接"
+            android:layout_margin="8dp"
+            android:background="@drawable/btn2"
+            />
+        <Button
+            android:id="@+id/m26_btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="保存语音"
+            android:layout_margin="8dp"
+            android:background="@drawable/btn2"
+            />
+    </LinearLayout>
+</LinearLayout>

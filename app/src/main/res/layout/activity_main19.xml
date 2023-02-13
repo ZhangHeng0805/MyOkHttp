@@ -17,6 +17,7 @@
             android:layout_height="wrap_content"
             android:hint="请输入影视名称"
             android:layout_weight="15"
+            android:maxLines="1"
             />
         <Button
             android:id="@+id/m19_btn_search"

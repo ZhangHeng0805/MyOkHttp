@@ -44,6 +44,7 @@
             android:background="@color/black_10"
             android:padding="8dp"
             android:text="标题"
+            android:textIsSelectable="true"
             android:textColor="@color/colorPrimary"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -56,6 +57,7 @@
             android:background="@color/white_10"
             android:lineHeight="25sp"
             android:padding="8dp"
+            android:textIsSelectable="true"
             android:text="内容"
             android:textColor="@color/black"
             android:textStyle="normal"

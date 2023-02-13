@@ -3,7 +3,6 @@ package com.zhangheng.myapplication.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -33,6 +32,7 @@ import com.zhangheng.myapplication.adapter.WeatherList_Adapter;
 import com.zhangheng.myapplication.bean.weather.JsonRootBean;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
 import com.zhangheng.myapplication.setting.ServerSetting;
+import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
@@ -47,7 +47,7 @@ import java.util.Map;
 import cn.hutool.json.JSONUtil;
 import okhttp3.Call;
 
-public class Main7Activity extends Activity implements View.OnClickListener , GeocodeSearch.OnGeocodeSearchListener {
+public class Main7Activity extends Activity implements View.OnClickListener, GeocodeSearch.OnGeocodeSearchListener {
     private EditText m7_et_city;
     private Button m7_btn_query;
     private ListView m7_list_future;
@@ -55,12 +55,12 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
     private ImageView m7_img_realtime_icon;
     private TextView m7_text_realtime_city, m7_text_realtime, m7_text_info, m7_text_temperature, m7_text_direct, m7_text_power, m7_text_humidity, m7_text_aqi, m7_text_future_city;
     private LocationManager locationManager;
-    private String locationProvider,city;       //位置提供器
+    private String locationProvider, city;       //位置提供器
     private GeocodeSearch geocodeSearch;
-    private ProgressDialog progressDialog;
 
     private ServerSetting setting;
-    private final String Tag=getClass().getSimpleName();
+    private final String Tag = getClass().getSimpleName();
+    private final Context context=Main7Activity.this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +88,7 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
                 }
             }
         }
-        setting=new ServerSetting(this);
+        setting = new ServerSetting(this);
 
         m7_et_city = findViewById(R.id.m7_et_city);
         m7_btn_query = findViewById(R.id.m7_btn_query);
@@ -112,11 +112,6 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.m7_btn_query:
-                progressDialog= new ProgressDialog(this);
-                progressDialog.setMessage("查询中，请稍后。。。");
-                progressDialog.setIndeterminate(true);// 是否形成一个加载动画  true表示不明确加载进度形成转圈动画  false 表示明确加载进度
-                progressDialog.setCancelable(false);//点击返回键或者dialog四周是否关闭dialog  true表示可以关闭 false表示不可关闭
-                progressDialog.show();
                 String city = m7_et_city.getText().toString();
                 getRealWeather(city);
                 break;
@@ -124,6 +119,8 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
     }
 
     private void getRealWeather(String city) {
+        DialogUtil dialogUtil = new DialogUtil(context);
+        dialogUtil.createProgressDialog("查询中...");
         String url = "http://apis.juhe.cn/simpleWeather/query";
         String key = getResources().getString(R.string.key_weather);
         Map<String, String> params = new HashMap<>();
@@ -135,87 +132,90 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
                 .url(url)
                 .build()
                 .execute(new StringCallback() {
-
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        dialogUtil.closeProgressDialog();
                         m7_text_realtime_city.setText("错误：" + OkHttpMessageUtil.error(e));
-                        progressDialog.dismiss();
                     }
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Gson gson = new Gson();
-                        JsonRootBean jsonRootBean = gson.fromJson(response, JsonRootBean.class);
-                        int error_code = jsonRootBean.getError_code();
-                        Main7Activity context = Main7Activity.this;
-                        if (error_code == 0) {
-                            //当前状态栏设置
-                            String city = jsonRootBean.getResult().getCity();
-                            m7_text_realtime_city.setText("《" + city + "》当前天气情况");
-                            //当前时间设置
-                            SimpleDateFormat df = new SimpleDateFormat("HH:mm");//设置日期格式
-                            String time = df.format(new Date());// new Date()为获取当前系统时间
-                            m7_text_realtime.setText("更新于" + time);
-                            //天气图标设置
-                            String wid = jsonRootBean.getResult().getRealtime().getWid();
-                            int i = getDayIcon(wid);
-                            m7_img_realtime_icon.setImageResource(i);
-                            //天气设置
-                            String info = jsonRootBean.getResult().getRealtime().getInfo();
-                            m7_text_info.setText(info);
-                            //温度设置
-                            String temperature = jsonRootBean.getResult().getRealtime().getTemperature() + "℃";
-                            m7_text_temperature.setText(temperature);
-                            //风向设置
-                            String direct = jsonRootBean.getResult().getRealtime().getDirect();
-                            m7_text_direct.setText(direct);
-                            //风力设置
-                            String power = jsonRootBean.getResult().getRealtime().getPower();
-                            m7_text_power.setText(power);
-                            //湿度
-                            String humidity = "湿度：" + jsonRootBean.getResult().getRealtime().getHumidity() + "%";
-                            m7_text_humidity.setText(humidity);
-                            //空气质量设置
-                            String aqi = "空气质量：" + jsonRootBean.getResult().getRealtime().getAqi();
-                            m7_text_aqi.setText(aqi);
+                        try {
+                            Gson gson = new Gson();
+                            JsonRootBean jsonRootBean = gson.fromJson(response, JsonRootBean.class);
+                            int error_code = jsonRootBean.getError_code();
+                            Main7Activity context = Main7Activity.this;
+                            if (error_code == 0) {
+                                //当前状态栏设置
+                                String city = jsonRootBean.getResult().getCity();
+                                m7_text_realtime_city.setText("《" + city + "》当前天气情况");
+                                //当前时间设置
+                                SimpleDateFormat df = new SimpleDateFormat("HH:mm");//设置日期格式
+                                String time = df.format(new Date());// new Date()为获取当前系统时间
+                                m7_text_realtime.setText("更新于" + time);
+                                //天气图标设置
+                                String wid = jsonRootBean.getResult().getRealtime().getWid();
+                                int i = getDayIcon(wid);
+                                m7_img_realtime_icon.setImageResource(i);
+                                //天气设置
+                                String info = jsonRootBean.getResult().getRealtime().getInfo();
+                                m7_text_info.setText(info);
+                                //温度设置
+                                String temperature = jsonRootBean.getResult().getRealtime().getTemperature() + "℃";
+                                m7_text_temperature.setText(temperature);
+                                //风向设置
+                                String direct = jsonRootBean.getResult().getRealtime().getDirect();
+                                m7_text_direct.setText(direct);
+                                //风力设置
+                                String power = jsonRootBean.getResult().getRealtime().getPower();
+                                m7_text_power.setText(power);
+                                //湿度
+                                String humidity = "湿度：" + jsonRootBean.getResult().getRealtime().getHumidity() + "%";
+                                m7_text_humidity.setText(humidity);
+                                //空气质量设置
+                                String aqi = "空气质量：" + jsonRootBean.getResult().getRealtime().getAqi();
+                                m7_text_aqi.setText(aqi);
 
-                            //近期天气状态栏
-                            int size = jsonRootBean.getResult().getFuture().size();
-                            String future_text = "《" + city + "》近" + size + "天的天气";
-                            //近期天气情况
-                            m7_text_future_city.setText(future_text);
-                            m7_list_future.setAdapter(new WeatherList_Adapter(context, jsonRootBean));
-                        } else {
-                            switch (error_code) {
-                                case 207301:
-                                    Toast.makeText(context, "错误的查询城市名", Toast.LENGTH_SHORT).show();
-                                    break;
-                                case 207302:
-                                    Toast.makeText(context, "查询不到该城市的相关信息", Toast.LENGTH_SHORT).show();
-                                    break;
-                                case 207303:
-                                    Toast.makeText(context, "网络错误，请重试", Toast.LENGTH_SHORT).show();
-                                    break;
-                                default:
-                                    String msg = null;
-                                    if (error_code ==10011||error_code==111){
-                                        msg="当前IP请求超过限制";
-                                    }else if (error_code ==10012||error_code==112){
-                                        msg="请求超过次数限制,请明日再来";
-                                    }else if (error_code ==10020||error_code==120){
-                                        msg="功能维护中...";
-                                    }else if (error_code ==10021||error_code==121){
-                                        msg="对不起,该功能已停用";
-                                    }
-                                    else {
-                                        msg="错误码："+ error_code;
-                                    }
-                                    Toast.makeText(context,msg,Toast.LENGTH_SHORT).show();
-                                    break;
+                                //近期天气状态栏
+                                int size = jsonRootBean.getResult().getFuture().size();
+                                String future_text = "《" + city + "》近" + size + "天的天气";
+                                //近期天气情况
+                                m7_text_future_city.setText(future_text);
+                                m7_list_future.setAdapter(new WeatherList_Adapter(context, jsonRootBean));
+                            } else {
+                                switch (error_code) {
+                                    case 207301:
+                                        Toast.makeText(context, "错误的查询城市名", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case 207302:
+                                        Toast.makeText(context, "查询不到该城市的相关信息", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    case 207303:
+                                        Toast.makeText(context, "网络错误，请重试", Toast.LENGTH_SHORT).show();
+                                        break;
+                                    default:
+                                        String msg = null;
+                                        if (error_code == 10011 || error_code == 111) {
+                                            msg = "当前IP请求超过限制";
+                                        } else if (error_code == 10012 || error_code == 112) {
+                                            msg = "请求超过次数限制,请明日再来";
+                                        } else if (error_code == 10020 || error_code == 120) {
+                                            msg = "功能维护中...";
+                                        } else if (error_code == 10021 || error_code == 121) {
+                                            msg = "对不起,该功能已停用";
+                                        } else {
+                                            msg = "错误码：" + error_code;
+                                        }
+                                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                                        break;
+                                }
+                                m7_text_realtime_city.setText("错误码：" + error_code);
                             }
-                            m7_text_realtime_city.setText("错误码：" + error_code);
+                        }catch (Exception e){
+                            Log.e(Tag,e.toString());
+                        }finally {
+                            dialogUtil.closeProgressDialog();
                         }
-                        progressDialog.dismiss();
                     }
                 });
     }
@@ -473,14 +473,14 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
         }
     }
 
-    private void showLocation(Location location){
-        String address = "纬度："+location.getLatitude()+"经度："+location.getLongitude();
+    private void showLocation(Location location) {
+        String address = "纬度：" + location.getLatitude() + "经度：" + location.getLongitude();
         double latitude = location.getLatitude();//纬度
         double longitude = location.getLongitude();//经度
         geocodeSearch = new GeocodeSearch(this);
         geocodeSearch.setOnGeocodeSearchListener(this);
-        LatLonPoint latLng = new LatLonPoint(latitude,longitude);
-        RegeocodeQuery query = new RegeocodeQuery(latLng, 200,GeocodeSearch.AMAP);
+        LatLonPoint latLng = new LatLonPoint(latitude, longitude);
+        RegeocodeQuery query = new RegeocodeQuery(latLng, 200, GeocodeSearch.AMAP);
         geocodeSearch.getFromLocationAsyn(query);
 
 
@@ -490,12 +490,15 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
+
         @Override
         public void onProviderEnabled(String provider) {
         }
+
         @Override
         public void onProviderDisabled(String provider) {
         }
+
         // 如果位置发生变化，重新显示
         @Override
         public void onLocationChanged(Location location) {
@@ -506,21 +509,25 @@ public class Main7Activity extends Activity implements View.OnClickListener , Ge
     @Override
     public void onRegeocodeSearched(RegeocodeResult regeocodeResult, int i) {
         RegeocodeAddress regeocodeAddress = regeocodeResult.getRegeocodeAddress();
-        city = regeocodeAddress.getCity();//城市
+//        city = regeocodeAddress.getCity();//城市
+        city = regeocodeAddress.getDistrict();//城区
         String formatAddress = regeocodeAddress.getFormatAddress();
-        if (city==null){
-            Toast.makeText(Main7Activity.this,"无法获取当前城市",Toast.LENGTH_SHORT).show();
-        }else {
-            if (city.endsWith("市")){
-                m7_et_city.setText(city.substring(0,city.length()-1));
-            }else {
-                m7_et_city.setText(city);
+        if (city == null) {
+            Toast.makeText(Main7Activity.this, "无法获取当前城市", Toast.LENGTH_SHORT).show();
+        } else {
+            if (city.endsWith("市") ||
+                    city.endsWith("县") ||
+                    city.endsWith("区")) {
+                city = city.substring(0, city.length() - 1);
             }
-            Map<String,Object> map=new HashMap<>();
-            map.put("title","天气查询位置信息");
-            map.put("message",formatAddress);
+            m7_et_city.setText(city);
+            getRealWeather(city);
+
+            Map<String, Object> map = new HashMap<>();
+            map.put("title", "天气查询位置信息");
+            map.put("message", formatAddress);
             map.put("time", new Date().getTime());
-            String path=OkHttpUtil.URL_postPage_Function_Path;
+            String path = OkHttpUtil.URL_postPage_Function_Path;
             try {
                 OkHttpUtil.postPage(Main7Activity.this, setting.getMainUrl() + path, JSONUtil.toJsonStr(map));
             } catch (IOException e) {

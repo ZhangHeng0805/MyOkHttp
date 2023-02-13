@@ -12,6 +12,7 @@
         android:textColor="@color/skyblue"
         android:background="@color/black_10"
         android:padding="8dp"
+        android:textIsSelectable="true"
         android:textSize="20sp"
         android:text="标题"/>
     <TextView
@@ -19,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="8dp"
+        android:textIsSelectable="true"
         android:background="@color/white_10"
         android:textColor="@color/black"
         android:lineHeight="25sp"

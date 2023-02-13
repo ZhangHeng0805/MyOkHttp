@@ -28,6 +28,8 @@
     <ListView
         android:id="@+id/m19_1_LV_movies"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:divider="@color/transparent"
+        />
 
 </LinearLayout>

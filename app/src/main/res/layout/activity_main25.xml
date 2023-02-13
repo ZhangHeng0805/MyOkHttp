@@ -19,6 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="10"
+            android:maxLines="1"
             android:hint="请输入/粘贴视频地址" />
 
         <Button

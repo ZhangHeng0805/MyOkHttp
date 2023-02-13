@@ -23,8 +23,8 @@ android {
         applicationId "com.zhangheng.myapplication"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 22
-        versionName "12.23"
+        versionCode 23
+        versionName "01.18"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // 显式声明支持注解
         javaCompileOptions {

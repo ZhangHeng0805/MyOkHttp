@@ -37,6 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="9"
+        android:maxLines="1"
         android:hint="请输入筛选信息(非必填)"/>
         <Button
             android:id="@+id/m21_btn_search"

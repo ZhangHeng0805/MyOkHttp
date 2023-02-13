@@ -35,6 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
             android:text=""
+            android:gravity="center"
+            android:textIsSelectable="true"
             android:textColor="@color/white" />
     </LinearLayout>
 
@@ -82,6 +84,7 @@
             android:lineHeight="25sp"
             android:paddingTop="10dp"
             android:text=""
+            android:textIsSelectable="true"
             android:textColor="@color/black"
             android:textSize="18sp" />
     </ScrollView>

@@ -58,11 +58,19 @@ public class Main12Activity extends Activity {
                     String explain = null;
                     switch (m12_RG_md5.getCheckedRadioButtonId()) {
                         case R.id.m12_rb_md5:
-                            result = EncryptUtil.getMd5(s);
+                            try {
+                                result = EncryptUtil.getMd5(s);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             explain = "常规md5加密";
                             break;
                         case R.id.m12_rb_mymd5:
-                            result = EncryptUtil.getMyMd5(s);
+                            try {
+                                result = EncryptUtil.getMyMd5(s);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             explain = "自制改造md5加密";
                             break;
                         case R.id.m12_rb_hmacmd5:

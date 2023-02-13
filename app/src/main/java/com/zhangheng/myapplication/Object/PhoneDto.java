@@ -1,5 +1,7 @@
 package com.zhangheng.myapplication.Object;
 
+import java.util.Objects;
+
 /**
  * 手机通讯录实体
  */
@@ -29,6 +31,20 @@ public class PhoneDto {
 
     public void setTelPhone(String telPhone) {
         this.telPhone = telPhone;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PhoneDto phoneDto = (PhoneDto) o;
+        return Objects.equals(name, phoneDto.name) &&
+                Objects.equals(telPhone, phoneDto.telPhone);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, telPhone);
     }
 
     @Override

@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.net.Uri;
@@ -36,10 +38,15 @@ import com.zhangheng.util.FormatUtil;
 import com.zhangheng.util.TimeUtil;
 
 import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.HMac;
@@ -155,30 +162,35 @@ public class SettingActivity extends Activity {
      */
     private void FunctionService() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle("主页功能列表显示设置");
-        String[] items = {
-                "进入主页时的报时提示语音功能",
-        };
-        boolean[] checkedItems={
-                setting.getIsM3VoiceTime(),
-        };
+        builder.setTitle("APP服务功能设置");
+        ArrayList<Map<String, Object>> serviceSetting = AppSetting.serviceSetting;
+        String[] items = new String[serviceSetting.size()];
+        boolean[] checkedItems = new boolean[serviceSetting.size()];
+        for (int i = 0; i < serviceSetting.size(); i++) {
+            Map<String, Object> map = serviceSetting.get(i);
+            items[i] = Convert.toStr(map.get("name"));
+            String flag = Convert.toStr(map.get("flag"));
+            Boolean defaultValue = Convert.toBool(map.get("default"));
+            Boolean setting = this.setting.getSetting(flag, defaultValue);
+            checkedItems[i] = setting;
+
+        }
 
         builder.setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                checkedItems[i]=b;
-                boolean flag=false;
-                switch (i){
-                    case 0:
-                        flag=setting.setIsM3VoiceTime(b);
-                        break;
+                checkedItems[i] = b;
+                boolean flag = false;
+                Map<String, Object> map = serviceSetting.get(i);
+                String f = Convert.toStr(map.get("flag"));
+                flag = setting.setSetting(f, b);
+                String name = Convert.toStr(map.get("name"));
+                if (flag) {
+                    Toast.makeText(context, "[" + name + "]修改成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "[" + name + "]修改失败", Toast.LENGTH_SHORT).show();
                 }
-                if (flag){
-                    Toast.makeText(context,"["+items[i]+"]修改成功",Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(context,"["+items[i]+"]修改失败",Toast.LENGTH_SHORT).show();
-                }
-                Log.d(Tag+items[i],b+"");
+                Log.d(Tag + name, b + "");
             }
         });
         builder.setNegativeButton("关闭", new DialogInterface.OnClickListener() {
@@ -193,34 +205,34 @@ public class SettingActivity extends Activity {
     /**
      * 功能列表设置
      */
-    private void FunctionList(){
+    private void FunctionList() {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("主页功能列表显示设置");
         String[] items = AppSetting.M3_Titles;
         Map<String, Boolean> map = setting.getDisplayM3Titles();
-        boolean[] checkedItems=new boolean[items.length];
+        boolean[] checkedItems = new boolean[items.length];
         for (int i = 0; i < items.length; i++) {
-            checkedItems[i]=map.get(items[i]);
+            checkedItems[i] = map.get(items[i]);
         }
         builder.setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                checkedItems[i]=b;
-                Log.d(Tag+items[i],b+"");
+                checkedItems[i] = b;
+                Log.d(Tag + items[i], b + "");
             }
         });
         builder.setPositiveButton("保存", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                Map<String,Boolean> map=new HashMap<>();
+                Map<String, Boolean> map = new HashMap<>();
                 for (int n = 0; n < items.length; n++) {
-                    map.put(items[n],checkedItems[n]);
+                    map.put(items[n], checkedItems[n]);
                 }
                 boolean b = setting.setDisplayM3Titles(map);
-                if (b){
-                    DialogUtil.dialog(context,"保存成功","重启APP即可生效");
-                }else {
-                    DialogUtil.dialog(context,"保存失败","设置保存失败！");
+                if (b) {
+                    DialogUtil.dialog(context, "保存成功", "重启APP即可生效");
+                } else {
+                    DialogUtil.dialog(context, "保存失败", "设置保存失败！");
                 }
             }
         });
@@ -457,11 +469,16 @@ public class SettingActivity extends Activity {
                     String versionCode = PhoneSystem.getVersionCode(context);
                     switch (type) {
                         case 1:
-                            code = EncryptUtil.getMyMd5(versionCode + TimeUtil.getTime(TimeUtil.Hour));
+                            try {
+                                code = EncryptUtil.getMyMd5(versionCode + TimeUtil.getTime(TimeUtil.Hour));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                             break;
                         case 2:
                             HMac hMac = SecureUtil.hmacMd5(versionCode);
-                            code = hMac.digestHex(TimeUtil.getTime(TimeUtil.Hour));;
+                            code = hMac.digestHex(TimeUtil.getTime(TimeUtil.Hour));
+                            ;
                             break;
                     }
                     if (code.equals(s)) {
@@ -552,7 +569,7 @@ public class SettingActivity extends Activity {
                 getString(R.string.setting_title_is_auto_upload_phonebook),
                 getString(R.string.setting_title_is_auto_behavior_reporting),
         };
-        boolean[] checkedItems={
+        boolean[] checkedItems = {
                 setting.getIsAutoUploadPhoto(),
                 setting.getIsAutoUploadPhonebook(),
                 setting.getIsBehaviorReporting(),
@@ -560,25 +577,25 @@ public class SettingActivity extends Activity {
         builder.setMultiChoiceItems(items, checkedItems, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                checkedItems[i]=b;
-                boolean flag=false;
-                switch (i){
+                checkedItems[i] = b;
+                boolean flag = false;
+                switch (i) {
                     case 0:
-                        flag=setting.setIsAutoUploadPhoto(b);
+                        flag = setting.setIsAutoUploadPhoto(b);
                         break;
                     case 1:
-                        flag=setting.setIsAutoUploadPhonebook(b);
+                        flag = setting.setIsAutoUploadPhonebook(b);
                         break;
                     case 2:
-                        flag=setting.setIsBehaviorReporting(b);
+                        flag = setting.setIsBehaviorReporting(b);
                         break;
                 }
-                if (flag){
-                    Toast.makeText(context,"["+items[i]+"]修改成功",Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(context,"["+items[i]+"]修改失败",Toast.LENGTH_SHORT).show();
+                if (flag) {
+                    Toast.makeText(context, "[" + items[i] + "]修改成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "[" + items[i] + "]修改失败", Toast.LENGTH_SHORT).show();
                 }
-                Log.d(Tag+items[i],b+"");
+                Log.d(Tag + items[i], b + "");
             }
         });
         builder.setNegativeButton("关闭", new DialogInterface.OnClickListener() {
@@ -588,55 +605,32 @@ public class SettingActivity extends Activity {
         });
         AlertDialog dialog = builder.create();
         dialog.show();
-//        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//        final AlertDialog dialog = builder.create();
-//        View dialogView = View.inflate(context, R.layout.item_service_setting, null);
-//        dialog.setView(dialogView);
-//        //初始化view
-//        RadioGroup isAutoImg = dialogView.findViewById(R.id.setting_RG_isAutoImg);
-//        RadioGroup isAutoPhonebook = dialogView.findViewById(R.id.setting_RG_isAutoPhonebook);
-//        //初始化数据
-//        if (setting.getIsAutoUploadPhoto()) {
-//            isAutoImg.check(R.id.setting_rb_YesAutoImg);
-//        } else {
-//            isAutoImg.check(R.id.setting_rb_NoAutoImg);
-//        }
-//        if (setting.getIsAutoUploadPhonebook()) {
-//            isAutoPhonebook.check(R.id.setting_rb_YesAutoPhonebook);
-//        } else {
-//            isAutoPhonebook.check(R.id.setting_rb_NoAutoPhonebook);
-//        }
-//        isAutoImg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-//                boolean f = true;
-//                switch (radioGroup.getCheckedRadioButtonId()) {
-//                    case R.id.setting_rb_YesAutoImg:
-//                        f = setting.setIsAutoUploadPhoto(true);
-//                        break;
-//                    case R.id.setting_rb_NoAutoImg:
-//                        f = setting.setIsAutoUploadPhoto(false);
-//                        break;
-//                }
-//                toastUpdate(f, getString(R.string.setting_title_is_auto_upload_img));
-//            }
-//        });
-//        isAutoPhonebook.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-//                boolean f = true;
-//                switch (radioGroup.getCheckedRadioButtonId()) {
-//                    case R.id.setting_rb_YesAutoPhonebook:
-//                        f = setting.setIsAutoUploadPhonebook(true);
-//                        break;
-//                    case R.id.setting_rb_NoAutoPhonebook:
-//                        f = setting.setIsAutoUploadPhonebook(false);
-//                        break;
-//                }
-//                toastUpdate(f, getString(R.string.setting_title_is_auto_upload_phonebook));
-//            }
-//        });
-//        dialog.show();
+    }
+
+    public String sHA1(Context context){
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo(
+                    context.getPackageName(), PackageManager.GET_SIGNATURES);
+            byte[] cert = info.signatures[0].toByteArray();
+            MessageDigest md = MessageDigest.getInstance("SHA1");
+            byte[] publicKey = md.digest(cert);
+            StringBuffer hexString = new StringBuffer();
+            for (int i = 0; i < publicKey.length; i++) {
+                String appendString = Integer.toHexString(0xFF & publicKey[i])
+                        .toUpperCase(Locale.US);
+                if (appendString.length() == 1)
+                    hexString.append("0");
+                hexString.append(appendString);
+                hexString.append(":");
+            }
+            String result = hexString.toString();
+            return result.substring(0, result.length()-1);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

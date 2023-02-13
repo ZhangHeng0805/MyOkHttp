@@ -16,6 +16,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="请输入生成的内容"
+            android:maxLines="3"
             android:layout_weight="12"/>
         <Button
             android:id="@+id/m8_btn_submit"

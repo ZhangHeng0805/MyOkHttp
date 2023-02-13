@@ -35,7 +35,7 @@ public class OkHttpUtil {
     }
 
 
-    public static void downLoad(Context context,String url,String path,String name){
+    public static void downLoad(Context context,String url,String path,String name) {
         OkHttpUtils.get()
                 .url(url)
                 .build()
@@ -43,7 +43,6 @@ public class OkHttpUtil {
                     @Override
                     public void onError(Call call, Exception e, int id) {
                         Log.e(context.getClass().getSimpleName() + "文件下载[" + url + "]", e.toString());
-                        e.printStackTrace();
                     }
 
                     @Override
