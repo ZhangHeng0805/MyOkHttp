@@ -17,6 +17,7 @@ import com.zhangheng.myapplication.activity.Main23Activity;
 import com.zhangheng.myapplication.activity.Main24Activity;
 import com.zhangheng.myapplication.activity.Main25Activity;
 import com.zhangheng.myapplication.activity.Main26Activity;
+import com.zhangheng.myapplication.activity.Main27Activity;
 import com.zhangheng.myapplication.activity.Main2Activity;
 import com.zhangheng.myapplication.activity.Main4Activity;
 import com.zhangheng.myapplication.activity.Main5Activity;
@@ -65,6 +66,7 @@ public class AppSetting {
             "24.小爱AI聊天",//Main24Activity(API)
             "25.视频解析下载(抖音/快手/微视...)",//Main25Activity(API)
             "26.文字转语音",//Main26Activity(API)
+            "27.AI机器人ChatGPT",//Main27Activity(API)
     };
     public final static Map<Integer, Class<?>> M3_contextMap = new HashMap<Integer, Class<?>>() {{
         put(1, MainActivity.class);
@@ -93,6 +95,7 @@ public class AppSetting {
         put(24, Main24Activity.class);
         put(25, Main25Activity.class);
         put(26, Main26Activity.class);
+        put(27, Main27Activity.class);
     }};
 
     public final static ArrayList<Map<String, Object>> serviceSetting = new ArrayList<Map<String, Object>>() {{

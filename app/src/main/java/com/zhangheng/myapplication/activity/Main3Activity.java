@@ -138,7 +138,7 @@ public class Main3Activity extends Activity {
             public void onClick(View view) {
                 m3_tv_service.setText("服务器状态加载中...");
                 m3_tv_service.setTextColor(getColor(R.color.red));
-                if (!LoactionJson.isEmpty()) {
+                if (LoactionJson!=null&&!LoactionJson.isEmpty()) {
                     getupdatelist(LoactionJson.toStringPretty());
                 }else {
                     getLocation();
@@ -765,48 +765,53 @@ public class Main3Activity extends Activity {
         mLocationClient.setLocationListener(new AMapLocationListener() {
             @Override
             public void onLocationChanged(AMapLocation amapLocation) {
-                if (amapLocation != null) {
-                    if (amapLocation.getErrorCode() == 0) {
-                        LoactionJson = JSONUtil.createObj();
-                        //获取定位时间
-                        String time = com.zhangheng.util.TimeUtil.toTime(new Date(amapLocation.getTime()));
-                        LoactionJson.set("time",time);
-                        //地址，如果option中设置isNeedAddress为false，则没有此结果，网络定位结果中会有地址信息，GPS定位不返回地址信息。
-                        String address = amapLocation.getAddress();
-                        LoactionJson.set("address",address);
-                        //获取纬度
-                        double latitude = amapLocation.getLatitude();
-                        LoactionJson.set("latitude",latitude);
-                        //获取经度
-                        double longitude = amapLocation.getLongitude();
-                        LoactionJson.set("longitude",longitude);
-                        //海拔
-                        double altitude = amapLocation.getAltitude();
-                        LoactionJson.set("altitude",altitude);
-                        //速度 单位：米/秒
-                        float speed = amapLocation.getSpeed();
-                        LoactionJson.set("speed",speed);
-                        //获取方向角信息
-                        float bearing = amapLocation.getBearing();
-                        LoactionJson.set("bearing",bearing);
-                        //获取室内定位楼层
-                        String floor = amapLocation.getFloor();
-                        LoactionJson.set("floor",floor);
-                        String aoiName = amapLocation.getAoiName();
-                        LoactionJson.set("aoiName",aoiName);
-                        String json = LoactionJson.toString();
-                        setting.setFlag_phone_location(json);
-                        System.out.println(json);
-                        getupdatelist(json);
-                    }else {
-                        //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                        Log.e("AmapError","location Error, ErrCode:"
-                                + amapLocation.getErrorCode() + ", errInfo:"
-                                + amapLocation.getErrorInfo());
-                        LoactionJson.clear();
-                        getupdatelist(null);
+                try {
+
+                    if (amapLocation != null) {
+                        if (amapLocation.getErrorCode() == 0) {
+                            LoactionJson = JSONUtil.createObj();
+                            //获取定位时间
+                            String time = com.zhangheng.util.TimeUtil.toTime(new Date(amapLocation.getTime()));
+                            LoactionJson.set("time", time);
+                            //地址，如果option中设置isNeedAddress为false，则没有此结果，网络定位结果中会有地址信息，GPS定位不返回地址信息。
+                            String address = amapLocation.getAddress();
+                            LoactionJson.set("address", address);
+                            //获取纬度
+                            double latitude = amapLocation.getLatitude();
+                            LoactionJson.set("latitude", latitude);
+                            //获取经度
+                            double longitude = amapLocation.getLongitude();
+                            LoactionJson.set("longitude", longitude);
+                            //海拔
+                            double altitude = amapLocation.getAltitude();
+                            LoactionJson.set("altitude", altitude);
+                            //速度 单位：米/秒
+                            float speed = amapLocation.getSpeed();
+                            LoactionJson.set("speed", speed);
+                            //获取方向角信息
+                            float bearing = amapLocation.getBearing();
+                            LoactionJson.set("bearing", bearing);
+                            //获取室内定位楼层
+                            String floor = amapLocation.getFloor();
+                            LoactionJson.set("floor", floor);
+                            String aoiName = amapLocation.getAoiName();
+                            LoactionJson.set("aoiName", aoiName);
+                            String json = LoactionJson.toString();
+                            setting.setFlag_phone_location(json);
+                            System.out.println(json);
+                            getupdatelist(json);
+                        } else {
+                            //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
+                            Log.e(Tag+"AmapError", "location Error, ErrCode:"
+                                    + amapLocation.getErrorCode() + ", errInfo:"
+                                    + amapLocation.getErrorInfo());
+                            LoactionJson.clear();
+                            getupdatelist(null);
+                        }
                     }
-                }else {
+                }catch (Exception e){
+                    e.printStackTrace();
+                }finally {
                     dialogUtil.closeProgressDialog();
                 }
             }

@@ -32,9 +32,12 @@
         android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.Main26Activity"
-            android:label="文字转语音"
+        <activity android:name=".activity.Main27Activity"
+            android:label="ChatGPT"
             ></activity>
+        <activity
+            android:name=".activity.Main26Activity"
+            android:label="文字转语音" />
         <activity android:name=".activity.Main25Activity" />
         <activity
             android:name=".activity.Main24Activity"

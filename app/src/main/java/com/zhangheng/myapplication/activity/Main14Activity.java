@@ -29,6 +29,7 @@ import org.jsoup.Jsoup;
 
 import java.io.IOException;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
@@ -221,11 +222,12 @@ public class Main14Activity extends AppCompatActivity {
 
     private void getPlay(String text,String id) {
         DialogUtil dialogUtil = new DialogUtil(context);
+        String[] types={"baidu","youdao","xunfei"};
         dialogUtil.createProgressDialog();
         GetBuilder builder = OkHttpUtils.get()
                 .url("https://xiaoapi.cn/API/zs_tts.php")
-                .addParams("type", "xunfei")//可为baidu、youdao、xunfei（即为百度、有道、讯飞）
-                .addParams("id", id)//语音类型1-20(20为英文专用语音)
+                .addParams("type", types[Convert.toInt(id)%types.length])//可为baidu、youdao、xunfei（即为百度、有道、讯飞）
+//                .addParams("id", id)//语音类型1-20(20为英文专用语音)
                 .addParams("msg", text);
         builder.build()
                 .execute(new StringCallback() {
