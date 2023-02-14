@@ -98,9 +98,8 @@ public class Main3Activity extends Activity {
     public AMapLocationClient mLocationClient = null;
     //声明AMapLocationClientOption对象
     public AMapLocationClientOption mLocationOption = null;
-    public JSONObject LoactionJson=null;
-    private DialogUtil dialogUtil=null;
-
+    public JSONObject LoactionJson = null;
+    private DialogUtil dialogUtil = null;
 
 
     @Override
@@ -138,9 +137,9 @@ public class Main3Activity extends Activity {
             public void onClick(View view) {
                 m3_tv_service.setText("服务器状态加载中...");
                 m3_tv_service.setTextColor(getColor(R.color.red));
-                if (LoactionJson!=null&&!LoactionJson.isEmpty()) {
+                if (LoactionJson != null && !LoactionJson.isEmpty()) {
                     getupdatelist(LoactionJson.toStringPretty());
-                }else {
+                } else {
                     getLocation();
                 }
             }
@@ -388,16 +387,16 @@ public class Main3Activity extends Activity {
      */
     public void getupdatelist(String json) {
 //        getBuild();
-        if (dialogUtil==null)
+        if (dialogUtil == null)
             dialogUtil = new DialogUtil(context);
         dialogUtil.createProgressDialog();
         String url = setting.getMainUrl()
                 + "config/updateApp/" + getResources().getString(R.string.app_name);
         OkHttpUtils
                 .post()
-                .addParams("json",json)
+                .addParams("json", json)
                 .url(url)
-                .addHeader("User-Agent", GetPhoneInfo.getHead(context,true))
+                .addHeader("User-Agent", GetPhoneInfo.getHead(context, true))
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -451,9 +450,9 @@ public class Main3Activity extends Activity {
                             }
 
                             Log.d(Tag, "更新：" + response);
-                        }catch (Exception e){
+                        } catch (Exception e) {
                             e.printStackTrace();
-                        }finally {
+                        } finally {
                             dialogUtil.closeProgressDialog();
                         }
                     }
@@ -755,9 +754,9 @@ public class Main3Activity extends Activity {
         }
     }
 
-    public void getLocation(){
-        if (dialogUtil==null)
-            dialogUtil=new DialogUtil(context);
+    public void getLocation() {
+        if (dialogUtil == null)
+            dialogUtil = new DialogUtil(context);
         dialogUtil.createProgressDialog();
         //初始化定位
         mLocationClient = new AMapLocationClient(getApplicationContext());
@@ -802,16 +801,17 @@ public class Main3Activity extends Activity {
                             getupdatelist(json);
                         } else {
                             //定位失败时，可通过ErrCode（错误码）信息来确定失败的原因，errInfo是错误信息，详见错误码表。
-                            Log.e(Tag+"AmapError", "location Error, ErrCode:"
+                            Log.e(Tag + "AmapError", "location Error, ErrCode:"
                                     + amapLocation.getErrorCode() + ", errInfo:"
                                     + amapLocation.getErrorInfo());
-                            LoactionJson.clear();
-                            getupdatelist(null);
+                            if (LoactionJson != null)
+                                LoactionJson.clear();
+                            getupdatelist("");
                         }
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
-                }finally {
+                } finally {
                     dialogUtil.closeProgressDialog();
                 }
             }
@@ -838,13 +838,14 @@ public class Main3Activity extends Activity {
     }
 
     private long mExitTime;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             if ((System.currentTimeMillis() - mExitTime) > 1500) {
                 Toast.makeText(context, "再按一次退出！", Toast.LENGTH_LONG).show();
                 mExitTime = System.currentTimeMillis();
-            }else {
+            } else {
                 finish();
             }
             return true;

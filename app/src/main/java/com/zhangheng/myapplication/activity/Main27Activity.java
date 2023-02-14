@@ -72,49 +72,52 @@ public class Main27Activity extends AppCompatActivity {
         String url = "https://v1.apigpt.cn/";
         OkHttpUtils.get().url(url)
                 .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.41")
-                .addParams("q",text)
-                .addParams("apitype","sql")
+                .addParams("q", text)
+                .addParams("apitype", "sql")
                 .build()
                 .connTimeOut(15000L)
                 .readTimeOut(120000L)
                 .writeTimeOut(20000L)
                 .execute(new StringCallback() {
-            @Override
-            public void onError(Call call, Exception e, int id) {
-                Log.e(Tag, e.toString());
-                DialogUtil.dialog(context, "数据获取失败", OkHttpMessageUtil.error(e));
-                dialogUtil.closeProgressDialog();
-            }
-
-            @Override
-            public void onResponse(String response, int id) {
-                try {
-                    if (JSONUtil.isTypeJSON(response)) {
-                        JSONObject parse = JSONUtil.parseObj(response);
-                        Integer code = parse.getInt("code");
-                        String msg = parse.getStr("msg");
-                        if (code.equals(200)) {
-                            m27_LL_res.setVisibility(View.VISIBLE);
-                            String questions = parse.getStr("Questions");
-                            m27_tv_res_my.setText(default_my + questions);
-                            String chatGPT_answer = parse.getStr("ChatGPT_Answer");
-                            m27_tv_res_robot.setText(default_robot + chatGPT_answer);
-                            if (!StrUtil.isBlank(msg))
-                                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
-                        } else {
-                            DialogUtil.dialog(context, "获取失败", msg);
-                        }
-                    } else {
-                        DialogUtil.dialog(context, "数据格式错误", response);
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e(Tag, e.toString());
+                        DialogUtil.dialog(context, "数据获取失败", OkHttpMessageUtil.error(e));
+                        dialogUtil.closeProgressDialog();
                     }
-                } catch (Exception e) {
-                    DialogUtil.dialog(context, "数据获取异常", e.toString());
-                    e.printStackTrace();
-                } finally {
-                    dialogUtil.closeProgressDialog();
-                }
-            }
-        });
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            if (JSONUtil.isTypeJSON(response)) {
+                                JSONObject parse = JSONUtil.parseObj(response);
+                                Integer code = parse.getInt("code");
+                                String msg = parse.getStr("msg");
+                                if (code.equals(200)) {
+                                    m27_LL_res.setVisibility(View.VISIBLE);
+                                    String questions = parse.getStr("Questions");
+                                    m27_tv_res_my.setText(default_my + questions);
+                                    String chatGPT_answer = parse.getStr("ChatGPT_Answer");
+                                    if (!StrUtil.isBlank(chatGPT_answer))
+                                        m27_tv_res_robot.setText(default_robot + chatGPT_answer);
+                                    else
+                                        m27_tv_res_robot.setText(default_robot + msg);
+                                    if (!StrUtil.isBlank(msg))
+                                        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    DialogUtil.dialog(context, "获取失败", msg);
+                                }
+                            } else {
+                                DialogUtil.dialog(context, "数据格式错误", response);
+                            }
+                        } catch (Exception e) {
+                            DialogUtil.dialog(context, "数据获取异常", e.toString());
+                            e.printStackTrace();
+                        } finally {
+                            dialogUtil.closeProgressDialog();
+                        }
+                    }
+                });
 
     }
 }

@@ -22,6 +22,7 @@ import java.net.SocketException;
 import java.util.Date;
 import java.util.Enumeration;
 
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -35,42 +36,54 @@ public class GetPhoneInfo {
     private static ServerSetting setting;
 
     public static String getHead(Context context) {
-        return getHead(context,false);
+        return getHead(context, false);
     }
-    public static String getHead(Context context,Boolean isUpdate) {
+
+    public static String getHead(Context context, Boolean isUpdate) {
         if (isUpdate) {
+            String charset = CharsetUtil.defaultCharsetName();
             String model = GetPhoneInfo.model;
             String net = Address.getIPAddress(context);
             String release = GetPhoneInfo.release;
             String versionCode = versionCode(context);
-            String tel = EncryptUtil.enBase64Str(phoneNum(context),"UTF-8");
+            String tel = EncryptUtil.enBase64Str(phoneNum(context), charset);
             String id = getID(context);
-            String notice = EncryptUtil.enBase64Str(GetPhoneInfo.notice,"UTF-8");
+            String notice = EncryptUtil.enBase64Str(GetPhoneInfo.notice, charset);
             Date date = new Date();
             long time = date.getTime();
-            String sign=time+id+model+net+release+versionCode+tel+notice+ TimeUtil.toTime(date,TimeUtil.enDateFormat_Detailed);
+            String sign =
+                    time +
+                    id +
+                    model +
+                    net +
+                    release +
+                    versionCode +
+                    tel + notice +
+                    TimeUtil.toTime(date, TimeUtil.enDateFormat_Detailed);
+//            System.out.println(sign);
             JSONObject obj = JSONUtil.createObj();
-            obj.set("ID",id);
-            obj.set("model",model);
-            obj.set("sdk",net);
-            obj.set("release",release);
-            obj.set("Appversion",versionCode);
-            obj.set("tel",tel);
+            obj.set("ID", id);
+            obj.set("model", model);
+            obj.set("sdk", net);
+            obj.set("release", release);
+            obj.set("Appversion", versionCode);
+            obj.set("tel", tel);
             obj.set("notice", notice);
-            obj.set("time",time);
+            obj.set("time", time);
+            obj.set("charset", charset);
             try {
-                obj.set("token", EncryptUtil.getSignature(sign,id));
+                obj.set("token", EncryptUtil.getSignature(sign, id, charset));
             } catch (Exception e) {
                 e.printStackTrace();
             }
 //            System.out.println(obj.toStringPretty());
             String json = obj.toString();
-            if (setting==null)
+            if (setting == null)
                 setting = new ServerSetting(context);
             setting.setFlag_phone_info(json);
             return json;
-        }else {
-            if (setting==null)
+        } else {
+            if (setting == null)
                 setting = new ServerSetting(context);
             return setting.getFlag_phone_info();
         }
@@ -84,24 +97,24 @@ public class GetPhoneInfo {
 //                + ")";
     }
 
-    public static String model = Build.BRAND+" "+Build.MODEL; // 手机型号
-//    public static String sdk = Build.VERSION.SDK; // SDK号
+    public static String model = Build.BRAND + " " + Build.MODEL; // 手机型号
+    //    public static String sdk = Build.VERSION.SDK; // SDK号
     public static String release = "Android" + Build.VERSION.RELEASE; // android系统版本号
 
-    public static String notice=null;
+    public static String notice = null;
 
     public static String versionCode(Context context) {//应用版本
-        String versionCode = context.getResources().getString(R.string.app_name)+"_" + PhoneSystem.getVersionCode(context);
+        String versionCode = context.getResources().getString(R.string.app_name) + "_" + PhoneSystem.getVersionCode(context);
         return versionCode;
     }
 
-    public static String phoneNum(Context context){//获取本机手机号码（有可能获取不到）
+    public static String phoneNum(Context context) {//获取本机手机号码（有可能获取不到）
         String getPhone = null;
         PhoneInfoUtils phoneInfoUtils = new PhoneInfoUtils(context);
         TelephonyManager phoneManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_SMS) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(context,Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED
-                && ContextCompat.checkSelfPermission(context,Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                && ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED
+                && ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    Activity#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -110,15 +123,15 @@ public class GetPhoneInfo {
             // to handle the case where the user grants the permission. See the documentation
             // for Activity#requestPermissions for more details.
         }
-        String line1Number=null;
+        String line1Number = null;
         try {
             line1Number = phoneManager.getLine1Number();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         if (line1Number == null) {
-            getPhone=null;
+            getPhone = null;
         } else if (line1Number.startsWith("+86")) {
             getPhone = line1Number.replace("+86", "");
         } else {
@@ -128,9 +141,9 @@ public class GetPhoneInfo {
         String providersName = phoneInfoUtils.getProvidersName();
         String nativePhoneNumber = phoneInfoUtils.getNativePhoneNumber();
 
-        if (getPhone!=null){
+        if (getPhone != null) {
             getPhone = "[" + providersName + "]" + getPhone;
-        }else {
+        } else {
             getPhone = "[" + providersName + "]" + nativePhoneNumber;
         }
 
@@ -139,13 +152,14 @@ public class GetPhoneInfo {
 
     /**
      * 获取设备唯一ID
+     *
      * @param context
      * @return
      */
     public static String getID(Context context) {
 
         TelephonyManager TelephonyMgr = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
-        if (ContextCompat.checkSelfPermission(context,Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    Activity#requestPermissions
             // here to request the missing permissions, and then overriding
@@ -154,7 +168,7 @@ public class GetPhoneInfo {
             // to handle the case where the user grants the permission. See the documentation
             // for Activity#requestPermissions for more details.
         }
-        String id=null;
+        String id = null;
         try {
             BluetoothAdapter m_BluetoothAdapter = null; // Local Bluetooth adapter
             m_BluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -168,13 +182,16 @@ public class GetPhoneInfo {
                     }
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        if (setting==null)
-            setting=new ServerSetting(context);
+        if (setting == null)
+            setting = new ServerSetting(context);
         String phoneLocation = setting.getFlag_phone_location();
-        notice=JSONUtil.parseObj(phoneLocation).getStr("aoiName");
+        if (!StrUtil.isBlank(phoneLocation))
+            notice = JSONUtil.parseObj(phoneLocation).getStr("aoiName");
+        else
+            notice="";
         if (StrUtil.isEmpty(id)) {
             id = "85" + //自己拼接构造IMEI Pseudo-Unique ID
                     Build.BOARD.length() % 10 +
@@ -193,6 +210,7 @@ public class GetPhoneInfo {
         }
         return id;
     }
+
     public static String getLocalIpAddress() {
         String localIp = "";
         try {
