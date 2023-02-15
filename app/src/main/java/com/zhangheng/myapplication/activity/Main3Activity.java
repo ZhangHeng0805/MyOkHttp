@@ -765,7 +765,6 @@ public class Main3Activity extends Activity {
             @Override
             public void onLocationChanged(AMapLocation amapLocation) {
                 try {
-
                     if (amapLocation != null) {
                         if (amapLocation.getErrorCode() == 0) {
                             LoactionJson = JSONUtil.createObj();
@@ -808,11 +807,18 @@ public class Main3Activity extends Activity {
                                 LoactionJson.clear();
                             getupdatelist("");
                         }
+                    } else {
+                        if (LoactionJson != null)
+                            LoactionJson.clear();
+                        getupdatelist("");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                    if (LoactionJson != null)
+                        LoactionJson.clear();
+                    getupdatelist("");
                 } finally {
-                    dialogUtil.closeProgressDialog();
+//                    dialogUtil.closeProgressDialog();
                 }
             }
         });
