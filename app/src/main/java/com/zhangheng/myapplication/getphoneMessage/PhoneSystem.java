@@ -54,7 +54,6 @@ public class PhoneSystem {
                     pkName, 0).versionCode;
             return "V" + versionCode + "." + versionName;
         } catch (Exception e) {
-
             e.printStackTrace();
         }
         return null;

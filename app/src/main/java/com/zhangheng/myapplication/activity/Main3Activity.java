@@ -63,6 +63,8 @@ import java.util.Map;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.comparator.VersionComparator;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -113,6 +115,7 @@ public class Main3Activity extends Activity {
         m3_tv_ipAddress = findViewById(R.id.m3_tv_ipAddress);
         m3_iv_setting = findViewById(R.id.m3_iv_setting);
         m3_iv_service_refersh = findViewById(R.id.m3_iv_service_refersh);
+        checkLife();//检查使用期限
 //        System.out.println("SHA1："+new SettingActivity().sHA1(context));
         m3_iv_setting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -204,7 +207,10 @@ public class Main3Activity extends Activity {
                     }
                 }
                 if (intent != null) {
-                    startActivity(intent);
+                    if (setting.getSetting(setting.flag_service_life,setting.default_is_service_life))
+                        startActivity(intent);
+                    else
+                        DialogUtil.dialog(context,"APP使用权限到期","对不起，您的APP使用权限到期，若需继续使用，请联系作者给您续期！");
                 }
             }
         });
@@ -374,11 +380,31 @@ public class Main3Activity extends Activity {
         Log.d(Tag, "用户：" + Build.USER);
     }
 
-
     public String getLocalMacAddress() {
         WifiManager wifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         WifiInfo info = wifi.getConnectionInfo();
         return info.getMacAddress();
+    }
+
+
+    private void checkLife(){
+        String service_life_info = setting.getService_life_info();
+        JSONObject obj;
+        if (JSONUtil.isTypeJSON(service_life_info)){
+             obj= JSONUtil.parseObj(service_life_info);
+            long maxDay = DateUtil.between(new Date(), new Date(obj.getLong("createTime")), DateUnit.DAY);
+            if (maxDay>obj.getInt("maxDay")){
+                setting.setSetting(setting.flag_service_life,false);
+            }else {
+                setting.setSetting(setting.flag_service_life,true);
+            }
+        }else {
+            obj = JSONUtil.createObj();
+            obj.set("createTime",new Date().getTime());
+            obj.set("maxDay",7);
+            setting.setSetting(setting.flag_service_life,true);
+            setting.setService_life_info(obj.toString());
+        }
     }
 
 
@@ -411,6 +437,7 @@ public class Main3Activity extends Activity {
 
                     @Override
                     public void onResponse(String response, int id) {
+
                         try {
                             if (response.indexOf("WEB服务器没有运行") < 1) {
                                 Message msg = null;

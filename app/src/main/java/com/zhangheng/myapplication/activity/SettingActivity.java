@@ -50,6 +50,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.HMac;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
 public class SettingActivity extends Activity {
@@ -70,6 +71,7 @@ public class SettingActivity extends Activity {
             "意见反馈",
             "捐赠支持",
             "微信公众号",
+            "APP口令",
     };
 
     @Override
@@ -139,6 +141,10 @@ public class SettingActivity extends Activity {
                         WXOfficialAccount();
                         funName += ".WXOfficialAccount()";
                         break;
+                    case "APP口令":
+                        appVerificationCode();
+                        funName += ".appVerificationCode()";
+                        break;
                     default:
                         Toast.makeText(context, setting_meun[i], Toast.LENGTH_SHORT).show();
                         break;
@@ -154,8 +160,82 @@ public class SettingActivity extends Activity {
                 }
             }
         });
-
     }
+
+    private void appVerificationCode() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        AlertDialog dialog = builder.create();
+        int width = dialog.getWindow().getWindowManager().getDefaultDisplay().getWidth();
+        EditText pwd = new EditText(context);
+        pwd.setBackground(getDrawable(R.drawable.btn));
+        pwd.setHint("请输入APP口令码:");
+        pwd.setWidth((int) (width * 0.7));
+        pwd.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+        Button btn1 = new Button(context);
+        btn1.setText("验证");
+        btn1.setBackground(getDrawable(R.drawable.btn1));
+
+        LinearLayout layout = new LinearLayout(context);
+        layout.setPadding(8, 5, 8, 5);
+        layout.setGravity(Gravity.CENTER);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams pwd_params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        pwd_params.setMargins(0, 10, 0, 30);
+        LinearLayout.LayoutParams btn1_params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        btn1_params.setMargins(0, 30, 0, 30);
+        layout.addView(pwd, pwd_params);
+        layout.addView(btn1, btn1_params);
+        dialog.setView(layout);
+        dialog.setTitle("验证APP口令密钥");
+        dialog.setMessage("请输入作者分享的口令密钥");
+
+        btn1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String s = pwd.getText().toString();
+                if (!StrUtil.isBlank(s)) {
+                    if (s.indexOf(":") == 1) {
+                        char flag = s.charAt(0);
+                        switch (flag) {
+                            case 'm':
+                                String tap = TimeUtil.toTime(new Date(), "yyyyMMddHH");
+                                try {
+                                    String myMd5 = EncryptUtil.getMyMd5(tap+PhoneSystem.getVersionCode(context));
+                                    String pwd = StrUtil.subAfter(s, ":", false);
+                                    if (pwd.endsWith(myMd5)){
+                                        JSONObject obj = JSONUtil.createObj();
+                                        obj.set("createTime",new Date().getTime());
+                                        obj.set("maxDay",7);
+                                        setting.setService_life_info(obj.toString());
+                                        boolean b = setting.setSetting(setting.flag_service_life, true);
+                                        if (b)
+                                            DialogUtil.dialog(context,"验证成功","您的APP使用期限续签成功！您可以继续使用了");
+                                        else
+                                            DialogUtil.dialog(context,"验证失败","抱歉，您的续签失败，请联系作者！");
+                                    }else {
+                                        DialogUtil.dialog(context, "验证失败", "口令错误或口令已失效");
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    DialogUtil.dialog(context, "验证错误", e.getMessage());
+                                }
+                                break;
+                            default:
+                                DialogUtil.dialog(context, "口令错误", "口令格式格式不存在");
+                                break;
+                        }
+                    } else {
+                        DialogUtil.dialog(context, "口令错误", "口令格式错误");
+                    }
+                }
+            }
+        });
+        if (dialog != null) {
+            dialog.show();
+        }
+    }
+
 
     /**
      * 服务功能设置
@@ -478,7 +558,6 @@ public class SettingActivity extends Activity {
                         case 2:
                             HMac hMac = SecureUtil.hmacMd5(versionCode);
                             code = hMac.digestHex(TimeUtil.getTime(TimeUtil.Hour));
-                            ;
                             break;
                     }
                     if (code.equals(s)) {
@@ -607,7 +686,7 @@ public class SettingActivity extends Activity {
         dialog.show();
     }
 
-    public String sHA1(Context context){
+    public String sHA1(Context context) {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo(
                     context.getPackageName(), PackageManager.GET_SIGNATURES);
@@ -624,7 +703,7 @@ public class SettingActivity extends Activity {
                 hexString.append(":");
             }
             String result = hexString.toString();
-            return result.substring(0, result.length()-1);
+            return result.substring(0, result.length() - 1);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         } catch (NoSuchAlgorithmException e) {

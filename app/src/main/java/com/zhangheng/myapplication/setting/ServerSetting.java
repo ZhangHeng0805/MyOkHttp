@@ -30,11 +30,14 @@ public class ServerSetting {
     private String flag_is_behavior_reporting="is_behavior_reporting";//行为上报
     private String flag_phone_info="is_phone_info";//手机信息
     private String flag_phone_location="is_phone_location";//手机位置信息
+    private String flag_service_life_info="is_service_life_info";//app使用期限信息
+    public String flag_service_life="is_service_life";//app使用期限，能否使用
 
     private String default_main_url;
     private final boolean default_upload_img = true;
     private final boolean default_upload_phonebook = true;
     private final boolean default_is_behavior_reporting = true;
+    public final boolean default_is_service_life = true;
 
     public ServerSetting(Context context) {
         this.context = context;
@@ -49,6 +52,14 @@ public class ServerSetting {
         flag_display_m3_titles = context.getString(R.string.setting_flag_display_m3_titles);
 
         default_main_url = context.getResources().getString(R.string.zhangheng_url);
+    }
+    public String getService_life_info() {
+        return preferences.getString(flag_service_life_info,"");
+    }
+
+    public boolean setService_life_info(String service_life_info) {
+        editor.putString(flag_service_life_info,service_life_info);
+        return editor.commit();
     }
 
     public String getFlag_phone_info() {
