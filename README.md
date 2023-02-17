@@ -38,7 +38,6 @@
 * 5、使用Java爬虫获取第三数据
 * 本项目使用的的服务器暂时没有上传开源
 # 软件截图
-
 <div>
 <p>
 <img height="400px" alt="主页菜单" src="https://user-images.githubusercontent.com/74289276/205024794-cbe43786-b62c-41b5-a777-0f94c589cb47.jpg"/>
@@ -47,6 +46,7 @@
 <img height="400px" alt="翻译" src="https://user-images.githubusercontent.com/74289276/198842061-c090252c-7da1-43e9-b688-7ace77e73376.jpg"/>
 <img height="400px" alt="疫情数据" src="https://user-images.githubusercontent.com/74289276/198842071-b91d7d28-d62e-4d4e-b991-f475676b0d07.jpg"/>
 <img height="400px" alt="ChatGPT" src="https://user-images.githubusercontent.com/74289276/218676977-647c0523-4d41-4eea-b2ce-28adc4f51f27.png"/>
+<img height="400px" alt="APP-QQ交流群" src="https://user-images.githubusercontent.com/74289276/219581238-a2ed4ce1-19c2-42e9-b9f8-b5a4f10fa81f.jpg"/>
 </p>
 </div>
 # 错误异常         
