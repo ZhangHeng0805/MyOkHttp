@@ -27,7 +27,7 @@
 * 25.视频解析下载(抖音/快手/微视...)
 * 26.文字转语音
 * 27.AI机器人ChatGPT
-
+> 交流QQ群: 660875372
 > * 说明：本项目的功能列表主页界面为```Main3Activity```
 > * 注意：本项目中```res/value/string.xml```文件中因涉及秘钥，所以没有上传该文件
 ## 本项目的Android的安装[APP下载](https://github.com/ZhangHeng0805/MyOkHttp/releases/download/ZHTools/ZH.Tools_V23.02.14_2.apk)
