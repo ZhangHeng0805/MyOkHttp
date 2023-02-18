@@ -38,6 +38,9 @@
 * 5、使用Java爬虫获取第三数据
 * 本项目使用的的服务器暂时没有上传开源
 # 软件截图
+
+* 更多APP截图 ![image](https://user-images.githubusercontent.com/74289276/219852601-1ddae8a4-5a7e-4bc2-b728-e03b2f044bab.png)
+
 <div>
 <p>
 <img height="400px" alt="主页菜单" src="https://user-images.githubusercontent.com/74289276/205024794-cbe43786-b62c-41b5-a777-0f94c589cb47.jpg"/>
