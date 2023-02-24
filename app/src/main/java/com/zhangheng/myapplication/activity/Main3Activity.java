@@ -34,6 +34,7 @@ import com.amap.api.location.AMapLocationListener;
 import com.google.gson.Gson;
 import com.zhangheng.bean.Message;
 import com.zhangheng.myapplication.R;
+import com.zhangheng.myapplication.bean.app.AppLife;
 import com.zhangheng.myapplication.getphoneMessage.GetPhoneInfo;
 import com.zhangheng.myapplication.getphoneMessage.GetPhoto;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
@@ -49,6 +50,7 @@ import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.RandomrUtil;
 import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhangheng.myapplication.util.TxtOperation;
+import com.zhangheng.util.ArrayUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -116,7 +118,7 @@ public class Main3Activity extends Activity {
         m3_iv_setting = findViewById(R.id.m3_iv_setting);
         m3_iv_service_refersh = findViewById(R.id.m3_iv_service_refersh);
         checkLife();//检查使用期限
-//        System.out.println("SHA1："+new SettingActivity().sHA1(context));
+//        System.out.println("SHA1："+SettingActivity.getAppSHA1(context));
         m3_iv_setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -207,14 +209,27 @@ public class Main3Activity extends Activity {
                     }
                 }
                 if (intent != null) {
-                    if (setting.getSetting(setting.flag_service_life,setting.default_is_service_life))
-                        startActivity(intent);
-                    else
-                        DialogUtil.dialog(context,"APP使用权限到期","对不起，您的APP使用权限到期，若需继续使用，请联系作者给您续期！");
+                    if (setting.getSetting(setting.flag_service_life, setting.default_is_service_life)) {
+                        String life_info = setting.getService_life_info();
+                        AppLife appLife = new Gson().fromJson(life_info, AppLife.class);
+                        Integer[] index = appLife.getIndex();
+                        if (index!=null) {
+                            Log.e(Tag,"index:"+index+",i:"+integer);
+                            if (ArrayUtil.exist(index,integer)){
+                                startActivity(intent);
+                            }else {
+                                DialogUtil.dialog(context, "功能使用限制", "对不起，该功能您暂时还无法使用，若有疑问请联系作者！");
+                            }
+                        }else {
+                            startActivity(intent);
+                        }
+                    } else
+                        DialogUtil.dialog(context, "APP使用权限到期", "对不起，您的APP使用权限到期，若需继续使用，请联系作者给您续期！");
                 }
             }
         });
     }
+
 
     public void getPhoto() {
         boolean b = ReadAndWrite.RequestPermissions(this, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -387,25 +402,27 @@ public class Main3Activity extends Activity {
     }
 
 
-    private void checkLife(){
+    private void checkLife() {
         String service_life_info = setting.getService_life_info();
-        JSONObject obj;
-        if (JSONUtil.isTypeJSON(service_life_info)){
-             obj= JSONUtil.parseObj(service_life_info);
-            long maxDay = DateUtil.between(new Date(), new Date(obj.getLong("createTime")), DateUnit.DAY);
-            if (maxDay>obj.getInt("maxDay")){
-                setting.setSetting(setting.flag_service_life,false);
-            }else {
-                setting.setSetting(setting.flag_service_life,true);
+        AppLife appLife;
+        Gson gson = new Gson();
+        if (JSONUtil.isTypeJSON(service_life_info)) {
+            appLife = gson.fromJson(service_life_info, AppLife.class);
+            long maxDay = DateUtil.between(new Date(), new Date(appLife.getCreateTime()), DateUnit.DAY);
+            if (maxDay > appLife.getMaxDay()) {
+                setting.setSetting(setting.flag_service_life, false);
+            } else {
+                setting.setSetting(setting.flag_service_life, true);
             }
-        }else {
-            obj = JSONUtil.createObj();
-            obj.set("createTime",new Date().getTime());
-            obj.set("maxDay",7);
-            setting.setSetting(setting.flag_service_life,true);
-            setting.setService_life_info(obj.toString());
+        } else {
+            appLife = new AppLife();
+            appLife.setCreateTime(new Date().getTime());
+            appLife.setMaxDay(7);
+            setting.setSetting(setting.flag_service_life, true);
+            setting.setService_life_info(gson.toJson(appLife));
         }
     }
+
 
 
     /**
