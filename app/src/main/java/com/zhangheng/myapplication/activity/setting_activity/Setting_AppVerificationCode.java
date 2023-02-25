@@ -75,6 +75,9 @@ public class Setting_AppVerificationCode extends SettingActivity {
                             case 'm':
                                 appRenewal(s);
                                 break;
+                            case 'u':
+                                updateUrl(s);
+                                break;
                             default:
                                 DialogUtil.dialog(context, "口令错误", "口令格式格式不存在");
                                 break;
@@ -91,8 +94,49 @@ public class Setting_AppVerificationCode extends SettingActivity {
     }
 
     /**
+     * 更新服务器地址
+     * u
+     * @param s
+     */
+    private void updateUrl(String s) {
+        String tap = TimeUtil.toTime(new Date(), "yyyyMMdd");
+        try {
+            String base64 = StrUtil.subAfter(s, ":", false);
+            if (Base64.isBase64(base64)){
+                String res = EncryptUtil.deBase64Str(base64);
+                if (res.indexOf("||")>0){
+                    String sign = StrUtil.subAfter(res, "||", true);
+                    String url = StrUtil.subBefore(res, "||", true);
+                    String myMd5 = EncryptUtil.getMyMd5(url + tap);
+                    if (myMd5.equals(sign)){
+                        if (Validator.isUrl(url)){
+                            url=url.endsWith("/")?url:url+"/";
+                            boolean b = setting.setMainUrl(url);
+                            if (b)
+                                DialogUtil.dialog(context, "设置成功", "服务地址更新成功！");
+                            else
+                                DialogUtil.dialog(context, "设置失败-u", "服务地址更新失败！");
+                        }else {
+                            DialogUtil.dialog(context, "设置失败-u", "口令中的地址格式错误");
+                        }
+                    }else {
+                        DialogUtil.dialog(context, "验证失败-u", "口令已过期或失效");
+                    }
+                }else {
+                    DialogUtil.dialog(context, "验证失败-u", "口令格式被篡改");
+                }
+            }else {
+                DialogUtil.dialog(context, "验证失败-u", "对不起，口令格式错误");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            DialogUtil.dialog(context, "验证错误-u", e.getMessage());
+        }
+    }
+
+    /**
      * APP续期
-     *
+     * m
      * @param s 验证口令
      */
     private void appRenewal(String s) {
@@ -130,19 +174,19 @@ public class Setting_AppVerificationCode extends SettingActivity {
                                     }
                                     appLife.setIndex(index);
                                 } else {
-                                    DialogUtil.dialog(context, "验证失败3", "口令被篡改");
+                                    DialogUtil.dialog(context, "验证失败3-m", "口令被篡改");
                                     return;
                                 }
                             } else {
-                                DialogUtil.dialog(context, "验证失败2", "口令被篡改");
+                                DialogUtil.dialog(context, "验证失败2-m", "口令被篡改");
                                 return;
                             }
                         } else {
-                            DialogUtil.dialog(context, "验证失败1", "口令被篡改");
+                            DialogUtil.dialog(context, "验证失败1-m", "口令被篡改");
                             return;
                         }
                     } else {
-                        DialogUtil.dialog(context, "验证失败0", "口令被篡改");
+                        DialogUtil.dialog(context, "验证失败0-m", "口令被篡改");
                         return;
                     }
                 }
@@ -157,34 +201,18 @@ public class Setting_AppVerificationCode extends SettingActivity {
                     event.content = json;
                     OkHttpUtil.postEvent(context, event);
                 } else
-                    DialogUtil.dialog(context, "验证失败", "抱歉，您的续签失败，请联系作者！");
+                    DialogUtil.dialog(context, "验证失败-m", "抱歉，您的续签失败，请联系作者！");
             } else {
-                DialogUtil.dialog(context, "验证失败", "口令错误或口令已失效");
+                DialogUtil.dialog(context, "验证失败-m", "口令错误或口令已失效");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            DialogUtil.dialog(context, "验证错误", e.getMessage());
+            DialogUtil.dialog(context, "验证错误-m", e.getMessage());
         }
     }
 
-    public static void main(String[] args) throws Exception {
-        pwd1();
-    }
 
-    private static void pwd1() throws Exception {
-        String s = TimeUtil.toTime(new Date(), "yyyyMMddHH");
-        String a = "3,5,6,7";
-        String v = "V23.02.25";
-        boolean is = false;
-        String myMd51 = EncryptUtil.getMyMd5(s + v + is);
-        if (is) {
-            String myMd52 = EncryptUtil.getMyMd5(a + s);
-            String b = "m:" + myMd51 + ":" + EncryptUtil.enBase64Str(a + "||" + myMd52);
-            System.out.println(b);
-        } else {
-            System.out.println("m:" + myMd51);
-        }
-    }
+
 
     @Override
     protected String makePwd() throws Exception {
