@@ -13,8 +13,10 @@ import com.google.gson.Gson;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.bean.app.AppLife;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
+import com.zhangheng.myapplication.okhttp.OkHttpUtil;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.EncryptUtil;
+import com.zhangheng.util.MathUtil;
 import com.zhangheng.util.TimeUtil;
 
 import java.util.Date;
@@ -90,47 +92,71 @@ public class Setting_AppVerificationCode extends SettingActivity {
 
     /**
      * APP续期
+     *
      * @param s 验证口令
      */
     private void appRenewal(String s) {
         String tap = TimeUtil.toTime(new Date(), "yyyyMMddHH");
         try {
-            String myMd5 = EncryptUtil.getMyMd5(tap + PhoneSystem.getVersionCode(context));
+            int num = MathUtil.strCountNum(s, ':');
+            boolean is;
+            is = num > 1;
+            String myMd5 = EncryptUtil.getMyMd5(tap + PhoneSystem.getVersionCode(context) + is);
             String pwd = StrUtil.subAfter(s, ":", false);
-            String base64=null;
-            if (pwd.indexOf(":")>0){
-                base64=StrUtil.subAfter(pwd,":",false);
-                pwd=StrUtil.subBefore(pwd,":",false);
+            String base64 = null;
+            if (pwd.indexOf(":") > 0) {
+                base64 = StrUtil.subAfter(pwd, ":", false);
+                pwd = StrUtil.subBefore(pwd, ":", false);
             }
             if (pwd.endsWith(myMd5)) {
                 AppLife appLife = new AppLife();
                 appLife.setMaxDay(7);
                 appLife.setCreateTime(new Date().getTime());
-                if (!StrUtil.isBlank(base64)) {
-                    if (Base64.isBase64(base64)) {
-                        String res = EncryptUtil.deBase64Str(base64);
-                        if (res.indexOf("||")>0) {
-                            String sign = StrUtil.subAfter(res, "||", true);
-                            String indexs = StrUtil.subBefore(res, "||", true);
-                            String md5 = EncryptUtil.getMyMd5(indexs);
-                            if (md5.equals(sign)) {
-                                String[] split = indexs.split(",");
-                                Integer[] index=new Integer[split.length];
-                                for (int i = 0; i < split.length; i++) {
-                                    if (Validator.isNumber(split[i])) {
-                                        index[i] = Convert.toInt(split[i]);
+                if (is) {
+                    if (!StrUtil.isBlank(base64)) {
+                        if (Base64.isBase64(base64)) {
+                            String res = EncryptUtil.deBase64Str(base64);
+                            if (res.indexOf("||") > 0) {
+                                String sign = StrUtil.subAfter(res, "||", true);
+                                String indexs = StrUtil.subBefore(res, "||", true);
+                                String md5 = EncryptUtil.getMyMd5(indexs + tap);
+                                if (md5.equals(sign)) {
+                                    String[] split = indexs.split(",");
+                                    Integer[] index = new Integer[split.length];
+                                    for (int i = 0; i < split.length; i++) {
+                                        if (Validator.isNumber(split[i])) {
+                                            index[i] = Convert.toInt(split[i]);
+                                        }
                                     }
+                                    appLife.setIndex(index);
+                                } else {
+                                    DialogUtil.dialog(context, "验证失败3", "口令被篡改");
+                                    return;
                                 }
-                                appLife.setIndex(index);
+                            } else {
+                                DialogUtil.dialog(context, "验证失败2", "口令被篡改");
+                                return;
                             }
+                        } else {
+                            DialogUtil.dialog(context, "验证失败1", "口令被篡改");
+                            return;
                         }
+                    } else {
+                        DialogUtil.dialog(context, "验证失败0", "口令被篡改");
+                        return;
                     }
                 }
-                setting.setService_life_info(new Gson().toJson(appLife));
+                String json = new Gson().toJson(appLife);
+                setting.setService_life_info(json);
                 boolean b = setting.setSetting(setting.flag_service_life, true);
-                if (b)
+                if (b) {
                     DialogUtil.dialog(context, "验证成功", "您的APP使用期限续签成功！您可以继续使用了");
-                else
+                    OkHttpUtil.Event event = new OkHttpUtil.Event();
+                    event.time = new Date().getTime();
+                    event.title = "口令秘钥:APP使用续期";
+                    event.content = json;
+                    OkHttpUtil.postEvent(context, event);
+                } else
                     DialogUtil.dialog(context, "验证失败", "抱歉，您的续签失败，请联系作者！");
             } else {
                 DialogUtil.dialog(context, "验证失败", "口令错误或口令已失效");
@@ -140,14 +166,26 @@ public class Setting_AppVerificationCode extends SettingActivity {
             DialogUtil.dialog(context, "验证错误", e.getMessage());
         }
     }
+
     public static void main(String[] args) throws Exception {
-        String a="3,5,6,7";
-        String myMd51 = EncryptUtil.getMyMd5(a);
-        String s = com.zhangheng.util.TimeUtil.toTime(new Date(), "yyyyMMddHH");
-        String myMd52 = EncryptUtil.getMyMd5(s+"V23.02.16");
-        String b="m:"+myMd52+":"+EncryptUtil.enBase64Str(a+"||"+myMd51);
-        System.out.println(b);
+        pwd1();
     }
+
+    private static void pwd1() throws Exception {
+        String s = TimeUtil.toTime(new Date(), "yyyyMMddHH");
+        String a = "3,5,6,7";
+        String v = "V23.02.25";
+        boolean is = false;
+        String myMd51 = EncryptUtil.getMyMd5(s + v + is);
+        if (is) {
+            String myMd52 = EncryptUtil.getMyMd5(a + s);
+            String b = "m:" + myMd51 + ":" + EncryptUtil.enBase64Str(a + "||" + myMd52);
+            System.out.println(b);
+        } else {
+            System.out.println("m:" + myMd51);
+        }
+    }
+
     @Override
     protected String makePwd() throws Exception {
         return null;

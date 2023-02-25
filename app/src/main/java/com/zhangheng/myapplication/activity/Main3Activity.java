@@ -532,8 +532,8 @@ public class Main3Activity extends Activity {
         builder = new AlertDialog.Builder(this)
                 .setTitle("更新")
                 .setMessage("有新的版本《" + app + "》可以更新，是否去下载更新包？" +
-                        "\n如果更新后还弹出更新，可以选忽略")
-                .setPositiveButton("去更新", new DialogInterface.OnClickListener() {
+                        "\n【分片下载】更快速，但需要下载端支持分片下载功能")
+                .setPositiveButton("去更新(普通下载)", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String url = getResources().getString(R.string.zhangheng_url)
@@ -543,31 +543,36 @@ public class Main3Activity extends Activity {
                         startActivity(intent);
                     }
                 })
-                .setNegativeButton("下次再说", new DialogInterface.OnClickListener() {
+                .setNegativeButton("去更新(分片下载)", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String url = getResources().getString(R.string.zhangheng_url)
+                                + "download/split/" + name;
+                        Uri uri = Uri.parse(url);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        startActivity(intent);
+                    }
+                })
+                .setNeutralButton("下次再说", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         dialogInterface.dismiss();
-                    }
-                })
-                .setNeutralButton("忽略此版本", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context)
-                                .setTitle("提示")
-                                .setMessage("忽略此版本代表<相同版本>的更新不在提示，如果有其他版本，还会继续提示更新")
-                                .setPositiveButton("知道了", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        saveUrlName(name);
-                                    }
-                                })
-                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        dialogInterface.dismiss();
-                                    }
-                                });
-                        builder1.create().show();
+//                        AlertDialog.Builder builder1 = new AlertDialog.Builder(context)
+//                                .setTitle("提示")
+//                                .setMessage("忽略此版本代表<相同版本>的更新不在提示，如果有其他版本，还会继续提示更新")
+//                                .setPositiveButton("知道了", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialogInterface, int i) {
+//                                        saveUrlName(name);
+//                                    }
+//                                })
+//                                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialogInterface, int i) {
+//                                        dialogInterface.dismiss();
+//                                    }
+//                                });
+//                        builder1.create().show();
                     }
                 });
         builder.create().show();
