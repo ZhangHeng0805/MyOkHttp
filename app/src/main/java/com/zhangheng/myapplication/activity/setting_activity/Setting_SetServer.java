@@ -2,7 +2,6 @@ package com.zhangheng.myapplication.activity.setting_activity;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,12 +15,7 @@ import com.zhangheng.myapplication.util.EncryptUtil;
 import com.zhangheng.util.FormatUtil;
 import com.zhangheng.util.TimeUtil;
 
-import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import cn.hutool.json.JSONUtil;
 
 public class Setting_SetServer extends SettingActivity {
     public Setting_SetServer(Context context) {
@@ -70,16 +64,11 @@ public class Setting_SetServer extends SettingActivity {
                             if (setting.setMainUrl(main_url)) {
                                 DialogUtil.dialog(context, "服务器配置设置成功", "请重启App使设置生效!");
                                 dialog.dismiss();
-                                Map<String, Object> map = new HashMap<>();
-                                map.put("funName", "服务器地址修改[" + Tag + ".setServerAddress()]成功");
-                                map.put("funPath", main_url);
-                                map.put("time", new Date().getTime());
-                                String path = OkHttpUtil.URL_postPage_Function_Path;
-                                try {
-                                    OkHttpUtil.postPage(context, url + path, JSONUtil.toJsonStr(map));
-                                } catch (IOException e) {
-                                    Log.e(Tag + "[" + path + "]", e.toString());
-                                }
+                                OkHttpUtil.Event event = new OkHttpUtil.Event();
+                                event.time = new Date().getTime();
+                                event.title = "服务器配置设置成功";
+                                event.content = "APP服务地址："+url;
+                                OkHttpUtil.postEvent(context, event);
                             } else {
                                 Toast.makeText(context, "服务器地址设置失败！", Toast.LENGTH_SHORT).show();
                             }
