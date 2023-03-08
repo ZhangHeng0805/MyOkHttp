@@ -1,13 +1,21 @@
 package com.zhangheng.myapplication.bean.app;
 
 
-import java.util.Arrays;
+import com.zhangheng.myapplication.util.EncryptUtil;
+import com.zhangheng.util.TimeUtil;
+
+import java.sql.Date;
+
+import cn.hutool.core.util.ArrayUtil;
 
 public class AppLife {
 
     private Long createTime;
-    private int maxDay;
+    private Integer maxDay;
     private Integer[] index;
+    private String appId;
+
+    private String sign;
 
     public Long getCreateTime() {
         return createTime;
@@ -17,11 +25,11 @@ public class AppLife {
         this.createTime = createTime;
     }
 
-    public int getMaxDay() {
+    public Integer getMaxDay() {
         return maxDay;
     }
 
-    public void setMaxDay(int maxDay) {
+    public void setMaxDay(Integer maxDay) {
         this.maxDay = maxDay;
     }
 
@@ -33,12 +41,29 @@ public class AppLife {
         this.index = index;
     }
 
-    @Override
-    public String toString() {
-        return "AppLife{" +
-                "createTime=" + createTime +
-                ", maxDay=" + maxDay +
-                ", index=" + Arrays.toString(index) +
-                '}';
+    public String getSign() {
+        return sign;
     }
+
+    public void setSign(String sign) {
+        this.sign = sign;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
+    }
+
+    public String createSign() throws Exception {
+        String token=createTime
+                +maxDay
+                +ArrayUtil.toString(index)
+                +appId
+                ;
+        return EncryptUtil.getSignature(token, TimeUtil.toTime(new Date(createTime),TimeUtil.enDateFormat_Detailed));
+    }
+
 }

@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import com.google.gson.Gson;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.bean.app.AppLife;
+import com.zhangheng.myapplication.getphoneMessage.GetPhoneInfo;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
 import com.zhangheng.myapplication.util.DialogUtil;
@@ -23,8 +24,11 @@ import java.util.Date;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Validator;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 
 public class Setting_AppVerificationCode extends SettingActivity {
     public Setting_AppVerificationCode(Context context) {
@@ -73,7 +77,8 @@ public class Setting_AppVerificationCode extends SettingActivity {
                         char flag = s.charAt(0);
                         switch (flag) {
                             case 'm':
-                                appRenewal(s);
+                                //appRenewal(s);
+                                appRenewal2(s);
                                 break;
                             case 'u':
                                 updateUrl(s);
@@ -143,7 +148,64 @@ public class Setting_AppVerificationCode extends SettingActivity {
     /**
      * APP续期
      * m
-     *
+     * V23.03.08
+     * @param s 验证口令
+     */
+    private void appRenewal2(String s){
+        try {
+            String base64 = StrUtil.subAfter(s, ":", false);
+            if (Base64.isBase64(base64)){
+                String json = EncryptUtil.deBase64Str(base64);
+                if (JSONUtil.isTypeJSON(json)){
+                    AppLife appLife = new Gson().fromJson(json, AppLife.class);
+                    String sign = appLife.createSign();
+                    if (sign.equals(appLife.getSign())){
+                        long between = DateUtil.between(new Date(appLife.getCreateTime()), new Date(), DateUnit.HOUR);
+                        if (between<=1){
+                            if (!StrUtil.isBlank(appLife.getAppId())){
+                                if (!GetPhoneInfo.getID(context).equals(appLife.getAppId())){
+                                    DialogUtil.dialog(context, "验证失败-m", "抱歉，该口令只能特定用户有权使用，您无法使用！");
+                                    return;
+                                }
+                            }
+                            if (appLife.getMaxDay()==null)
+                                appLife.setMaxDay(7);
+                            json = new Gson().toJson(appLife);
+                            setting.setService_life_info(json);
+                            boolean b = setting.setSetting(setting.flag_service_life, true);
+                            if (b) {
+                                DialogUtil.dialog(context, "验证成功", "您的APP使用期限续签成功！您可以继续使用"+appLife.getMaxDay()+"天了");
+                                OkHttpUtil.Event event = new OkHttpUtil.Event();
+                                event.time = new Date().getTime();
+                                event.title = "口令秘钥:APP使用续期";
+                                event.content = json;
+                                OkHttpUtil.postEvent(context, event);
+                            } else
+                                DialogUtil.dialog(context, "验证失败-m", "抱歉，您的续签失败，请联系作者！");
+                        }else {
+                            DialogUtil.dialog(context, "验证失败-m", "口令已过期失效");
+                        }
+                    }else {
+                        DialogUtil.dialog(context, "验证失败-m", "口令内容被篡改");
+                    }
+                }else {
+                    DialogUtil.dialog(context, "验证失败1-m", "口令格式错误");
+                    return;
+                }
+            }else {
+                DialogUtil.dialog(context, "验证失败0-m", "口令格式错误");
+                return;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            DialogUtil.dialog(context, "验证错误-m", e.getMessage());
+        }
+    }
+
+    /**
+     * APP续期
+     * m
+     * V23.02.25
      * @param s 验证口令
      */
     private void appRenewal(String s) {

@@ -36,6 +36,7 @@ public class SystemUtil {
      * @param activity
      */
     public static void closeInput(Activity activity) {
+
         try {
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             boolean isOpen = imm.isActive();

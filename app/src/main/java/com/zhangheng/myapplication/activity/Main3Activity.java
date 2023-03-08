@@ -806,7 +806,7 @@ public class Main3Activity extends Activity {
     public void getLocation() {
         if (dialogUtil == null)
             dialogUtil = new DialogUtil(context);
-        dialogUtil.createProgressDialog();
+        dialogUtil.createProgressDialog("初始化加载中...");
         //初始化定位
         mLocationClient = new AMapLocationClient(getApplicationContext());
         //设置定位回调监听
