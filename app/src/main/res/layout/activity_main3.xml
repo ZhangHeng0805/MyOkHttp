@@ -55,15 +55,20 @@
                     android:tooltipText="服务刷新"
                     />
             </LinearLayout>
-            <TextView
-                android:id="@+id/m3_tv_ipAddress"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:textIsSelectable="true"
-                android:layout_weight="1"
-                android:text="应用版本号"
-                android:paddingBottom="0dp"/>
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/m3_tv_ipAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:textIsSelectable="true"
+                    android:layout_weight="1"
+                    android:text="应用版本号"
+                    android:paddingBottom="0dp"/>
+
+            </LinearLayout>
         </LinearLayout>
         <ImageView
             android:id="@+id/m3_iv_setting"

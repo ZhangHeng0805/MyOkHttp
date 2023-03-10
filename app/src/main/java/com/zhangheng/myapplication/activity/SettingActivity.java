@@ -25,6 +25,7 @@ import com.zhangheng.myapplication.activity.setting_activity.Setting_QQGroup;
 import com.zhangheng.myapplication.activity.setting_activity.Setting_SetServer;
 import com.zhangheng.myapplication.activity.setting_activity.Setting_SetService;
 import com.zhangheng.myapplication.activity.setting_activity.Setting_WXOfficialAccount;
+import com.zhangheng.myapplication.getphoneMessage.GetPhoneInfo;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
 import com.zhangheng.myapplication.setting.ServerSetting;
 
@@ -43,6 +44,7 @@ public class SettingActivity extends Activity {
 
     private ImageView setting_iv_back;
     private ListView setting_lv_meun;
+    private TextView setting_tv_phoneId;
 
     private ServerSetting setting;
 
@@ -64,6 +66,8 @@ public class SettingActivity extends Activity {
     private void initControl() {
         setting_iv_back = findViewById(R.id.setting_iv_back);
         setting_lv_meun = findViewById(R.id.setting_lv_meun);
+        setting_tv_phoneId = findViewById(R.id.setting_tv_phoneId);
+        setting_tv_phoneId.setText("ID码：" + GetPhoneInfo.getID(context));
     }
 
     private final String[] setting_meun = {
