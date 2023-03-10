@@ -88,5 +88,25 @@ public class AndroidFileUtil {
             {".zip", "application/zip"},
             {"", "*/*"}
     };
-
+    /**
+     * 文件大小格式化
+     * @param size 文件字节
+     * @return 格式化字符串
+     */
+    public static String fileSizeFormat(Long size) {
+        double length = Double.valueOf(String.valueOf(size));
+        String[] unit = new String[]{"B", "KB", "MB", "GB", "TB"};
+        int i = 0;
+        while (true) {
+            if (length < 1024) {
+                if (i == 0)
+                    return length + unit[i];
+                else
+                    return Math.round(length * 100) / 100.0+unit[i];
+            } else {
+                length = length / 1024.0;
+            }
+            i++;
+        }
+    }
 }

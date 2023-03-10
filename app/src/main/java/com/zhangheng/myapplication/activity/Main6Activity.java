@@ -17,12 +17,15 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.ViewTarget;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.util.AndroidImageUtil;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.LocalFileTool;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.RandomrUtil;
+import com.zhangheng.util.MathUtil;
 import com.zhangheng.util.TimeUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.BitmapCallback;
@@ -209,6 +212,7 @@ public class Main6Activity extends AppCompatActivity implements View.OnClickList
                                 url = getString(R.string.image_url);
                             }
                             editText.setText(url);
+                            loadImage(url);
                         } catch (Exception e) {
                             Log.e(Tag + "图片地址刷新"+r, e.toString());
                             DialogUtil.dialog(context, "加载失败", OkHttpMessageUtil.error(e));
@@ -230,16 +234,31 @@ public class Main6Activity extends AppCompatActivity implements View.OnClickList
                 imageView.setImageBitmap(null);
                 String url = editText.getText().toString();
                 textView.setVisibility(View.GONE);
-                if (!Validator.isUrl(url)) {
-                    Toast.makeText(context, "请输入正确网址", Toast.LENGTH_SHORT).show();
-                } else {
-                    getImage(url);
-                }
+                loadImage(url);
                 break;
         }
     }
+    public void loadImage(String url){
+        if (!Validator.isUrl(url)) {
+            Toast.makeText(context, "请输入正确网址", Toast.LENGTH_SHORT).show();
+        } else {
+                    getImage(url);
+//            getImage2(url);
+        }
+    }
 
+    public void getImage2(String url){
+        ViewTarget<ImageView, Drawable> into = Glide.with(context)
+                .load(url)
+//                .fitCenter()
+                .placeholder(R.drawable.loading2)
+                .error(R.drawable.icon)
+                .into(imageView);
+
+    }
     public void getImage(String url) {
+        DialogUtil dialogUtil = new DialogUtil(context);
+        dialogUtil.createProgressDialog();
         OkHttpUtils
                 .get()
                 .url(url)
@@ -248,6 +267,7 @@ public class Main6Activity extends AppCompatActivity implements View.OnClickList
                 .execute(new BitmapCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
+                        dialogUtil.closeProgressDialog();
                         e.printStackTrace();
                         textView.setVisibility(View.VISIBLE);
                         textView.setText("错误：" + OkHttpMessageUtil.error(e));
@@ -255,6 +275,7 @@ public class Main6Activity extends AppCompatActivity implements View.OnClickList
 
                     @Override
                     public void onResponse(Bitmap response, int id) {
+                        dialogUtil.closeProgressDialog();
                         imageView.setImageBitmap(response);
                         progressBar.setProgress((100));
                         textView.setVisibility(View.VISIBLE);
@@ -264,6 +285,7 @@ public class Main6Activity extends AppCompatActivity implements View.OnClickList
 
                     @Override
                     public void inProgress(float progress, long total, int id) {
+                        System.out.println(progress+" - "+total+" - "+ MathUtil.twoDecimalPlaces(progress/total));
                         super.inProgress(progress, total, id);
                         progressBar.setProgress((int) (progress * 100));
                         tv_pro.setText((int) (progress * 100) + "%");

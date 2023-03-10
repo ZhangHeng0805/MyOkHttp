@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat;
 import com.zhangheng.file.FiletypeUtil;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
+import com.zhangheng.myapplication.util.AndroidFileUtil;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.LocalFileTool;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
@@ -133,13 +134,18 @@ public class Main4Activity extends AppCompatActivity implements View.OnClickList
                         @Override
                         public void onResponse(File response, int id) {
                             Log.e("路径", "response:" + response.getAbsolutePath());
-                            textView.setText("下载完成\n存储路径：" + response.getAbsolutePath().replace(LocalFileTool.BasePath,"内部存储"));
+                            textView.setText("下载完成!\n" +
+                                    "- 文件大小：" + AndroidFileUtil.fileSizeFormat(response.length())+
+                                    "\n- 存储路径：" + response.getAbsolutePath().replace(LocalFileTool.BasePath,"内部存储"));
                             Main4Activity.this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + response.getAbsolutePath())));
                         }
 
                         @Override
                         public void inProgress(float progress, long total, int id) {
 //                            super.inProgress(progress, total, id);
+//                            System.out.println(progress+" - "+total+" - "+ MathUtil.twoDecimalPlaces(progress/total));
+                            textView.setText("- 下载大小："+AndroidFileUtil.fileSizeFormat((long) (total*progress))+" / "+AndroidFileUtil.fileSizeFormat(total));
+
                             progressBar.setProgress((int) (progress * 100));
                             textView_pro.setText((int) (progress * 100) + "%");
                             if (progress == 1) {

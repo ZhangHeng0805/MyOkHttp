@@ -168,62 +168,73 @@ public class Main26Activity extends AppCompatActivity {
     }
 
     private void getPlay(String text, String id) {
-        String type;
-        Integer i = Convert.toInt(id);
-        if (i >= 1 && i <= 20) {
-            type = "xunfei";
-        } else if (i > 20 && i <= 28) {
-            type = "baidu";
-            id = (i - 20) + "";
-        } else {
-            DialogUtil.dialog(context, "语音类型错误", "语音类型不存在！");
-            return;
-        }
+        url = TextToSpeech.data.get(text);
+        if (StrUtil.isBlank(url)) {
+            String type;
+            Integer i = Convert.toInt(id);
+            if (i >= 1 && i <= 20) {
+                type = "xunfei";
+            } else if (i > 20 && i <= 28) {
+                type = "baidu";
+                id = (i - 20) + "";
+            } else {
+                DialogUtil.dialog(context, "语音类型错误", "语音类型不存在！");
+                return;
+            }
 
-        DialogUtil dialogUtil = new DialogUtil(context);
-        dialogUtil.createProgressDialog();
-        GetBuilder builder = OkHttpUtils.get()
-                .url("https://xiaoapi.cn/API/zs_tts.php")
-                .addParams("type", type)//可为baidu、youdao、xunfei（即为百度、有道、讯飞）
-                .addParams("id", id)//语音类型1-20(20为英文专用语音)
-                .addParams("msg", text);
-        builder.build()
-                .execute(new StringCallback() {
-                    @Override
-                    public void onError(Call call, Exception e, int id) {
-                        dialogUtil.closeProgressDialog();
-                        m26_LL_btn.setVisibility(View.GONE);
-                        Log.e(Tag, e.toString());
-                        DialogUtil.dialog(context, "播放错误", OkHttpMessageUtil.error(e));
-                    }
-
-                    @Override
-                    public void onResponse(String response, int i1) {
-                        try {
-                            Log.d(Tag + "音频", "response:" + response);
-                            if (JSONUtil.isTypeJSON(response)) {
-                                JSONObject obj = JSONUtil.parseObj(response);
-                                if (obj.getInt("code").equals(200)) {
-                                    url = obj.getStr("tts");
-                                }else {
-                                    DialogUtil.dialog(context, "播放失败", obj.getStr("msg"));
-                                    return;
-                                }
-                                Log.d(Tag + "音频地址["+obj.getStr("name")+"]：", url);
-                                plagAudio(url);
-                            } else {
-                                DialogUtil.dialog(context, "播放失败", response);
-                                m26_LL_btn.setVisibility(View.GONE);
-                            }
-                        } catch (Exception e) {
-                            DialogUtil.dialog(context, "播放失败", "对不起，此语音暂时无法播放");
-                            e.printStackTrace();
-                            m26_LL_btn.setVisibility(View.GONE);
-                        } finally {
+            DialogUtil dialogUtil = new DialogUtil(context);
+            dialogUtil.createProgressDialog();
+            GetBuilder builder = OkHttpUtils.get()
+                    .url("https://xiaoapi.cn/API/zs_tts.php")
+                    .addParams("type", type)//可为baidu、youdao、xunfei（即为百度、有道、讯飞）
+                    .addParams("id", id)//语音类型1-20(20为英文专用语音)
+                    .addParams("msg", text);
+            builder.build()
+                    .execute(new StringCallback() {
+                        @Override
+                        public void onError(Call call, Exception e, int id) {
                             dialogUtil.closeProgressDialog();
+                            m26_LL_btn.setVisibility(View.GONE);
+                            Log.e(Tag, e.toString());
+                            DialogUtil.dialog(context, "播放错误", OkHttpMessageUtil.error(e));
                         }
-                    }
-                });
+
+                        @Override
+                        public void onResponse(String response, int i1) {
+                            try {
+                                Log.d(Tag + "音频", "response:" + response);
+                                if (JSONUtil.isTypeJSON(response)) {
+                                    JSONObject obj = JSONUtil.parseObj(response);
+                                    if (obj.getInt("code").equals(200)) {
+                                        url = obj.getStr("tts");
+                                    } else {
+                                        DialogUtil.dialog(context, "播放失败", obj.getStr("msg"));
+                                        return;
+                                    }
+                                    Log.d(Tag + "音频地址[" + obj.getStr("name") + "]：", url);
+                                    TextToSpeech.data.put(text,url);
+                                    plagAudio(url);
+                                } else {
+                                    DialogUtil.dialog(context, "播放失败", response);
+                                    m26_LL_btn.setVisibility(View.GONE);
+                                }
+                            } catch (Exception e) {
+                                DialogUtil.dialog(context, "播放失败", "对不起，此语音暂时无法播放");
+                                e.printStackTrace();
+                                m26_LL_btn.setVisibility(View.GONE);
+                            } finally {
+                                dialogUtil.closeProgressDialog();
+                            }
+                        }
+                    });
+        }else {
+            try {
+                plagAudio(url);
+            } catch (IOException e) {
+                DialogUtil.dialog(context, "播放失败", "对不起，此语音暂时无法播放");
+                e.printStackTrace();
+            }
+        }
 
     }
 

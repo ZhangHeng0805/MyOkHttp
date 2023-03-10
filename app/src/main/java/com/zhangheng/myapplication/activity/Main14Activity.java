@@ -17,6 +17,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.zhangheng.myapplication.R;
+import com.zhangheng.myapplication.reptile.TextToSpeech;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.myapplication.util.RandomrUtil;
@@ -211,7 +212,8 @@ public class Main14Activity extends AppCompatActivity {
                     }else {
                         id="20";
                     }
-                    getPlay(text,id);
+//                    getPlay(text,id);
+                    new TextToSpeech(context).getPlay(text,id);
 //                    String url="https://api.vvhan.com/api/song?txt="+text;
                 } else {
                     m14_iv_bofang.setVisibility(View.GONE);

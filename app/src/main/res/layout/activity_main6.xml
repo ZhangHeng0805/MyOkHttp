@@ -56,6 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:visibility="gone"
         >
         <ProgressBar
             android:id="@+id/progress_img"
@@ -88,7 +89,8 @@
             android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
             android:scaleType="fitCenter"
-            android:layout_height="wrap_content"/>
+            android:src="@drawable/icon"
+            android:layout_height="match_parent"/>
         <TextView
             android:id="@+id/m6_txt_img"
             android:layout_marginTop="15dp"
