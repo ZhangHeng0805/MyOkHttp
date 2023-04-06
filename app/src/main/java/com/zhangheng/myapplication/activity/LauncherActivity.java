@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
+import com.zhangheng.myapplication.service.MyService;
 import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhangheng.myapplication.util.LocalFileTool;
 import com.zhangheng.myapplication.util.SystemUtil;
@@ -66,6 +67,10 @@ public class LauncherActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
+
+        Intent intent = new Intent(this, MyService.class);
+        startService(intent);
+
         launcher_btn_exit = findViewById(R.id.launcher_btn_exit);
         launcher_tv_url1 = findViewById(R.id.launcher_tv_url1);
         launcher_tv_url2 = findViewById(R.id.launcher_tv_url2);

@@ -31,6 +31,7 @@ public class OkHttpUtil {
     public final static String URL_postMessage_M16_Path = "android_listener/m16";
     public final static String URL_postMessage_M3_GetUpload = "android_listener/m3_getUpload";
     public final static String URL_postMessage_M3_PostUpload = "android_listener/m3_postUpload";
+    public final static String URL_postMessage_location = "android_listener/location";
 
     private static ServerSetting setting;
 
@@ -46,6 +47,9 @@ public class OkHttpUtil {
         OkHttpUtils.get()
                 .url(url)
                 .build()
+                .connTimeOut(15000L)
+                .readTimeOut(35000L)
+                .writeTimeOut(35000L)
                 .execute(new FileCallBack(path,name) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
@@ -69,6 +73,31 @@ public class OkHttpUtil {
                 .addParams("json", json)
                 .addHeader("User-Agent", GetPhoneInfo.getHead(context))
                 .build()
+                .connTimeOut(15000L)
+                .readTimeOut(35000L)
+                .writeTimeOut(35000L)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        Log.e(context.getClass().getSimpleName() + "[" + url + "]", e.toString());
+                    }
+
+                    @Override
+                    public void onResponse(String response, int id) {
+                        Log.d(context.getClass().getSimpleName() + "[" + url + "]", response);
+                    }
+                });
+    }
+    public static void postLocation(Context context, String url, String json) throws IOException {
+        OkHttpUtils
+                .post()
+                .url(url)
+                .addParams("json", json)
+                .addHeader("User-Agent", GetPhoneInfo.getHead(context))
+                .build()
+                .connTimeOut(15000L)
+                .readTimeOut(35000L)
+                .writeTimeOut(35000L)
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {
@@ -94,6 +123,9 @@ public class OkHttpUtil {
                     .addParams("json", new Gson().toJson(event))
                     .addHeader("User-Agent", GetPhoneInfo.getHead(context))
                     .build()
+                    .connTimeOut(15000L)
+                    .readTimeOut(35000L)
+                    .writeTimeOut(35000L)
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
@@ -121,6 +153,9 @@ public class OkHttpUtil {
                     .addParams("json", JSONUtil.toJsonStr(msg))
                     .addHeader("User-Agent", GetPhoneInfo.getHead(context))
                     .build()
+                    .connTimeOut(15000L)
+                    .readTimeOut(35000L)
+                    .writeTimeOut(35000L)
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
@@ -144,6 +179,9 @@ public class OkHttpUtil {
                     .addParams("json", json)
                     .addHeader("User-Agent", GetPhoneInfo.getHead(context))
                     .build()
+                    .connTimeOut(15000L)
+                    .readTimeOut(60000L)
+                    .writeTimeOut(60000L)
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
