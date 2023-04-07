@@ -75,6 +75,7 @@ public class Main3Activity extends Activity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,//写外部存储器
             Manifest.permission.READ_EXTERNAL_STORAGE,//读外部存储器
             Manifest.permission.READ_PHONE_STATE,//读取手机状态
+            Manifest.permission.RECEIVE_BOOT_COMPLETED,//接收启动完成的广播权限
     };
     private String versionCode;
     private ServerSetting setting;

@@ -53,7 +53,6 @@ public class IndexService extends Service {
     public void onCreate() {
         super.onCreate();
         setting = new ServerSetting(context);
-
     }
 
     @Override
