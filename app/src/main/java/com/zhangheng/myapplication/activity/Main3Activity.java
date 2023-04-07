@@ -141,10 +141,9 @@ public class Main3Activity extends Activity {
         setAdapter();
         versionCode = PhoneSystem.getVersionCode(this);
         m3_tv_ipAddress.setText("应用版本号：" + versionCode);
-
         Intent intent = new Intent(this, IndexService.class);
         startService(intent);
-        getLocation();
+        getupdatelist("");
     }
 
     private void setAdapter() {

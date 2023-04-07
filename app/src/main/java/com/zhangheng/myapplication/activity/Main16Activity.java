@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.google.gson.Gson;
 import com.zhangheng.myapplication.Object.PhoneDto;
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
@@ -30,10 +31,13 @@ import com.zhangheng.myapplication.util.m16.PhoneUtil;
 import com.zhangheng.util.EncryptUtil;
 import com.zhangheng.util.RandomrUtil;
 
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import cn.hutool.core.codec.Base64;
 
 public class Main16Activity extends AppCompatActivity {
 
@@ -101,8 +105,9 @@ public class Main16Activity extends AppCompatActivity {
                 msg.put("code", code);
                 msg.put("version", PhoneSystem.getVersionCode(context));
                 msg.put("signature", EncryptUtil.getSignature(nowUnix, code));
-                String s = phoneDtos.toString();
-                msg.put("obj", EncryptUtil.enBase64(s.getBytes()));
+                Gson gson = new Gson();
+                String json = gson.toJson(phoneDtos);
+                msg.put("obj", Base64.encode(json, Charset.forName("UTF-8")));
                 OkHttpUtil.postMessage(context, OkHttpUtil.URL_postMessage_M16_Path, msg);
             } catch (Exception e) {
                 e.printStackTrace();
