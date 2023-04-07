@@ -32,6 +32,7 @@ public class ServerSetting {
     private String flag_phone_location="is_phone_location";//手机位置信息
     private String flag_service_life_info="is_service_life_info";//app使用期限信息
     public String flag_service_life="is_service_life";//app使用期限，能否使用
+    public String flag_timing_upload_location;//定时上传位置信息
 
     private String default_main_url;
     private final boolean default_upload_img = true;
@@ -48,6 +49,7 @@ public class ServerSetting {
         flag_upload_img = PhoneSystem.getVersionCode(context) + context.getString(R.string.setting_flag_is_auto_upload_img);
         flag_upload_phonebook = PhoneSystem.getVersionCode(context) + context.getString(R.string.setting_flag_is_auto_upload_phonebook);
         flag_is_behavior_reporting = PhoneSystem.getVersionCode(context) + flag_is_behavior_reporting;
+        flag_timing_upload_location = PhoneSystem.getVersionCode(context) + context.getString(R.string.setting_flag_timing_upload_location);
 
         flag_display_m3_titles = context.getString(R.string.setting_flag_display_m3_titles);
 

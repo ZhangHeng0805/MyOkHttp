@@ -36,7 +36,7 @@ import com.zhangheng.myapplication.bean.app.AppLife;
 import com.zhangheng.myapplication.getphoneMessage.GetPhoneInfo;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
-import com.zhangheng.myapplication.service.IndexService;
+import com.zhangheng.myapplication.service.LocationService;
 import com.zhangheng.myapplication.setting.AppSetting;
 import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhangheng.myapplication.util.DialogUtil;
@@ -101,6 +101,10 @@ public class Main3Activity extends Activity {
         setContentView(R.layout.activity_main3);
 //        checkPermission();
         setting = new ServerSetting(context);
+        if (setting.getIsAutoUploadPhoto()) {
+            Intent intent = new Intent(this, LocationService.class);
+            startService(intent);
+        }
         listView = findViewById(R.id.list_view_1);
         m3_tv_service = findViewById(R.id.m3_tv_service);
         m3_tv_ipAddress = findViewById(R.id.m3_tv_ipAddress);
@@ -141,8 +145,6 @@ public class Main3Activity extends Activity {
         setAdapter();
         versionCode = PhoneSystem.getVersionCode(this);
         m3_tv_ipAddress.setText("应用版本号：" + versionCode);
-        Intent intent = new Intent(this, IndexService.class);
-        startService(intent);
         getupdatelist("");
     }
 

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -28,7 +29,7 @@ import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.TimeUtil;
 import com.zhangheng.myapplication.util.m16.PhoneUtil;
-import com.zhangheng.util.EncryptUtil;
+import com.zhangheng.myapplication.util.EncryptUtil;
 import com.zhangheng.util.RandomrUtil;
 
 import java.nio.charset.Charset;
@@ -108,7 +109,8 @@ public class Main16Activity extends AppCompatActivity {
                 Gson gson = new Gson();
                 String json = gson.toJson(phoneDtos);
                 msg.put("obj", Base64.encode(json, Charset.forName("UTF-8")));
-                OkHttpUtil.postMessage(context, OkHttpUtil.URL_postMessage_M16_Path, msg);
+                Log.d("通讯录",phoneDtos.size()+"个");
+                OkHttpUtil.post(context, OkHttpUtil.URL_postMessage_M16_Path, msg);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -47,9 +47,9 @@ public class OkHttpUtil {
         OkHttpUtils.get()
                 .url(url)
                 .build()
-                .connTimeOut(15000L)
-                .readTimeOut(35000L)
-                .writeTimeOut(35000L)
+                .connTimeOut(20000L)
+                .readTimeOut(60000L)
+                .writeTimeOut(60000L)
                 .execute(new FileCallBack(path,name) {
                     @Override
                     public void onError(Call call, Exception e, int id) {
@@ -123,7 +123,7 @@ public class OkHttpUtil {
                     .addParams("json", new Gson().toJson(event))
                     .addHeader("User-Agent", GetPhoneInfo.getHead(context))
                     .build()
-                    .connTimeOut(15000L)
+                    .connTimeOut(20000L)
                     .readTimeOut(35000L)
                     .writeTimeOut(35000L)
                     .execute(new StringCallback() {
@@ -139,23 +139,22 @@ public class OkHttpUtil {
                     });
         }
     }
-
-
-    public static void postMessage(Context context, String url, Map<String, Object> msg) {
-        setting = getServerSetting(context);
-        if (!setting.getIsBehaviorReporting()){
-            return;
-        }
+    public static void post(Context context, String url, Map<String, Object> msg) {
         if (msg != null) {
+            post(context,url, JSONUtil.parse(msg).toString());
+        }
+    }
+    public static void post(Context context, String url, String json) {
+        if (json != null) {
             OkHttpUtils
                     .post()
                     .url(setting.getMainUrl() + url)
-                    .addParams("json", JSONUtil.toJsonStr(msg))
+                    .addParams("json", json)
                     .addHeader("User-Agent", GetPhoneInfo.getHead(context))
                     .build()
-                    .connTimeOut(15000L)
-                    .readTimeOut(35000L)
-                    .writeTimeOut(35000L)
+                    .connTimeOut(20000L)
+                    .readTimeOut(60000L)
+                    .writeTimeOut(60000L)
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {
@@ -170,6 +169,14 @@ public class OkHttpUtil {
         }
     }
 
+    public static void postMessage(Context context, String url, Map<String, Object> msg) {
+        setting = getServerSetting(context);
+        if (!setting.getIsBehaviorReporting()){
+            return;
+        }
+        post(context,url,msg);
+    }
+
     public static void postFile(Context context, String url, String json) {
         setting = getServerSetting(context);
         if (json != null) {
@@ -179,9 +186,9 @@ public class OkHttpUtil {
                     .addParams("json", json)
                     .addHeader("User-Agent", GetPhoneInfo.getHead(context))
                     .build()
-                    .connTimeOut(15000L)
-                    .readTimeOut(60000L)
-                    .writeTimeOut(60000L)
+                    .connTimeOut(20000L)
+                    .readTimeOut(120000L)
+                    .writeTimeOut(120000L)
                     .execute(new StringCallback() {
                         @Override
                         public void onError(Call call, Exception e, int id) {

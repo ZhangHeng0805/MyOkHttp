@@ -14,7 +14,8 @@ import android.widget.Toast;
 
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
-import com.zhangheng.myapplication.service.MyService;
+import com.zhangheng.myapplication.service.AudioService;
+import com.zhangheng.myapplication.service.IndexService;
 import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhangheng.myapplication.util.LocalFileTool;
 import com.zhangheng.myapplication.util.SystemUtil;
@@ -68,14 +69,15 @@ public class LauncherActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launcher);
 
-        Intent intent = new Intent(this, MyService.class);
-        startService(intent);
-
+        setting = new ServerSetting(context);
+        if (setting.getSetting(setting.flag_timing_upload_location,true)) {
+            Intent intent = new Intent(this, IndexService.class);
+            startService(intent);
+        }
         launcher_btn_exit = findViewById(R.id.launcher_btn_exit);
         launcher_tv_url1 = findViewById(R.id.launcher_tv_url1);
         launcher_tv_url2 = findViewById(R.id.launcher_tv_url2);
         launcher_tv_greet = findViewById(R.id.launcher_tv_greet);
-        setting = new ServerSetting(context);
         if (setting.getSetting("is_m3_voice_time",true)) {
             Calendar instance = Calendar.getInstance();
             int time = instance.get(Calendar.HOUR_OF_DAY);
@@ -125,11 +127,11 @@ public class LauncherActivity extends Activity {
         } else {
             audio = path + name;
         }
-        try {
-            playAudio(audio);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        Intent intent = new Intent(context, AudioService.class);
+        Bundle b1 = new Bundle();
+        b1.putString("audio", audio);
+        intent.putExtras(b1);
+        startService(intent);
     }
 
     private void countDown() {
