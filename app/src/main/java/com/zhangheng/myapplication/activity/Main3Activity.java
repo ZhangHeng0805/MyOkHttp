@@ -101,7 +101,7 @@ public class Main3Activity extends Activity {
         setContentView(R.layout.activity_main3);
 //        checkPermission();
         setting = new ServerSetting(context);
-        if (setting.getIsAutoUploadPhoto()) {
+        if (setting.getSetting(setting.flag_timing_upload_location,true)) {
             Intent intent = new Intent(this, LocationService.class);
             startService(intent);
         }

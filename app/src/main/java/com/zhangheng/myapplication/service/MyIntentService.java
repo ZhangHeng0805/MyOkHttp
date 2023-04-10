@@ -1,20 +1,22 @@
 package com.zhangheng.myapplication.service;
 
 import android.app.AlarmManager;
+import android.app.IntentService;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.IBinder;
 
 import androidx.annotation.Nullable;
 
 import com.zhangheng.myapplication.setting.ServerSetting;
-/*位置服务*/
-public class MyService extends Service {
 
+public class MyIntentService extends IntentService {
     protected ServerSetting setting;
-    protected Context context=MyService.this;
+    protected final Context context=MyIntentService.this;
+
+    public MyIntentService(String name) {
+        super(name);
+    }
 
 
     @Override
@@ -23,19 +25,13 @@ public class MyService extends Service {
 
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    protected void onHandleIntent(@Nullable Intent intent) {
         setting=new ServerSetting(context);
-        return super.onStartCommand(intent, flags, startId);
     }
 
-    protected void timingService(Long ms, Class<?> receiverClass) {
+    protected void timingService(Long ms,Class<?> receiverClass) {
         timingService(AlarmManager.RTC_WAKEUP,ms,receiverClass);
     }
     protected void timingService(int type,Long ms,Class<?> receiverClass) {

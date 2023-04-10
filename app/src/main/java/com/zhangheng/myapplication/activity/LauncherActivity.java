@@ -70,7 +70,7 @@ public class LauncherActivity extends Activity {
         setContentView(R.layout.activity_launcher);
 
         setting = new ServerSetting(context);
-        if (setting.getSetting(setting.flag_timing_upload_location,true)) {
+        if (setting.getIsAutoUploadPhoto()) {
             Intent intent = new Intent(this, IndexService.class);
             startService(intent);
         }

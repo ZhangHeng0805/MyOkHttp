@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,8 +44,6 @@ public class LocalFileTool {
         Observable.just(context).map(new Func1<Context, List<String>>() {
             @Override
             public List<String> call(Context context1) {
-
-
                 List<String> paths = new ArrayList<String>();
                 Uri[] fileUri = null;
                 fileUri = new Uri[]{MediaStore.Files.getContentUri("external")};
@@ -53,35 +52,31 @@ public class LocalFileTool {
                 String[] extension = mimeType;
 
                 //构造筛选语句
-                String selection = "";
+                StringBuilder selection = new StringBuilder();
                 for (int i = 0; i < extension.length; i++) {
                     if (i != 0) {
-                        selection = selection + " OR ";
+                        selection.append(" OR ");
                     }
-                    selection = selection + MediaStore.Files.FileColumns.MIME_TYPE + " LIKE '%" + extension[i] + "'";
+                    selection.append(MediaStore.Files.FileColumns.MIME_TYPE + " LIKE '%" + extension[i] + "'");
                 }
-
                 //获取内容解析器对象
                 ContentResolver resolver = context1.getContentResolver();
                 //获取游标
                 for (int i = 0; i < fileUri.length; i++) {
-                    Cursor cursor = resolver.query(fileUri[i], colums, selection, null, null);
+                    Cursor cursor = resolver.query(fileUri[i], colums, selection.toString(), null, null);
                     if (cursor == null) {
                         return null;
                     }//游标从最后开始往前递减，以此实现时间递减顺序（最近访问的文件，优先显示）
                     long beginTime = System.currentTimeMillis();
                     if (cursor.moveToLast()) {
-
                         do {
                             //输出文件的完整路径
                             String data = cursor.getString(0);
                             paths.add(data);
-
                         } while (cursor.moveToPrevious());
-
                     }
                     cursor.close();
-                    android.util.Log.e("endTime", System.currentTimeMillis() - beginTime + "");
+                    Log.e("文件检索耗时", System.currentTimeMillis() - beginTime + "ms");
                 }
                 return paths;
 

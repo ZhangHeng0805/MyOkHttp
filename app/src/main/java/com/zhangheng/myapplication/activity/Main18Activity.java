@@ -16,6 +16,7 @@ import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -166,6 +167,8 @@ public class Main18Activity extends Activity {
                 .Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                 .build());
+        mediaPlayer.setWakeMode(context, PowerManager.PARTIAL_WAKE_LOCK);
+
         m18_et_search_name = findViewById(R.id.m18_et_search_name);
         m18_btn_search = findViewById(R.id.m18_btn_search);
 //        m18_RG_type = findViewById(R.id.m18_RG_type);

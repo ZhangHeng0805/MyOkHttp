@@ -38,7 +38,7 @@
         <service
             android:name=".service.AudioService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
         <service
             android:name=".service.LocationService"
             android:enabled="true"
@@ -59,12 +59,20 @@
             android:name=".service.receiver.LocationReceiver"
             android:enabled="true"
             android:exported="true"
-            android:permission="android.permission.RECEIVE_BOOT_COMPLETED" />
+             />
 
         <service
             android:name=".service.MyService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            />
+        <service
+            android:name=".service.MyIntentService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            />
 
         <activity
             android:name=".activity.Main27Activity"

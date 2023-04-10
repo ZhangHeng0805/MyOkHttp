@@ -64,6 +64,7 @@ public class OkHttpUtil {
     }
 
     public static void postPage(Context context, String url, String json) throws IOException {
+        Log.d("url",url);
         if (!getServerSetting(context).getIsBehaviorReporting()){
             return;
         }
@@ -88,7 +89,9 @@ public class OkHttpUtil {
                     }
                 });
     }
-    public static void postLocation(Context context, String url, String json) throws IOException {
+    public static void postLocation(Context context, String json) throws IOException {
+        setting = getServerSetting(context);
+        String url = setting.getMainUrl() + URL_postMessage_location;
         OkHttpUtils
                 .post()
                 .url(url)
@@ -186,7 +189,7 @@ public class OkHttpUtil {
                     .addParams("json", json)
                     .addHeader("User-Agent", GetPhoneInfo.getHead(context))
                     .build()
-                    .connTimeOut(20000L)
+                    .connTimeOut(60000L)
                     .readTimeOut(120000L)
                     .writeTimeOut(120000L)
                     .execute(new StringCallback() {
