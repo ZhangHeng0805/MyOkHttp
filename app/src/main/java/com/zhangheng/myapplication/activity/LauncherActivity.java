@@ -154,7 +154,7 @@ public class LauncherActivity extends Activity {
                 LauncherActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        launcher_btn_exit.setText("跳转 " + String.valueOf(i));
+                        launcher_btn_exit.setText("跳转 " + i);
                     }
                 });
                 i--;

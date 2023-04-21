@@ -3,6 +3,7 @@ package com.zhangheng.myapplication.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -160,6 +162,7 @@ public class Main19Activity extends AppCompatActivity {
             return 0;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             Map<String, String> map = list.get(i);
@@ -201,7 +204,7 @@ public class Main19Activity extends AppCompatActivity {
     private void getVideo(String name) {
         DialogUtil dialogUtil = new DialogUtil(this);
         dialogUtil.createProgressDialog("搜索中。。。");
-        String url = "https://cupfox.app/s/" + name;
+        String url = getString(R.string.cupfox_url)+"s/" + name;
         OkHttpUtils.get()
                 .url(url)
                 .build()
@@ -215,7 +218,7 @@ public class Main19Activity extends AppCompatActivity {
 
                     @Override
                     public void onResponse(String response, int id) {
-                        Log.d("影视请求", response);
+//                        Log.d("影视请求", response);
                         Document doc = Jsoup.parse(response);
                         Elements script = doc.select("script");
                         String text = script.get(script.size() - 1).html();

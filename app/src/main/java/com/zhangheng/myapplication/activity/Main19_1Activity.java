@@ -56,13 +56,13 @@ public class Main19_1Activity extends Activity {
     private List<String> list_banner_path = new ArrayList<>(),//放图片地址的集合
             list_banner_title = new ArrayList<>();//放标题的集合
 
-    private List<Map<String, String>> list_map_tv = new ArrayList<>(),//热播新剧
-            list_map_movie = new ArrayList<>(),//热门电影
-            list_map_anime = new ArrayList<>(),//热播动漫
-            list_map_show = new ArrayList<>(),//热播综艺
-            list_map_documentary = new ArrayList<>(),//热播纪录片
-            list_map_high = new ArrayList<>(),//豆瓣Top250
-            list_map_filter = new ArrayList<>();//更多好片
+//    private List<Map<String, String>> list_map_tv = new ArrayList<>(),//热播新剧
+//            list_map_movie = new ArrayList<>(),//热门电影
+//            list_map_anime = new ArrayList<>(),//热播动漫
+//            list_map_show = new ArrayList<>(),//热播综艺
+//            list_map_documentary = new ArrayList<>(),//热播纪录片
+//            list_map_high = new ArrayList<>(),//豆瓣Top250
+//            list_map_filter = new ArrayList<>();//更多好片
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +118,7 @@ public class Main19_1Activity extends Activity {
         DialogUtil dialogUtil = new DialogUtil(context);
         dialogUtil.createProgressDialog("加载中。。。");
         OkHttpUtils.get()
-                .url("https://www.cupfox.app/")
+                .url(getString(R.string.cupfox_url))
                 .build()
                 .execute(new StringCallback() {
                     @Override
@@ -132,7 +132,6 @@ public class Main19_1Activity extends Activity {
                     public void onResponse(String response, int id) {
                         Document doc = Jsoup.parse(response);
                         getBanner(doc);
-
 
                         List<Map<String, List<Map<String, String>>>> list = new ArrayList<>();
 

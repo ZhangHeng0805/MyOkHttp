@@ -21,7 +21,7 @@ android {
     }
     defaultConfig {
         applicationId "com.zhangheng.myapplication"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 23
         versionName "04.10"
@@ -39,6 +39,22 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    signingConfigs {
+        release {
+            v1SigningEnabled true  //打包时默认勾选 V1（Jar Signature）
+            v2SigningEnabled true//打包时默认勾选 V2（Full APK Signature）
+            storeFile file('E:\\Users\\Administrator\\AndroidStudioProjects\\ZhTools.jks')
+            storePassword 'zh10120812'
+            keyAlias = 'key0'
+            keyPassword 'zh10120812'
+        }
+    }
+    lintOptions {
+        checkReleaseBuilds false
+        // Or, if you prefer, you can continue to check for errors in release builds,
+        // but continue the build even when errors are found:
+        abortOnError false
     }
 }
 
