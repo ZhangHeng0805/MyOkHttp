@@ -11,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -255,6 +256,7 @@ public class Main19_1Activity extends Activity {
                 view = View.inflate(context, R.layout.item_list_movies1, null);
                 holder.title = view.findViewById(R.id.item_tv_movies_title);
                 holder.gridView = view.findViewById(R.id.item_GL_movies);
+                holder.LL_title = view.findViewById(R.id.item_LL_movies_title);
                 holder.imageView = view.findViewById(R.id.item_iv_movies_close);
                 view.setTag(holder);
             } else {
@@ -273,7 +275,7 @@ public class Main19_1Activity extends Activity {
                         intentSearch(value.get(i).get("name"));
                     }
                 });
-                holder.imageView.setOnClickListener(new View.OnClickListener() {
+                holder.LL_title.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         int visibility = holder.gridView.getVisibility();
@@ -295,6 +297,7 @@ public class Main19_1Activity extends Activity {
             private TextView title;
             private FixedGridView gridView;
             private ImageView imageView;
+            private LinearLayout LL_title;
         }
     }
 }

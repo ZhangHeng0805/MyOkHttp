@@ -258,13 +258,68 @@ public class Main3Activity extends Activity {
             setting.setService_life_info(gson.toJson(appLife));
         }
     }
+    /**
+     * 查询更新
+     * v23.04.10及以下
+     */
+    public void getupdatelist(String json) {
+        if (dialogUtil == null)
+            dialogUtil = new DialogUtil(context);
+        dialogUtil.createProgressDialog();
+        String url = setting.getMainUrl()
+                + "config/updateApp/" + getResources().getString(R.string.app_name);
+        OkHttpUtils
+                .post()
+                .addParams("json", json)
+                .url(url)
+                .addHeader("User-Agent", GetPhoneInfo.getHead(context, true))
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+                        dialogUtil.closeProgressDialog();
+                        String error = OkHttpMessageUtil.error(e);
+                        Toast.makeText(context, "错误：" + error, Toast.LENGTH_SHORT).show();
+                        m3_tv_service.setText(error);
+                        m3_tv_service.setTextColor(getColor(R.color.red));
+                        Log.e(Tag, "更新错误：" + e.toString());
+                    }
 
+                    @Override
+                    public void onResponse(String response, int id) {
+                        try {
+                            if (response.indexOf("WEB服务器没有运行") < 1) {
+                                Gson gson = new Gson();
+                                Message msg = gson.fromJson(response, Message.class);
+                                String title = msg.getTitle();
+                                int compare = VersionComparator.INSTANCE.compare(title, GetPhoneInfo.versionCode(context));
+                                if (compare>0){
+                                    showUpdate(msg.getMessage(),appversion(title));
+                                }else {
+                                    Log.d(Tag, "无需更新");
+                                }
+                                m3_tv_service.setText("服务器已连接");
+                                m3_tv_service.setTextColor(getColor(R.color.colorPrimary));
+                            }else {
+                                m3_tv_service.setText("WEB服务器没有运行");
+                                m3_tv_service.setTextColor(getColor(R.color.orange));
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }finally {
+                            dialogUtil.closeProgressDialog();
+                            Log.d(Tag, "更新：" + response);
+                        }
+                    }
+                });
+    }
 
 
     /**
      * 查询更新
+     * v23.04.10及以下
      */
-    public void getupdatelist(String json) {
+    public void getupdatelist1(String json) {
 //        getBuild();
         if (dialogUtil == null)
             dialogUtil = new DialogUtil(context);
@@ -306,7 +361,9 @@ public class Main3Activity extends Activity {
                                                 String version = appversion(url_name);
                                                 int compare = VersionComparator.INSTANCE.compare(version, versionCode);
                                                 if (compare > 0) {
-                                                    showUpdate(url_name);
+                                                    String url = getResources().getString(R.string.zhangheng_url)
+                                                            + "fileload/download/" + url_name;
+                                                    showUpdate(url,version);
                                                 } else {
                                                     Log.d(Tag, "无需更新");
                                                 }
@@ -361,29 +418,29 @@ public class Main3Activity extends Activity {
     /**
      * 展示更新提示弹窗
      *
-     * @param name
+     * @param url
+     * @param app_version
      */
-    public void showUpdate(final String name) {
-        String app = appversion(name);
+    public void showUpdate(final String url,final String app_version) {
+//        String app_version = appversion(name);
         builder = new AlertDialog.Builder(this)
                 .setTitle("更新")
-                .setMessage("有新的版本《" + app + "》可以更新，是否去下载更新包？" +
-                        "\n【分片下载】更快速，但需要下载端支持分片下载功能")
-                .setPositiveButton("去更新(普通下载)", new DialogInterface.OnClickListener() {
+                .setMessage("有新的版本《" + app_version + "》可以更新，是否去下载更新包？" +
+                        "\n【链接更新】直接用更新链接下载，【主页更新】去主页链接下载")
+                .setPositiveButton("去更新(链接更新)", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String url = getResources().getString(R.string.zhangheng_url)
-                                + "fileload/download/" + name;
+//                        String url = getResources().getString(R.string.zhangheng_url)
+//                                + "fileload/download/" + name;
                         Uri uri = Uri.parse(url);
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(intent);
                     }
                 })
-                .setNegativeButton("去更新(分片下载)", new DialogInterface.OnClickListener() {
+                .setNegativeButton("去更新(主页更新)", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        String url = getResources().getString(R.string.zhangheng_url)
-                                + "download/split/" + name;
+                        String url = getResources().getString(R.string.zhangheng_url);
                         Uri uri = Uri.parse(url);
                         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                         startActivity(intent);

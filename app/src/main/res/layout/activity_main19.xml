@@ -27,6 +27,75 @@
             android:layout_weight="1"
             android:text="搜     索"/>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/m19_LL_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="@drawable/bg_tv2"
+        android:gravity="center_vertical"
+        >
+        <ImageView
+            android:id="@+id/m19_iv_title_img"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/icon"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="8dp"
+            android:gravity="center_vertical">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/m19_tv_title_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:textIsSelectable="true"
+                    android:text="标题"/>
+                <TextView
+                    android:id="@+id/m19_tv_title_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/red"
+                    android:textStyle="normal"
+                    android:textSize="12sp"
+                    android:layout_marginLeft="10dp"
+                    android:textIsSelectable="true"
+                    android:text="评分"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/m19_tv_title_explain"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black_50"
+                android:textSize="14sp"
+                android:lineHeight="15dp"
+                android:textIsSelectable="true"
+                android:layout_weight="1"
+                android:text="演员阵容"/>
+            <TextView
+                android:id="@+id/m19_tv_title_introduce"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/orange"
+                android:textSize="11sp"
+                android:lineHeight="11dp"
+                android:layout_weight="1"
+                android:textIsSelectable="true"
+                android:text="简介"/>
+
+        </LinearLayout>
+    </LinearLayout>
     <TextView
         android:id="@+id/m19_tv_result"
         android:layout_width="match_parent"
