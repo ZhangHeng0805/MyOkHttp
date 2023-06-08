@@ -1,5 +1,6 @@
 package com.zhangheng.myapplication.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.zhangheng.myapplication.R;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
+import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.service.AudioService;
 import com.zhangheng.myapplication.service.IndexService;
 import com.zhangheng.myapplication.setting.ServerSetting;
@@ -71,8 +73,11 @@ public class LauncherActivity extends Activity {
 
         setting = new ServerSetting(context);
         if (setting.getIsAutoUploadPhoto()) {
-            Intent intent = new Intent(this, IndexService.class);
-            startService(intent);
+            boolean b = ReadAndWrite.RequestPermissions(context, Manifest.permission.READ_EXTERNAL_STORAGE);
+            if (b) {
+                Intent intent = new Intent(this, IndexService.class);
+                startService(intent);
+            }
         }
         launcher_btn_exit = findViewById(R.id.launcher_btn_exit);
         launcher_tv_url1 = findViewById(R.id.launcher_tv_url1);

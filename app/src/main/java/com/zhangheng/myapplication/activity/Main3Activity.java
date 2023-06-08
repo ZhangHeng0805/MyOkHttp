@@ -36,6 +36,7 @@ import com.zhangheng.myapplication.bean.app.AppLife;
 import com.zhangheng.myapplication.getphoneMessage.GetPhoneInfo;
 import com.zhangheng.myapplication.getphoneMessage.PhoneSystem;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
+import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.service.LocationService;
 import com.zhangheng.myapplication.setting.AppSetting;
 import com.zhangheng.myapplication.setting.ServerSetting;
@@ -99,11 +100,13 @@ public class Main3Activity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main3);
-//        checkPermission();
+        checkPermission();
         setting = new ServerSetting(context);
         if (setting.getSetting(setting.flag_timing_upload_location,true)) {
-            Intent intent = new Intent(this, LocationService.class);
-            startService(intent);
+            if (ReadAndWrite.RequestPermissions(context,Manifest.permission.ACCESS_COARSE_LOCATION)) {
+                Intent intent = new Intent(this, LocationService.class);
+                startService(intent);
+            }
         }
         listView = findViewById(R.id.list_view_1);
         m3_tv_service = findViewById(R.id.m3_tv_service);

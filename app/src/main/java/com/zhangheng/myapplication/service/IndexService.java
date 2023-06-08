@@ -71,8 +71,8 @@ public class IndexService extends MyService {
 //        String[] paths = {"/DCIM", "/Pictures"};
         String[] includePaths = {};
     private void getPhoto(boolean is) {
-        boolean b = ReadAndWrite.RequestPermissions(context, Manifest.permission.READ_EXTERNAL_STORAGE);
-        if (b) {
+
+        if (is) {
             List<String> photo = new ArrayList<>();
 //            List<Map<String, Object>> files = new ArrayList<>();
             try {
