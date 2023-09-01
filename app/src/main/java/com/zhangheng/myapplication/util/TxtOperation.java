@@ -33,9 +33,9 @@ public class TxtOperation {
      * @param encoding 文件编码
      * @return 文本每行数据集合
      */
-    public static List<String> readTxtFile(File file,String encoding){
+    public static List<String> readTxtFile(File file,String encoding)throws Exception{
         List<String> list=new ArrayList<>();
-        try {
+//        try {
             if(file.isFile() && file.exists()){ //判断文件是否存在
                 InputStreamReader read = new InputStreamReader(
                         new FileInputStream(file),encoding);//考虑到编码格式
@@ -48,10 +48,10 @@ public class TxtOperation {
             }else{
                 throw new Exception("找不到<"+file.getPath()+">该文件！cannot find file");
             }
-        } catch (Exception e) {
-            System.err.println("读取文件内容出错");
-            e.printStackTrace();
-        }
+//        } catch (Exception e) {
+//            System.err.println("读取文件内容出错");
+//            e.printStackTrace();
+//        }
         return list;
     }
 
@@ -60,7 +60,7 @@ public class TxtOperation {
      * @param filePath 文件路径
      * @return 文本每行数据集合
      */
-    public static List<String> readTxtFile(String filePath){
+    public static List<String> readTxtFile(String filePath) throws Exception {
         String encoding= CharsetUtil.defaultCharsetName();
         File file=new File(filePath);
         return readTxtFile(file,encoding);
@@ -72,7 +72,7 @@ public class TxtOperation {
      * @param encoding 文件编码
      * @return 文本每行数据集合
      */
-    public static List<String> readTxtFile(String filePath,String encoding){
+    public static List<String> readTxtFile(String filePath,String encoding) throws Exception {
         File file=new File(filePath);
         return readTxtFile(file,encoding);
     }
@@ -216,13 +216,9 @@ public class TxtOperation {
      * @param isContinuation 是否续写(true追加/false覆盖)
      * @return 是否写入成功
      */
-    public static boolean writeTxtFile(String newStr,String path,boolean isContinuation){
+    public static boolean writeTxtFile(String newStr,String path,boolean isContinuation) throws IOException {
         boolean f=false;
-        try {
-            f = writeTxtFile(newStr, creatTxtFile(path),isContinuation);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        f = writeTxtFile(newStr, creatTxtFile(path),isContinuation);
         return f;
     }
 }

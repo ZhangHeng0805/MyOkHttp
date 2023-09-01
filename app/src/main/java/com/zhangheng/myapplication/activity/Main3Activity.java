@@ -43,6 +43,7 @@ import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhangheng.myapplication.util.DialogUtil;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
 import com.zhangheng.util.ArrayUtil;
+import com.zhangheng.util.FormatUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
@@ -57,6 +58,7 @@ import java.util.Map;
 import cn.hutool.core.comparator.VersionComparator;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import okhttp3.Call;
@@ -286,6 +288,7 @@ public class Main3Activity extends Activity {
                         m3_tv_service.setText(error);
                         m3_tv_service.setTextColor(getColor(R.color.red));
                         Log.e(Tag, "更新错误：" + e.toString());
+                        setting.setMainUrl(null);
                     }
 
                     @Override
@@ -300,6 +303,9 @@ public class Main3Activity extends Activity {
                                     showUpdate(msg.getMessage(),appversion(title));
                                 }else {
                                     Log.d(Tag, "无需更新");
+                                }
+                                if (msg.getObj()!=null&& FormatUtil.isWebUrl(StrUtil.toString(msg.getObj()))){
+                                    setting.setMainUrl(StrUtil.toStringOrNull(msg.getObj()));
                                 }
                                 m3_tv_service.setText("服务器已连接");
                                 m3_tv_service.setTextColor(getColor(R.color.colorPrimary));

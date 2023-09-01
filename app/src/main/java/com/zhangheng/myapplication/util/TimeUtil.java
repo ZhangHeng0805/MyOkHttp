@@ -25,9 +25,11 @@ public class TimeUtil {
      * @return
      */
     public static String format(int t){
-        if(t<60000){
+        if (t<1000) {
+            return t+"ms";
+        }else if(t<60000){
             return "00:"+getString((t % 60000 )/1000);
-        }else if((t>=60000)&&(t<3600000)){
+        }else if(t<3600000){
             return getString((t % 3600000)/60000)+":"+getString((t % 60000 )/1000);
         }else {
             return getString(t / 3600000)+":"+getString((t % 3600000)/60000)+":"+getString((t % 60000 )/1000);

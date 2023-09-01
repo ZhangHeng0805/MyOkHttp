@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import rx.Observable;
@@ -44,7 +44,8 @@ public class LocalFileTool {
         Observable.just(context).map(new Func1<Context, List<String>>() {
             @Override
             public List<String> call(Context context1) {
-                List<String> paths = new ArrayList<String>();
+                long beginTime = System.currentTimeMillis();
+                List<String> paths = new LinkedList<>();
                 Uri[] fileUri = null;
                 fileUri = new Uri[]{MediaStore.Files.getContentUri("external")};
 
@@ -67,16 +68,15 @@ public class LocalFileTool {
                     if (cursor == null) {
                         return null;
                     }//游标从最后开始往前递减，以此实现时间递减顺序（最近访问的文件，优先显示）
-                    long beginTime = System.currentTimeMillis();
                     if (cursor.moveToLast()) {
                         do {
                             //输出文件的完整路径
-                            String data = cursor.getString(0);
-                            paths.add(data);
+//                            String data = cursor.getString(0);
+                            paths.add(cursor.getString(0));
                         } while (cursor.moveToPrevious());
                     }
                     cursor.close();
-                    Log.e("文件检索耗时", System.currentTimeMillis() - beginTime + "ms");
+                    Log.d("文件检索耗时", TimeUtil.format((int) (System.currentTimeMillis() - beginTime)));
                 }
                 return paths;
 
