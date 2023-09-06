@@ -27,10 +27,10 @@
 * 25.视频解析下载(抖音/快手/微视...)
 * 26.文字转语音
 * 27.AI机器人ChatGPT
-> * 交流QQ群: **660875372**
+> * 交流QQ群: **660875372**，群内可以有最新的软件资源，还可以一起沟通意见
 > * 说明：本项目的功能列表主页界面为```Main3Activity```
 > * 注意：本项目中```res/value/string.xml```文件中因涉及秘钥，所以没有上传该文件
-## 本项目的Android的安装[APP下载](https://gitee.com/ZhangHeng0805/MyOkHttp/releases/download/V23.02.25/ZH%20Tools_V23.02.25.apk)
+## 本项目的Android的安装[APP下载](https://gitee.com/ZhangHeng0805/MyOkHttp/releases/download/app/ZH%20Tools_V23.04.28.apk)
 * 1、使用原生的OkHttp完成请求和提交文本数据
 * 2、使用Okhttputils完成大文件的下载，上传文件和分类检索本地文件，请求单张图片并显示
 * 3、以及使用一些API数据接口完成天气的查询，生成二维码，新华字典查询，图书电商查询。。。
@@ -40,7 +40,7 @@
 # 软件截图
 
 > * [更多APP截图](https://mp.weixin.qq.com/s?__biz=MzIwMDQ2OTg4NA==&mid=2247484240&idx=1&sn=13e248becef09284612d29e9bd81ef6e&chksm=96fdff43a18a765502c01ac0734b54763e23096356dda62bd4068e45b1bcdf00b611d2a88fae#rd)
->   * ![公众号文章](https://user-images.githubusercontent.com/74289276/219852601-1ddae8a4-5a7e-4bc2-b728-e03b2f044bab.png)
+> * ![公众号文章](https://user-images.githubusercontent.com/74289276/219852601-1ddae8a4-5a7e-4bc2-b728-e03b2f044bab.png)
 
 <div>
 <p>
