@@ -5,7 +5,6 @@ import com.zhangheng.myapplication.activity.Main11Activity;
 import com.zhangheng.myapplication.activity.Main12Activity;
 import com.zhangheng.myapplication.activity.Main13Activity;
 import com.zhangheng.myapplication.activity.Main14Activity;
-import com.zhangheng.myapplication.activity.Main15Activity;
 import com.zhangheng.myapplication.activity.Main16Activity;
 import com.zhangheng.myapplication.activity.Main17Activity;
 import com.zhangheng.myapplication.activity.Main18Activity;
@@ -18,15 +17,12 @@ import com.zhangheng.myapplication.activity.Main24Activity;
 import com.zhangheng.myapplication.activity.Main25Activity;
 import com.zhangheng.myapplication.activity.Main26Activity;
 import com.zhangheng.myapplication.activity.Main27Activity;
-import com.zhangheng.myapplication.activity.Main2Activity;
 import com.zhangheng.myapplication.activity.Main4Activity;
 import com.zhangheng.myapplication.activity.Main5Activity;
 import com.zhangheng.myapplication.activity.Main6Activity;
 import com.zhangheng.myapplication.activity.Main7Activity;
 import com.zhangheng.myapplication.activity.Main8Activity;
 import com.zhangheng.myapplication.activity.Main9Activity;
-import com.zhangheng.myapplication.activity.MainActivity;
-import com.zhangheng.myapplication.activity.Test1Activity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,11 +36,10 @@ public class AppSetting {
      * 主页功能列表
      */
     public static final String[] M3_Titles = new String[]{
-//            "1.原生OkHttp的Get和Post请求文本数据",//MainActivity
-//            "2.使用OkHttpUtil的Post提交文本数据",//Main2Activity
+
             "3.文件下载工具",//Main4Activity
 //            "4.上传文件和检索本地文件",//Main5Activity
-            "5.图片显示工具",//Main6Activity
+            "5.看图工具",//Main6Activity
             "6.天气查询工具",//Main7Activity（API）
             "7.二维码生成工具",//Main8Activity
             "8.新华字典查询工具",//Main9Activity（API）
@@ -53,7 +48,7 @@ public class AppSetting {
             "11.密码工具",//Main12Activity
             "12.画板工具",//Main13Activity
             "13.精选文案",//Main14Activity（爬虫,API）
-            "14.每天60秒读懂世界",//Main15Activity（API）
+//            "14.每天60秒读懂世界",//Main15Activity（API）
 //            "15.自制下拉刷新的ListView（测试）",//Test1Activity
             "16.电话本工具",//Main16Activity
             "17.手机扫码工具",//Main17Activity
@@ -69,8 +64,7 @@ public class AppSetting {
             "27.AI机器人ChatGPT",//Main27Activity(API)
     };
     public final static Map<Integer, Class<?>> M3_contextMap = new HashMap<Integer, Class<?>>() {{
-        put(1, MainActivity.class);
-        put(2, Main2Activity.class);
+
         put(3, Main4Activity.class);
         put(4, Main5Activity.class);
         put(5, Main6Activity.class);
@@ -82,8 +76,7 @@ public class AppSetting {
         put(11, Main12Activity.class);
         put(12, Main13Activity.class);
         put(13, Main14Activity.class);
-        put(14, Main15Activity.class);
-        put(15, Test1Activity.class);
+//        put(14, Main15Activity.class);
         put(16, Main16Activity.class);
         put(17, Main17Activity.class);
         put(18, Main18Activity.class);

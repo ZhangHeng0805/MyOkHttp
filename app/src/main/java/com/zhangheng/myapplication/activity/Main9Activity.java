@@ -81,8 +81,8 @@ public class Main9Activity extends AppCompatActivity {
     private void getDictionary(String word) {
         DialogUtil dialogUtil = new DialogUtil(context);
         dialogUtil.createProgressDialog("查询中...");
-        String url = "http://v.juhe.cn/xhzd/query";
-        String key = getResources().getString(R.string.key_dictionary);
+        String url = getString(R.string.dictionary_juhe_url);
+        String key = getString(R.string.key_dictionary);
         Map<String, String> map = new HashMap<>();
         map.put("key", key);
         map.put("word", word);

@@ -191,8 +191,9 @@ public class Main8Activity extends AppCompatActivity {
      * @param text
      */
     private void getQRImageByNet(String text) throws UnsupportedEncodingException {
-        String url = "http://apis.juhe.cn/qrcode/api";
-        String key = getResources().getString(R.string.key_QRImage);
+
+        String url = getString(R.string.qrcode_juhe_url);
+        String key = getString(R.string.key_QRImage);
 //        int width = DisplyUtil.getScreenWidth(this);
 //        int w = (int) (width * 0.9);
         String W = String.valueOf(Width);
@@ -208,12 +209,15 @@ public class Main8Activity extends AppCompatActivity {
 //        String encode = URLEncoder.encode(s, "UTF-8");
         param.put("logo", null);//logo图片URL地址或base64encode编码的图片内容，需要urlencode
         param.put("w", W);//尺寸大小（像素），例如：300
-        param.put("m", "50");//边距大小（像素），例如：10
+        int M= (int) (Width*0.05);
+        param.put("m", String.valueOf(M));//边距大小（像素），例如：10
         param.put("lw", null);//logo宽度（像素），例如：60
         param.put("type", "2");//返回模式，1:二维码图片以base64encode编码返回 2:直接返回二维码图像，默认1
 
         final boolean b = ReadAndWrite.RequestPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);//写入权限
         if (b) {
+            DialogUtil dialogUtil = new DialogUtil(context);
+            dialogUtil.createProgressDialog();
             OkHttpUtils
                     .get()
                     .url(url)
@@ -224,13 +228,14 @@ public class Main8Activity extends AppCompatActivity {
                         @Override
                         public void onError(Call call, Exception e, int id) {
                             e.printStackTrace();
-
+                            dialogUtil.closeProgressDialog();
                             Toast.makeText(Main8Activity.this, "错误" + OkHttpMessageUtil.error(e), Toast.LENGTH_SHORT).show();
                         }
 
                         @Override
                         public void onResponse(final Bitmap response, int id) {
                             m8_image.setImageBitmap(response);
+                            dialogUtil.closeProgressDialog();
                         }
 
                     });

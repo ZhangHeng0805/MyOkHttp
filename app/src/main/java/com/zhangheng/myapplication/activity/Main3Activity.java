@@ -85,7 +85,7 @@ public class Main3Activity extends Activity {
 
     private ListView listView;
     private TextView m3_tv_service, m3_tv_ipAddress;
-    private ImageView m3_iv_setting, m3_iv_service_refersh;
+    private ImageView m3_iv_setting, m3_iv_service_refersh,m3_iv_logo;
 
     private AlertDialog.Builder builder;
     private SharedPreferences sharedPreferences;
@@ -115,6 +115,7 @@ public class Main3Activity extends Activity {
         m3_tv_ipAddress = findViewById(R.id.m3_tv_ipAddress);
         m3_iv_setting = findViewById(R.id.m3_iv_setting);
         m3_iv_service_refersh = findViewById(R.id.m3_iv_service_refersh);
+        m3_iv_logo = findViewById(R.id.m3_iv_logo);
         checkLife();//检查使用期限
 //        System.out.println("SHA1："+SettingActivity.getAppSHA1(context));
         m3_iv_setting.setOnClickListener(new View.OnClickListener() {
@@ -147,21 +148,40 @@ public class Main3Activity extends Activity {
                 }
             }
         });
+        m3_iv_logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                StringBuilder html=new StringBuilder();
+                html.append("<p style='text-size:25px'><span style='color:#008577'>星曦向荣</span>的<i>Android</i>工具应用<b>ZH Tools</b></p>");
+                html.append("<p>个人开发的工具APP，免费的影视和音乐资源，天气、字典、翻译、画图、新闻、二维码、文字转语音、ChatGPT...等丰富的功能等您来体验.</p>");
+                html.append("<ol>");
+                String weixin_url="https://mp.weixin.qq.com/s?__biz=MzIwMDQ2OTg4NA==&mid=2247484118&idx=1&sn=30dd3f7f2a4d93a6fdce4fb808e7c506&chksm=96fdfec5a18a77d35645d8e8f55477353aeb9a949fc73a2c302ca336155f8becae635e26f022#rd";
+                html.append("<li>微信公众号：<a href='"+weixin_url+"'>星曦向荣</a></li>");
+                html.append("<li>服务主页：<a href='"+setting.getMainUrl()+"'>"+setting.getMainUrl()+"</a></li>");
+                html.append("</ol>");
+
+                DialogUtil.dialog(context,"APP简介",html.toString(),true);
+            }
+        });
         setAdapter();
         versionCode = PhoneSystem.getVersionCode(this);
         m3_tv_ipAddress.setText("应用版本号：" + versionCode);
         getupdatelist("");
     }
 
+    private List<String> titleItem;
     private void setAdapter() {
         String[] m3_titles = AppSetting.M3_Titles;
+        titleItem = new ArrayList<>();
         List<String> list = new ArrayList<>();
         Map<String, Boolean> map = setting.getDisplayM3Titles();
         for (String title : m3_titles) {
             if (map.get(title)) {
-                list.add(title);
+                titleItem.add(title);
+                list.add(title.substring(title.indexOf('.')+1));
             }
         }
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                 context, R.layout.item_list_text, list);
         listView.setAdapter(adapter);
@@ -169,10 +189,11 @@ public class Main3Activity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Intent intent = null;
-                ArrayAdapter<String> adapter1 = (ArrayAdapter<String>) adapterView.getAdapter();
-                String item = adapter1.getItem(i);
-                String[] split = item.split("\\.");
 
+//                ArrayAdapter<String> adapter1 = (ArrayAdapter<String>) adapterView.getAdapter();
+//                String item = adapter1.getItem(i);
+                String item = titleItem.get(i);
+                String[] split = item.split("\\.");
                 Integer integer = 0;
                 if (split.length >= 2) {
                     integer = Integer.valueOf(split[0]);

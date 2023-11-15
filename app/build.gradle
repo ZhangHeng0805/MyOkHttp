@@ -24,7 +24,7 @@ android {
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 23
-        versionName "04.28"
+        versionName "11.15"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         // 显式声明支持注解
         javaCompileOptions {
@@ -78,17 +78,16 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
     implementation files('libs/AMap_Location_V5.2.0_20200915.jar')
     implementation files('libs/AMap_Search_V7.7.0_20201027.jar')
-
     implementation files('libs/Volley.jar')
     // https://mvnrepository.com/artifact/io.netty/netty-all
     implementation 'com.lzy.widget:imagepicker:0.6.1'
     //指定版本
     implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
     //手机扫码
-    implementation files('lib/ZH_Utils.jar')
     //html解析
     // https://mvnrepository.com/artifact/org.jsoup/jsoup
     implementation 'org.jsoup:jsoup:1.15.3'
-    implementation 'com.youth.banner:banner:1.4.10'  //轮播图
-
+    implementation 'com.youth.banner:banner:1.4.10'
+    //轮播图
+    implementation files('lib/ZH_Utils.jar')
 }

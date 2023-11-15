@@ -121,8 +121,8 @@ public class Main7Activity extends Activity implements View.OnClickListener, Geo
     private void getRealWeather(String city) {
         DialogUtil dialogUtil = new DialogUtil(context);
         dialogUtil.createProgressDialog("查询中...");
-        String url = "http://apis.juhe.cn/simpleWeather/query";
-        String key = getResources().getString(R.string.key_weather);
+        String url = getString(R.string.weather_juhe_url);
+        String key = getString(R.string.key_weather);
         Map<String, String> params = new HashMap<>();
         params.put("city", city);
         params.put("key", key);

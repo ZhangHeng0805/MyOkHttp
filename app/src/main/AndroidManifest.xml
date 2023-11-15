@@ -110,7 +110,7 @@
             android:name=".activity.Main17Activity"
             android:label="手机扫码" />
         <activity android:name=".activity.Main16Activity" />
-        <activity android:name=".activity.Test1Activity" /> <!-- 调整二维码扫描界面为竖屏 -->
+        <!-- 调整二维码扫描界面为竖屏 -->
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="portrait"
@@ -188,8 +188,6 @@
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.Main2Activity" />
-        <activity android:name=".activity.MainActivity" />
     </application>
 
 </manifest>

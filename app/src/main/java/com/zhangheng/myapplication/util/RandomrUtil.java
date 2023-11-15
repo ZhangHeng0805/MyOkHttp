@@ -36,7 +36,7 @@ public class RandomrUtil {
     /**
      * 数字字符数组
      */
-    private static final char[] NUMBER=new char[]{
+    public static final char[] NUMBER=new char[]{
             '1','2','3','4','5','6','7','8','9','0',
     };
 

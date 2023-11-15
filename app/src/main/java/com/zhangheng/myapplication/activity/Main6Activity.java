@@ -180,6 +180,8 @@ public class Main6Activity extends AppCompatActivity implements View.OnClickList
         OkHttpUtils.get()
                 .url(urls[r])
                 .build()
+                .readTimeOut(3000L)
+                .connTimeOut(2000L)
                 .execute(new StringCallback() {
                     @Override
                     public void onError(Call call, Exception e, int id) {

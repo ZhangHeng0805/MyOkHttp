@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="8dp"
+
     tools:context=".activity.Main24Activity">
     <ListView
         android:id="@+id/m24_LV_list"
@@ -12,6 +12,7 @@
         android:layout_height="match_parent"
         android:divider="@color/transparent"
         android:dividerHeight="8dp"
+        android:padding="8dp"
         android:layout_above="@id/m24_LL_edit"
         android:layout_marginBottom="10dp"
         />
@@ -20,8 +21,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
-    android:background="@drawable/bg_shore"
+    android:background="@color/black_10"
     android:gravity="center_vertical"
+    android:padding="8dp"
     android:orientation="horizontal">
     <EditText
         android:id="@+id/m24_et_content"

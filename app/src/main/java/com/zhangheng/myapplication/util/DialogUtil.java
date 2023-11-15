@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.text.Html;
+import android.widget.TextView;
+
+import com.zhangheng.myapplication.R;
 
 public class DialogUtil {
     private final ProgressDialog progressDialog;
@@ -14,12 +17,18 @@ public class DialogUtil {
 
     public static void dialog(Context context, String title, String message,boolean isHtml){
         AlertDialog.Builder d=new AlertDialog.Builder(context);
-
+        TextView showText = new TextView(context);
+        showText.setTextSize(16);
+        showText.setTextColor(context.getColor(R.color.black));
+        showText.setLineSpacing(0,1.2f);
+        showText.setPadding(50,25,50,25);
+        showText.setTextIsSelectable(true);
         if (isHtml) {
-            d.setMessage(Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT));
+            showText.setText(Html.fromHtml(message, Html.FROM_HTML_MODE_COMPACT));
         }else {
-            d.setMessage(message);
+            showText.setText(message);
         }
+        d.setView(showText);
         d.setTitle(title);
         d.create().show();
     }
