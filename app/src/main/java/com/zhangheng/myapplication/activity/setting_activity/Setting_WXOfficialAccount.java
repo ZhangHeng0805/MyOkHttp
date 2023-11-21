@@ -1,6 +1,7 @@
 package com.zhangheng.myapplication.activity.setting_activity;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -65,11 +66,14 @@ public class Setting_WXOfficialAccount extends SettingActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 try {
-                    Intent lan = context.getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
+                    String packageName = "com.tencent.mm";
+                    String className = "com.tencent.mm.ui.LauncherUI";
                     Intent intent = new Intent(Intent.ACTION_MAIN);
                     intent.addCategory(Intent.CATEGORY_LAUNCHER);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setComponent(lan.getComponent());
+                    intent.setComponent(new ComponentName(packageName, className));
+                    intent.putExtra("LauncherUI.From.Scaner.Shortcut", true);
+//                    intent.putExtra("LauncherUI.Search.Query", keyword);
                     context.startActivity(intent);
                 } catch (Exception e) {
                     //若无法正常跳转，在此进行错误处理

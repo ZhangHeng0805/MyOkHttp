@@ -1,11 +1,13 @@
 package com.zhangheng.myapplication.activity.setting_activity;
 
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -86,11 +88,13 @@ public class Setting_Donation extends SettingActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 try {
-                    Intent lan = context.getPackageManager().getLaunchIntentForPackage("com.tencent.mm");
+                    String packageName = "com.tencent.mm";
+                    String className = "com.tencent.mm.ui.LauncherUI";
                     Intent intent = new Intent(Intent.ACTION_MAIN);
                     intent.addCategory(Intent.CATEGORY_LAUNCHER);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setComponent(lan.getComponent());
+                    intent.setComponent(new ComponentName(packageName, className));
+                    intent.putExtra("LauncherUI.From.Scaner.Shortcut", true);
                     context.startActivity(intent);
                 } catch (Exception e) {
                     //若无法正常跳转，在此进行错误处理
@@ -103,11 +107,17 @@ public class Setting_Donation extends SettingActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 try {
-                    Intent lan = context.getPackageManager().getLaunchIntentForPackage("com.eg.android.AlipayGphone");
-                    Intent intent = new Intent(Intent.ACTION_MAIN);
-                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setComponent(lan.getComponent());
+                    //支付宝付款码
+//                    Uri uri = Uri.parse("alipayqr://platformapi/startapp?saId=20000056");
+                    //支付宝扫一扫
+                    Uri uri = Uri.parse("alipayqr://platformapi/startapp?saId=10000007");
+                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+
+//                    Intent lan = context.getPackageManager().getLaunchIntentForPackage("com.eg.android.AlipayGphone");
+//                    Intent intent = new Intent(Intent.ACTION_MAIN);
+//                    intent.addCategory(Intent.CATEGORY_LAUNCHER);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//                    intent.setComponent(lan.getComponent());
                     context.startActivity(intent);
                 } catch (Exception e) {
                     //若无法正常跳转，在此进行错误处理
